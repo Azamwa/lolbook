@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { useAppDispatch, useAppSelector } from 'store/index';
-import { csrFetch } from 'store/csrFetch';
 import classNames from 'classnames/bind';
 import navigationStyle from 'styles/components/navigation.module.scss';
+import { useAppDispatch, useAppSelector } from 'store';
+import { csrFetch } from 'store/csrFetch';
 
 const cx = classNames.bind(navigationStyle);
 
