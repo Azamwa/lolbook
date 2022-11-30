@@ -1,0 +1,10 @@
+.Background {
+	width: 100%;
+	height: 100vh;
+	background: url('../../assets/img/Invasion_of_starGuard.jpg');
+	filter: blur(2px);
+	opacity: 0.9;
+	position: absolute;
+	transform: scale(1.02);
+	z-index: -1;
+}

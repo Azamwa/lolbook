@@ -4,20 +4,20 @@ module.exports = {
 	env: {
 		browser: true,
 		node: true,
-		es2021: true,
+		es2021: true
 	},
 	extends: [
 		'eslint:recommended',
 		'plugin:react/recommended',
-		'plugin:@typescript-eslint/recommended',
+		'plugin:@typescript-eslint/recommended'
 	],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		ecmaFeatures: {
-			jsx: true,
+			jsx: true
 		},
 		ecmaVersion: 13,
-		sourceType: 'module',
+		sourceType: 'module'
 	},
 	plugins: ['import', 'react', 'react-hooks', '@typescript-eslint'],
 	rules: {
@@ -25,5 +25,6 @@ module.exports = {
 		'react-hooks/exhaustive-deps': 'error',
 		'@typescript-eslint/no-unused-vars': 'error',
 		'react/react-in-jsx-scope': 'off',
-	},
+		'@typescript-eslint/no-var-requires': 0
+	}
 };

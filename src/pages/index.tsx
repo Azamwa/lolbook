@@ -1,9 +1,3 @@
-import Sea from 'components/Sea';
-
 export default function Home() {
-	return (
-		<div>
-			<Sea />
-		</div>
-	);
+	return <div>롤 패치노트</div>;
 }
