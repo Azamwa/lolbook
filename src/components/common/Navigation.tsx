@@ -1,11 +1,41 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import classNames from 'classnames/bind';
-import navigationStyle from 'styles/components/navigation.module.scss';
+import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from 'store';
 import { csrFetch } from 'store/csrFetch';
 
-const cx = classNames.bind(navigationStyle);
+const NavigationContainer = styled.div`
+	width: 100%;
+	height: 70px;
+	z-index: 10;
+	display: flex;
+	align-items: center;
+	position: fixed;
+	opacity: 0.8;
+	background-color: rgb(235, 102, 45);
+`;
+
+const LogoHeader = styled.div`
+	font-size: 4rem;
+	margin-left: 30px;
+`;
+
+const MenuList = styled.div`
+	display: flex;
+	margin-left: 50px;
+	gap: 20px;
+`;
+
+const Menu = styled.div`
+	font-size: 2rem;
+`;
+
+const Version = styled.div`
+	position: relative;
+	font-size: 2rem;
+	position: absolute;
+	right: 30px;
+`;
 
 function Navigation() {
 	const version = useAppSelector((state) => state.version.lastVersion);
@@ -16,23 +46,23 @@ function Navigation() {
 	}, [dispatch, version]);
 
 	return (
-		<div className={cx('navBar', 'background-orange')}>
-			<div className={cx('logoHeader')}>
+		<NavigationContainer>
+			<LogoHeader>
 				<Link href="/">
-					<span className={cx('title')}>LOLIPOP</span>
+					<span>LOLIPOP</span>
 				</Link>
-			</div>
-			<div className={cx('menuList')}>
+			</LogoHeader>
+			<MenuList>
 				<Link href="/items">
-					<div className={cx('menu')}>아이템 정보</div>
+					<Menu>아이템 정보</Menu>
 				</Link>
 				<Link href="/champions">
-					<div className={cx('menu')}>챔피언 정보</div>
+					<Menu>챔피언 정보</Menu>
 				</Link>
-			</div>
+			</MenuList>
 
-			<div className={cx('version')}>Version {version}</div>
-		</div>
+			<Version>Version {version}</Version>
+		</NavigationContainer>
 	);
 }
 

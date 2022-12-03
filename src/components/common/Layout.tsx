@@ -1,19 +1,23 @@
 import React from 'react';
-import LayoutStyle from 'styles/components/layout.module.scss';
-import classNames from 'classnames/bind';
 import Navigation from './Navigation';
+import GlobalStyle from 'utils/GlobalStyle';
+import styled from 'styled-components';
+
+const LayoutContainer = styled.div`
+	width: 100%;
+	height: 100vh;
+`;
 
 type LayoutProps = {
 	children: React.ReactNode;
 };
 
-const cx = classNames.bind(LayoutStyle);
-
 function Layout({ children }: LayoutProps) {
 	return (
 		<>
+			<GlobalStyle />
 			<Navigation />
-			<div className={cx('layoutContainer')}>{children}</div>
+			<LayoutContainer>{children}</LayoutContainer>
 		</>
 	);
 }

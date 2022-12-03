@@ -1,11 +1,14 @@
 import React from 'react';
-import itemListStyle from 'styles/components/itemList.module.scss';
-import classNames from 'classnames/bind';
+import styled from 'styled-components';
 
-const cx = classNames.bind(itemListStyle);
+const ListContainer = styled.div`
+	background-color: rgb(33, 47, 61);
+	overflow-x: hidden;
+	overflow-y: auto;
+`;
 
 function ItemList() {
-	return <div className={cx('listContainer')}></div>;
+	return <ListContainer></ListContainer>;
 }
 
 export default ItemList;
