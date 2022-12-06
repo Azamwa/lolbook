@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
 import ItemList from './../components/units/ItemList';
 import { BiSearchAlt2 } from 'react-icons/bi';
@@ -26,7 +26,8 @@ const ItemWrap = styled.div`
 `;
 
 const ItemListBox = styled.div`
-	width: 40%;
+	min-width: 310px;
+	width: 45%;
 	min-height: 641px;
 	background-color: rgb(44, 62, 80);
 	display: grid;
@@ -77,6 +78,11 @@ const ItemFilterBox = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
+	:hover {
+		cursor: pointer;
+		background-color: rgb(93, 109, 126);
+	}
 `;
 
 const FilterCheckBox = styled.input`
@@ -85,14 +91,20 @@ const FilterCheckBox = styled.input`
 	height: 30px;
 `;
 
-const Label = styled.label`
+const Label = styled.label<{ filterImage: string; smallSize: boolean }>`
 	display: block;
-	width: 50%;
-	height: 50%;
+	width: ${(props) => (props.smallSize ? '60%' : '50%')};
+	height: ${(props) => (props.smallSize ? '60%' : '50%')};
+	background-image: ${(props) =>
+		`url(https://cdn.mobalytics.gg/assets/lol/images/item-categories/${props.filterImage})`};
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center center;
 	filter: invert(62%) sepia(28%) saturate(632%) hue-rotate(3deg) brightness(97%) contrast(90%);
+
+	:hover {
+		cursor: pointer;
+	}
 `;
 
 type ItemProps = {
@@ -108,19 +120,11 @@ type ItemProps = {
 
 function Items({ itemList }: ItemProps) {
 	const { data } = itemList;
+	const items = Object.entries(data);
 	const [searchValue, setSearchValue] = useState<string>('');
-	useEffect(() => {
-		console.log(data);
-	}, [data]);
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
-	};
-
-	const filterImageURL = (imgTitle: string) => {
-		return {
-			backgroundImage: `url('https://cdn.mobalytics.gg/assets/lol/images/item-categories/'${imgTitle})`
-		};
 	};
 
 	return (
@@ -144,12 +148,17 @@ function Items({ itemList }: ItemProps) {
 							return (
 								<ItemFilterBox key={filter.id}>
 									<FilterCheckBox type="checkbox" id="filterImg" />
-									<Label htmlFor="filterImg" style={filterImageURL(filter.url)} />
+									<Label
+										htmlFor="filterImg"
+										filterImage={filter.url}
+										smallSize={index > 4 && index < 11}
+										title={filter.title}
+									/>
 								</ItemFilterBox>
 							);
 						})}
 					</FilterContainer>
-					<ItemList />
+					<ItemList itemList={items} />
 				</ItemListBox>
 			</ItemWrap>
 		</>
