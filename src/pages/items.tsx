@@ -1,8 +1,11 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ItemList from './../components/units/ItemList';
 import { BiSearchAlt2 } from 'react-icons/bi';
-import { itemFilter } from 'utils/itemFilter';
+import { itemFilter } from 'utils/items/itemListInfo';
+import { useAppDispatch } from 'store';
+import { useAppSelector } from './../store/index';
+import items, { setItemsByGroup } from 'store/items';
 
 const Background = styled.div`
 	width: 100vw;
@@ -33,6 +36,18 @@ const ItemListBox = styled.div`
 	display: grid;
 	grid-template-rows: 50px auto;
 	grid-template-columns: 45px auto;
+
+	& ::-webkit-scrollbar {
+		color: black;
+	}
+
+	& ::-webkit-scrollbar-thumb {
+		background-color: rgb(52, 69, 85);
+	}
+
+	& ::-webkit-scrollbar-track {
+		background-color: rgb(26, 36, 46);
+	}
 `;
 
 const Spacer = styled.div`
@@ -108,7 +123,7 @@ const Label = styled.label<{ filterImage: string; smallSize: boolean }>`
 `;
 
 type ItemProps = {
-	itemList: {
+	itemData: {
 		type: string;
 		version: string;
 		basic: object;
@@ -118,14 +133,19 @@ type ItemProps = {
 	};
 };
 
-function Items({ itemList }: ItemProps) {
-	const { data } = itemList;
-	const items = Object.entries(data);
+function Items({ itemData }: ItemProps) {
+	const dispatch = useAppDispatch();
+	const itemList = useAppSelector((state) => state.items.itemGroup);
+	const { data } = itemData;
 	const [searchValue, setSearchValue] = useState<string>('');
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
 	};
+
+	useEffect(() => {
+		dispatch(setItemsByGroup(data));
+	}, []);
 
 	return (
 		<>
@@ -158,7 +178,7 @@ function Items({ itemList }: ItemProps) {
 							);
 						})}
 					</FilterContainer>
-					<ItemList itemList={items} />
+					<ItemList itemList={itemList} />
 				</ItemListBox>
 			</ItemWrap>
 		</>
@@ -169,9 +189,9 @@ export const getStaticProps = async () => {
 	const response = await fetch(
 		'https://ddragon.leagueoflegends.com/cdn/12.22.1/data/ko_KR/item.json'
 	);
-	const itemList = await response.json();
+	const itemData = await response.json();
 	return {
-		props: { itemList }
+		props: { itemData }
 	};
 };
 

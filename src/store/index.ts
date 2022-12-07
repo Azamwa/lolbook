@@ -1,9 +1,11 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { useSelector, useDispatch, TypedUseSelectorHook } from 'react-redux';
 import { version } from './csrFetch/version';
+import items from './items';
 
 const rootReducer = combineReducers({
-	version: version.reducer
+	version: version.reducer,
+	items: items.reducer
 });
 
 const store = configureStore({
