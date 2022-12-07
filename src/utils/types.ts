@@ -9,7 +9,7 @@ export interface ItemProps {
 		h: number;
 	};
 	name: string;
-	gold?: {
+	gold: {
 		base: number;
 		total: number;
 		sell: number;

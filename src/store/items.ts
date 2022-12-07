@@ -35,7 +35,7 @@ const initialState: ItemsState = {
 			name: '기본',
 			items: [
 				1004, 1006, 1011, 1018, 1026, 1027, 1028, 1029, 1031, 1033, 1036, 1037, 1038, 1042,
-				1052, 1058, 2419, 2420, 2421, 3035, 3057
+				1052, 1058, 2420, 2421, 3035, 3057
 			],
 			value: []
 		},
@@ -67,9 +67,7 @@ const initialState: ItemsState = {
 			name: '신화',
 			items: [
 				2065, 3001, 3078, 3084, 3152, 3190, 4005, 4633, 4636, 4644, 6617, 6630, 6631, 6632,
-				6653, 6655, 6656, 6657, 6662, 6665, 6667, 6671, 6672, 6673, 6691, 6692, 6693, 7000,
-				7001, 7002, 7005, 7006, 7007, 7008, 7009, 7010, 7011, 7012, 7013, 7014, 7015, 7016,
-				7017, 7018, 7019, 7020, 7021, 7022, 7023, 7024, 7025, 7026, 7027, 7028
+				6653, 6655, 6656, 6657, 6662, 6665, 6667, 6671, 6672, 6673, 6691, 6692, 6693
 			],
 			value: []
 		}
@@ -81,14 +79,17 @@ const items = createSlice({
 	initialState,
 	reducers: {
 		setItemsByGroup(state, action) {
-			state.itemGroup.forEach((group) => (group.value.length = 0));
-			for (let id in action.payload) {
-				state.itemGroup.forEach((group) => {
+			state.itemGroup.forEach((group) => {
+				group.value.length = 0;
+				for (let id in action.payload) {
 					if (group.items.includes(Number(id))) {
 						group.value.push(action.payload[id]);
 					}
+				}
+				group.value.sort((a: ItemProps, b: ItemProps): number => {
+					return a.gold.total - b.gold.total;
 				});
-			}
+			});
 		}
 	}
 });

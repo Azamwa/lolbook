@@ -1,7 +1,8 @@
 import Image from 'next/image';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ItemProps } from 'utils/types';
+import { useAppSelector } from 'store/index';
 
 const ListContainer = styled.div`
 	padding: 20px;
@@ -17,6 +18,7 @@ const ItemGroup = styled.div`
 `;
 
 const ItemGroupName = styled.div`
+	padding: 10px;
 	color: #fff;
 	font-size: 2.5rem;
 	margin-bottom: 10px;
@@ -26,11 +28,12 @@ const ItemGroupName = styled.div`
 	}
 `;
 
-const ItemListByGroup = styled.div`
-	display: grid;
+const ItemListByGroup = styled.div<{ toggleOn: boolean }>`
+	display: ${(props) => (props.toggleOn ? 'grid' : 'none')};
 	justify-content: center;
 	grid-template-columns: repeat(auto-fill, 40px);
 	grid-gap: 10px;
+	margin-bottom: 50px;
 `;
 
 const ItemContainer = styled.div`
@@ -60,31 +63,45 @@ type ItemListProps = {
 };
 
 function ItemList({ itemList }: ItemListProps) {
-	useEffect(() => {
-		console.log(itemList);
-	}, []);
+	const [toggleGroup, setToggleGroup] = useState<boolean[]>(
+		new Array(itemList.length).fill(true)
+	);
+	const version = useAppSelector((state) => state.version.lastVersion);
+
+	const handleSetToggle = (index: number) => {
+		setToggleGroup(
+			toggleGroup.map((toggleOn, toggleIndex) => {
+				return index === toggleIndex ? !toggleOn : toggleOn;
+			})
+		);
+	};
+
 	return (
 		<ListContainer>
-			{itemList.map((group) => {
+			{itemList.map((group, groupIdx) => {
 				return (
-					<ItemGroup key={group.id}>
-						<ItemGroupName>{group.name} ▾</ItemGroupName>
-						<ItemListByGroup>
-							{group?.value?.map((item, index) => {
-								return (
-									<ItemContainer key={index} title={item.name}>
-										<Image
-											src={`https://ddragon.leagueoflegends.com/cdn/12.23.1/img/item/${item?.image?.full}`}
-											width={40}
-											height={40}
-											alt="itemImage"
-										/>
-										<ItemPrice>{item?.gold?.total}</ItemPrice>
-									</ItemContainer>
-								);
-							})}
-						</ItemListByGroup>
-					</ItemGroup>
+					group?.value?.length !== 0 && (
+						<ItemGroup key={group.id}>
+							<ItemGroupName onClick={() => handleSetToggle(groupIdx)}>
+								{group.name} ▾
+							</ItemGroupName>
+							<ItemListByGroup toggleOn={toggleGroup[groupIdx]}>
+								{group?.value?.map((item, index) => {
+									return (
+										<ItemContainer key={index} title={item.name}>
+											<Image
+												src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item?.image?.full}`}
+												width={40}
+												height={40}
+												alt="itemImage"
+											/>
+											<ItemPrice>{item?.gold?.total}</ItemPrice>
+										</ItemContainer>
+									);
+								})}
+							</ItemListByGroup>
+						</ItemGroup>
+					)
 				);
 			})}
 		</ListContainer>
