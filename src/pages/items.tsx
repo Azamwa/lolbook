@@ -8,7 +8,6 @@ import { useAppSelector } from './../store/index';
 import { setItemsByGroup } from 'store/items';
 import { setComplete, setPending } from 'store/common';
 import { ItemProps } from 'utils/types';
-import { createLabel } from 'typescript';
 
 const Background = styled.div`
 	width: 100vw;
@@ -143,7 +142,7 @@ interface ItemDataProps {
 		type: string;
 		version: string;
 		basic: object;
-		data: object;
+		data: ItemProps;
 		groups: object;
 		tree: object;
 	};
@@ -153,34 +152,60 @@ function Items({ itemData }: ItemDataProps) {
 	const dispatch = useAppDispatch();
 	const itemList = useAppSelector((state) => state.items.itemGroup);
 	const version = useAppSelector((state) => state.version.lastVersion);
-	const { data } = itemData;
-	let conditionedItem: any = data;
+	const { data }: any = itemData;
 	const [searchValue, setSearchValue] = useState<string>('');
+	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
 	};
 
-	const handleChecked = (e: ChangeEvent<HTMLInputElement>) => {
-		console.log(e.target);
+	const handleChecked = (e: ChangeEvent<HTMLInputElement>, id: string[]) => {
+		if (e.target.checked) {
+			setCheckedFilter(checkedFilter.length === 0 ? [id] : [...checkedFilter, id]);
+		} else {
+			setCheckedFilter(checkedFilter.filter((filter) => id !== filter));
+		}
 	};
 
 	useEffect(() => {
 		let searchItem: any = {};
+		let filteredItem: any = {};
 		dispatch(setPending());
 
-		if (searchValue !== '') {
-			for (let id in conditionedItem) {
-				if (conditionedItem[id].name.includes(searchValue)) {
-					searchItem[id] = conditionedItem[id];
-				}
+		for (let id in data) {
+			if (data[id].name.includes(searchValue)) {
+				searchItem[id] = data[id];
 			}
-			conditionedItem = searchItem;
 		}
 
-		dispatch(setItemsByGroup(conditionedItem));
+		filteredItem = searchItem;
+		let filterCount = 0;
+
+		if (checkedFilter.length !== 0) {
+			while (filterCount < checkedFilter.length) {
+				filteredItem = {};
+				const filter = checkedFilter[filterCount];
+
+				for (let id in searchItem) {
+					if (filter.length === 1 && searchItem[id].tags.includes(filter[0])) {
+						filteredItem[id] = searchItem[id];
+					} else if (
+						filter.length === 2 &&
+						(searchItem[id].tags.includes(filter[0]) ||
+							searchItem[id].tags.includes(filter[1]))
+					) {
+						filteredItem[id] = searchItem[id];
+					}
+				}
+				searchItem = filteredItem;
+				filterCount++;
+			}
+		}
+
+		dispatch(setItemsByGroup(filteredItem));
 		dispatch(setComplete());
-	}, [dispatch, searchValue, conditionedItem]);
+	}, [dispatch, searchValue, checkedFilter]);
 
 	useEffect(() => {
 		dispatch(setPending());
@@ -209,16 +234,16 @@ function Items({ itemData }: ItemDataProps) {
 					<FilterContainer>
 						{itemFilter.map((filter, index) => {
 							return (
-								<ItemFilterBox key={filter.id}>
+								<ItemFilterBox key={filter.id[0]}>
 									<FilterCheckBox
 										type="checkbox"
-										id={filter.id}
-										onChange={handleChecked}
+										id={filter.id[0]}
+										onChange={(e) => handleChecked(e, filter.id)}
 										filterImage={filter.url}
 										smallSize={index > 4 && index < 11}
 										title={filter.title}
 									/>
-									<Label htmlFor={filter.id} />
+									<Label htmlFor={filter.id[0]} title={filter.title} />
 								</ItemFilterBox>
 							);
 						})}

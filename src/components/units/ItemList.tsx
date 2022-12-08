@@ -89,12 +89,14 @@ function ItemList({ itemList }: ItemListProps) {
 								{group?.value?.map((item, index) => {
 									return (
 										<ItemContainer key={index} title={item.name}>
-											<Image
-												src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item?.image?.full}`}
-												width={40}
-												height={40}
-												alt="itemImage"
-											/>
+											{version !== '' && (
+												<Image
+													src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item?.image?.full}`}
+													width={40}
+													height={40}
+													alt="itemImage"
+												/>
+											)}
 											<ItemPrice>{item?.gold?.total}</ItemPrice>
 										</ItemContainer>
 									);

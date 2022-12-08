@@ -1,72 +1,72 @@
 export const itemFilter = [
 	{
 		url: 'attack-damage.svg',
-		id: 'Damage',
+		id: ['Damage'],
 		title: '공격력'
 	},
 	{
 		url: 'ctrit-chance.svg',
-		id: 'CriticalStrike',
+		id: ['CriticalStrike'],
 		title: '치명타'
 	},
 	{
 		url: 'attack-speed.svg',
-		id: 'AttackSpeed',
+		id: ['AttackSpeed'],
 		title: '공격속도'
 	},
 	{
 		url: 'on-hit.svg',
-		id: 'OnHit',
+		id: ['OnHit'],
 		title: '적중 시 효과'
 	},
 	{
 		url: 'armor-penetration.svg',
-		id: 'ArmorPenetration',
+		id: ['ArmorPenetration'],
 		title: '방어구관통력'
 	},
 	{
 		url: 'ability-power.svg',
-		id: 'SpellDamage',
+		id: ['SpellDamage'],
 		title: '주문력'
 	},
 	{
 		url: 'mana.svg',
-		id: 'Mana',
+		id: ['Mana', 'ManaRegen'],
 		title: '마나 및 재생'
 	},
 	{
 		url: 'magic-penetration.svg',
-		id: 'MagicPenetration',
+		id: ['MagicPenetration'],
 		title: '마법관통력'
 	},
 	{
 		url: 'health.svg',
-		id: 'Health',
+		id: ['Health', 'HealthRegen'],
 		title: '체력 및 재생'
 	},
 	{
 		url: 'armor.svg',
-		id: 'Armor',
+		id: ['Armor'],
 		title: '방어력'
 	},
 	{
 		url: 'magic-resist.svg',
-		id: 'MagicResist',
+		id: ['SpellBlock'],
 		title: '마법저항력'
 	},
 	{
 		url: 'ability-haste.svg',
-		id: 'AbilityHaste',
+		id: ['AbilityHaste', 'CooldownReduction'],
 		title: '스킬가속'
 	},
 	{
 		url: 'movement-speed.svg',
-		id: 'NonbootsMovement',
+		id: ['Boots', 'NonbootsMovement'],
 		title: '이동속도'
 	},
 	{
 		url: 'omni-vamp.svg',
-		id: 'LifeSteal',
+		id: ['SpellVamp', 'LifeSteal'],
 		title: '생명력흡수 및 흡혈'
 	}
 ];
