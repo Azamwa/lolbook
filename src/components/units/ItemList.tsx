@@ -1,8 +1,9 @@
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ItemProps } from 'utils/types';
-import { useAppSelector } from 'store/index';
+import { useAppDispatch, useAppSelector } from 'store/index';
+import { setItemDetail } from 'store/items';
 
 const ListContainer = styled.div`
 	padding: 20px;
@@ -18,9 +19,9 @@ const ItemGroup = styled.div`
 `;
 
 const ItemGroupName = styled.div`
-	padding: 10px;
+	padding-left: 20px;
 	color: #fff;
-	font-size: 2.5rem;
+	font-size: 2rem;
 	margin-bottom: 10px;
 
 	:hover {
@@ -36,15 +37,19 @@ const ItemListByGroup = styled.div<{ toggleOn: boolean }>`
 	margin-bottom: 50px;
 `;
 
-const ItemContainer = styled.div`
+const ItemContainer = styled.div<{ selected: boolean }>`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	gap: 3px;
+	gap: 10px;
 
 	:hover {
 		cursor: pointer;
+	}
+
+	img {
+		border: ${(props) => (props.selected ? '2px solid rgb(174, 214, 241)' : 'none')};
 	}
 `;
 
@@ -60,12 +65,16 @@ type ItemListProps = {
 		name: string;
 		value: undefined | ItemProps[];
 	}[];
+	fromItemDetail: (item: ItemProps) => void;
 };
 
-function ItemList({ itemList }: ItemListProps) {
+function ItemList({ itemList, fromItemDetail }: ItemListProps) {
+	const dispatch = useAppDispatch();
 	const [toggleGroup, setToggleGroup] = useState<boolean[]>(
 		new Array(itemList.length).fill(true)
 	);
+	const selectItemDetail = useAppSelector((state) => state.items.itemDetail);
+	const [selectedItem, setSelectItem] = useState<ItemProps | undefined>();
 	const version = useAppSelector((state) => state.version.lastVersion);
 
 	const handleSetToggle = (index: number) => {
@@ -75,6 +84,16 @@ function ItemList({ itemList }: ItemListProps) {
 			})
 		);
 	};
+
+	const handleClickItems = (item: ItemProps) => {
+		dispatch(setItemDetail(item));
+		setSelectItem(item);
+		fromItemDetail(item);
+	};
+
+	useEffect(() => {
+		setSelectItem(selectItemDetail);
+	}, [selectItemDetail]);
 
 	return (
 		<ListContainer>
@@ -88,13 +107,17 @@ function ItemList({ itemList }: ItemListProps) {
 							<ItemListByGroup toggleOn={toggleGroup[groupIdx]}>
 								{group?.value?.map((item, index) => {
 									return (
-										<ItemContainer key={index} title={item.name}>
+										<ItemContainer
+											key={index}
+											title={item.name}
+											selected={item === selectedItem}>
 											{version !== '' && (
 												<Image
 													src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item?.image?.full}`}
 													width={40}
 													height={40}
 													alt="itemImage"
+													onClick={() => handleClickItems(item)}
 												/>
 											)}
 											<ItemPrice>{item?.gold?.total}</ItemPrice>

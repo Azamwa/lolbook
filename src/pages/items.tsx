@@ -1,13 +1,14 @@
 import React, { ChangeEvent, useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
-import ItemList from './../components/units/ItemList';
+import ItemList from 'components/units/ItemList';
 import { BiSearchAlt2 } from 'react-icons/bi';
 import { itemFilter } from 'utils/items/itemListInfo';
 import { useAppDispatch } from 'store';
-import { useAppSelector } from './../store/index';
-import { setItemsByGroup } from 'store/items';
+import { useAppSelector } from 'store/index';
+import { setFromItem, setItemDetail, setItemsByGroup } from 'store/items';
 import { setComplete, setPending } from 'store/common';
 import { ItemProps } from 'utils/types';
+import ItemDetail from 'components/units/ItemDetail';
 
 const Background = styled.div`
 	width: 100vw;
@@ -27,6 +28,7 @@ const ItemWrap = styled.div`
 	padding: 50px;
 	padding-top: 120px;
 	display: flex;
+	justify-content: space-around;
 	align-items: center;
 `;
 
@@ -168,6 +170,23 @@ function Items({ itemData }: ItemDataProps) {
 		}
 	};
 
+	const changeItemDetail = (id: string) => {
+		dispatch(setItemDetail(data[id]));
+		fromItemDetail(data[id]);
+	};
+
+	const fromItemDetail = useCallback((item: ItemProps) => {
+		if (item.from !== undefined) {
+			let fromItemList: string[] = [];
+			item.from.forEach((fromItem: string) => {
+				fromItemList.push(data[fromItem]);
+			});
+			dispatch(setFromItem(fromItemList));
+		} else {
+			dispatch(setFromItem(null));
+		}
+	}, []);
+
 	useEffect(() => {
 		let searchItem: any = {};
 		let filteredItem: any = {};
@@ -248,8 +267,9 @@ function Items({ itemData }: ItemDataProps) {
 							);
 						})}
 					</FilterContainer>
-					<ItemList itemList={itemList} />
+					<ItemList itemList={itemList} fromItemDetail={fromItemDetail} />
 				</ItemListBox>
+				<ItemDetail changeItem={changeItemDetail} />
 			</ItemWrap>
 		</>
 	);
