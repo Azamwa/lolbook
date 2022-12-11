@@ -257,7 +257,9 @@ function Items({ itemData }: ItemDataProps) {
 									<FilterCheckBox
 										type="checkbox"
 										id={filter.id[0]}
-										onChange={(e) => handleChecked(e, filter.id)}
+										onChange={(e: ChangeEvent<HTMLInputElement>) =>
+											handleChecked(e, filter.id)
+										}
 										filterImage={filter.url}
 										smallSize={index > 4 && index < 11}
 										title={filter.title}

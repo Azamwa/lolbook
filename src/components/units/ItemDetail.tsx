@@ -211,25 +211,29 @@ const ItemGold = styled.div`
 	}
 `;
 
+const DescriptionWrap = styled.div`
+	padding: 15px 0;
+`;
+
+const Descriptions = styled.p`
+	font-size: 1.6rem;
+	font-weight: lighter;
+	color: rgba(255, 255, 255, 0.7);
+	margin-bottom: 3px;
+`;
+
+const FlavorText = styled.p`
+	margin-top: 15px;
+	font-size: 1.4rem;
+	font-weight: 700;
+	color: rgb(84, 153, 199);
+	font-family: sans-serif;
+	font-style: italic;
+	word-spacing: -3px;
+`;
+
 interface itemDetailProps {
 	changeItem: (id: string) => void;
-}
-
-interface DescriptionProps {
-	stats: {
-		name: null | RegExpMatchArray;
-		value: null | RegExpMatchArray;
-	};
-	passive: {
-		name: string[];
-		text: string[];
-	};
-	active: {
-		name: string[];
-		text: string[];
-	};
-	rarityMythic?: string;
-	flavorText?: string;
 }
 
 function ItemDetail({ changeItem }: itemDetailProps) {
@@ -249,39 +253,48 @@ function ItemDetail({ changeItem }: itemDetailProps) {
 		return spreadItem;
 	}, [fromItemList]);
 
-	useEffect(() => {
-		let description: DescriptionProps = {
-			stats: {
-				name: [''],
-				value: ['']
-			},
-			passive: {
-				name: [],
-				text: []
-			},
-			active: {
-				name: [],
-				text: []
-			},
-			rarityMythic: '',
-			flavorText: ''
-		};
+	const flavorText = useMemo(() => {
+		let text: RegExpMatchArray | null | string = '';
+		if (item?.description !== undefined && item?.description.includes('flavorText')) {
+			text = item?.description.match(/<flavorText>(.*?)<\/flavorText>/g) + '';
+			text = text.replace(/<[^>]*>?/g, '');
+		} else if (item?.description !== undefined && item?.description.includes('rules')) {
+			text = item?.description.match(/<rules>(.*?)<\/rules>/);
+			if (text !== null) {
+				text = text[1].replace(/<[^>]*>?/g, '');
+			}
+		}
+		return text;
+	}, [item]);
+
+	const description: string[] = useMemo(() => {
+		let text: string = '';
 		if (item?.description !== undefined) {
-			let stats: RegExpMatchArray | string | null =
-				item?.description.match(/<stats>(.+)<\/stats>/);
-			let skill: RegExpMatchArray | string | null = item?.description.match(
-				/<(passive|active)>(.+)(<\/maintext>)$/g
-			);
-			console.log(skill);
-			if (stats !== null) {
-				stats = stats[1].replace(/\s/g, '');
-				description.stats.name = stats.match(/[가-힣]+/g);
-				description.stats.value = stats.match(/[0-9]+/g);
+			let regExpMatch: RegExpMatchArray | string | null = null;
+			if (item.description.includes('rules')) {
+				regExpMatch = item.description.match(/<mainText>(.*?)<rules>/);
+				if (regExpMatch !== null) {
+					text = regExpMatch[1] + '';
+				}
+			} else if (item.description.includes('flavorText')) {
+				regExpMatch = item.description.match(/<mainText>(.*?)<flavorText>/);
+				if (regExpMatch !== null) {
+					text = regExpMatch[1] + '';
+				}
+			} else {
+				text = item.description;
 			}
 
-			// console.log(description);
+			if (item.description.includes('<li>')) {
+				text = text.replace(/<li>/, '<br>');
+			}
+
+			return text.split('<br>').map((sentence: string) => {
+				return sentence.replace(/<[^>]*>?/g, '');
+			});
 		}
-	}, [item]);
+		return [];
+	}, [item, flavorText]);
 
 	return (
 		<ItemDetailContainer>
@@ -369,22 +382,30 @@ function ItemDetail({ changeItem }: itemDetailProps) {
 					</ItemCombination>
 					<ItemDescription>
 						{item !== undefined && (
-							<MainInfoWrap>
-								<Image
-									src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${item?.image?.full}`}
-									width={40}
-									height={40}
-									alt="itemImage"
-								/>
-								<ItemMainInfo>
-									<ItemName>{item?.name}</ItemName>
-									<ItemGold>
-										<Image src={doge} width={18} height={18} alt="coin" />
-										{item?.gold.total}
-										<br />
-									</ItemGold>
-								</ItemMainInfo>
-							</MainInfoWrap>
+							<>
+								<MainInfoWrap>
+									<Image
+										src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${item?.image?.full}`}
+										width={40}
+										height={40}
+										alt="itemImage"
+									/>
+									<ItemMainInfo>
+										<ItemName>{item?.name}</ItemName>
+										<ItemGold>
+											<Image src={doge} width={18} height={18} alt="coin" />
+											{item?.gold.total}
+											<br />
+										</ItemGold>
+									</ItemMainInfo>
+								</MainInfoWrap>
+								<DescriptionWrap>
+									{description.map((content: string) => {
+										return <Descriptions>{content}</Descriptions>;
+									})}
+									<FlavorText>{flavorText}</FlavorText>
+								</DescriptionWrap>
+							</>
 						)}
 					</ItemDescription>
 				</>
