@@ -1,19 +1,27 @@
 import React from 'react';
-import LayoutStyle from 'styles/components/layout.module.scss';
-import classNames from 'classnames/bind';
 import Navigation from './Navigation';
+import GlobalStyle from 'utils/GlobalStyle';
+import styled from 'styled-components';
+import Loading from './Loading';
+import { useAppSelector } from 'store';
+
+const LayoutContainer = styled.div`
+	width: 100%;
+	height: 100vh;
+`;
 
 type LayoutProps = {
 	children: React.ReactNode;
 };
 
-const cx = classNames.bind(LayoutStyle);
-
 function Layout({ children }: LayoutProps) {
+	const pending = useAppSelector((state) => state.common.pending);
 	return (
 		<>
+			<GlobalStyle />
+			{pending && <Loading />}
 			<Navigation />
-			<div className={cx('layoutContainer')}>{children}</div>
+			<LayoutContainer>{children}</LayoutContainer>
 		</>
 	);
 }
