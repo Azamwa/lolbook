@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { ItemProps } from 'utils/types';
-import { useAppDispatch, useAppSelector } from 'store/index';
+import { useAppDispatch, useAppSelector } from 'store';
 import { setItemDetail } from 'store/items';
 
 const ListContainer = styled.div`

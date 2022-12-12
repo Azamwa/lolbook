@@ -1,14 +1,13 @@
 import React, { ChangeEvent, useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import ItemList from 'components/units/ItemList';
-import { BiSearchAlt2 } from 'react-icons/bi';
+import ItemDetail from 'components/units/ItemDetail';
+import { ItemProps } from 'utils/types';
 import { itemFilter } from 'utils/items/itemListInfo';
-import { useAppDispatch } from 'store';
-import { useAppSelector } from 'store/index';
+import { useAppDispatch, useAppSelector } from 'store';
 import { setFromItem, setItemDetail, setItemsByGroup } from 'store/items';
 import { setComplete, setPending } from 'store/common';
-import { ItemProps } from 'utils/types';
-import ItemDetail from 'components/units/ItemDetail';
+import { BiSearchAlt2 } from 'react-icons/bi';
 
 const Background = styled.div`
 	width: 100vw;

@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from 'store/index';
+import { useAppDispatch, useAppSelector } from 'store';
+import { closeDetail } from 'store/items';
 import Image from 'next/image';
 import doge from '/public/img/doge.png';
-import { closeDetail } from 'store/items';
 
 const ItemDetailContainer = styled.div<{ openDetail: boolean }>`
 	min-width: 310px;
@@ -268,7 +268,7 @@ const CloseButton = styled.div`
 	width: 100%;
 	height: 40px;
 	font-size: 1.5rem;
-	display: flex;
+	display: none;
 	justify-content: center;
 	align-items: center;
 	position: absolute;
@@ -277,6 +277,10 @@ const CloseButton = styled.div`
 
 	:hover {
 		cursor: pointer;
+	}
+
+	@media screen and (max-width: 767px) {
+		display: flex;
 	}
 `;
 
