@@ -1,15 +1,47 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useAppSelector } from 'store/index';
+import { useAppDispatch, useAppSelector } from 'store/index';
 import Image from 'next/image';
 import doge from '/public/img/doge.png';
+import { closeDetail } from 'store/items';
 
-const ItemDetailContainer = styled.div`
+const ItemDetailContainer = styled.div<{ openDetail: boolean }>`
 	min-width: 310px;
 	width: 40%;
 	min-height: 691px;
+	height: 90%;
 	background-color: rgb(33, 47, 61);
+	position: relative;
+
+	& ::-webkit-scrollbar {
+		color: black;
+	}
+
+	& ::-webkit-scrollbar-thumb {
+		background-color: rgb(52, 69, 85);
+	}
+
+	& ::-webkit-scrollbar-track {
+		background-color: rgb(26, 36, 46);
+	}
+
+	@media screen and (max-width: 1300px) {
+		min-height: 620px;
+	}
+
+	@media screen and (max-width: 767px) {
+		display: ${(props) => (props.openDetail ? 'block' : 'none')};
+		width: 55%;
+		min-height: 540px;
+	}
+`;
+
+const SrollbarContainer = styled.div`
+	width: 100%;
+	height: 100%;
 	padding: 30px;
+	overflow-x: hidden;
+	overflow-y: auto;
 `;
 
 const PartSubject = styled.div`
@@ -232,14 +264,32 @@ const FlavorText = styled.p`
 	word-spacing: -3px;
 `;
 
+const CloseButton = styled.div`
+	width: 100%;
+	height: 40px;
+	font-size: 1.5rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	bottom: 10px;
+	background-color: rgb(235, 102, 45);
+
+	:hover {
+		cursor: pointer;
+	}
+`;
+
 interface itemDetailProps {
 	changeItem: (id: string) => void;
 }
 
 function ItemDetail({ changeItem }: itemDetailProps) {
+	const dispatch = useAppDispatch();
 	const item = useAppSelector((state) => state.items.itemDetail);
 	const fromItemList = useAppSelector((state) => state.items.fromItemList);
 	const version = useAppSelector((state) => state.version);
+	const openDetail = useAppSelector((state) => state.items.openDetail);
 
 	const spreadFromItem = useMemo(() => {
 		let spreadItem: string[] = [];
@@ -297,119 +347,133 @@ function ItemDetail({ changeItem }: itemDetailProps) {
 	}, [item, flavorText]);
 
 	return (
-		<ItemDetailContainer>
-			{version.status === 'complete' && (
-				<>
-					<ItemBuild>
-						<PartSubject>아이템 빌드</PartSubject>
-						{item !== undefined && (
-							<BuildList>
-								{item.into?.map((id, index) => {
-									return (
-										<Image
-											src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${id}.png`}
-											width={35}
-											height={35}
-											alt="intoItem"
-											key={index}
-											onClick={() => changeItem(id)}
-										/>
-									);
-								})}
-							</BuildList>
-						)}
-					</ItemBuild>
-					<ItemCombination>
-						<PartSubject>아이템 조합식</PartSubject>
-						{item?.from && (
-							<Combination>
-								<CombinedItem>
-									<Image
-										src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${item?.image?.full}`}
-										width={35}
-										height={35}
-										alt="combinedItem"
-									/>
-								</CombinedItem>
-								<FirstCombination numberOfItems={item?.from.length}>
-									{item?.from.map((fromItem, index) => {
+		<ItemDetailContainer openDetail={openDetail}>
+			<SrollbarContainer>
+				{version.status === 'complete' && (
+					<>
+						<ItemBuild>
+							<PartSubject>아이템 빌드</PartSubject>
+							{item !== undefined && (
+								<BuildList>
+									{item.into?.map((id, index) => {
 										return (
-											<ChildrenImageWrap
+											<Image
+												src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${id}.png`}
+												width={35}
+												height={35}
+												alt="intoItem"
 												key={index}
-												fromItem={
-													fromItemList !== null &&
-													fromItemList !== undefined &&
-													fromItemList[index]?.from !== undefined
-												}>
-												<Image
-													src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${fromItem}.png`}
-													width={35}
-													height={35}
-													alt="combination"
-													onClick={() => changeItem(fromItem)}
-												/>
-											</ChildrenImageWrap>
+												onClick={() => changeItem(id)}
+											/>
 										);
 									})}
-								</FirstCombination>
-								{spreadFromItem.length > 0 && (
-									<SecondCombination numberOfItems={item?.from.length}>
-										{fromItemList?.map((fromItem, fromItemIdx) => {
+								</BuildList>
+							)}
+						</ItemBuild>
+						<ItemCombination>
+							<PartSubject>아이템 조합식</PartSubject>
+							{item?.from && (
+								<Combination>
+									<CombinedItem>
+										<Image
+											src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${item?.image?.full}`}
+											width={35}
+											height={35}
+											alt="combinedItem"
+										/>
+									</CombinedItem>
+									<FirstCombination numberOfItems={item?.from.length}>
+										{item?.from.map((fromItem, index) => {
 											return (
-												<GrandsonItemWrap
-													key={fromItemIdx}
-													grandSonLength={fromItem?.from?.length}>
-													{fromItem?.from?.map((id, grandsonIdx) => {
-														return (
-															<GrandSonImgWrap key={grandsonIdx}>
-																<Image
-																	src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${id}.png`}
-																	width={35}
-																	height={35}
-																	alt="combination"
-																	onClick={() => changeItem(id)}
-																/>
-															</GrandSonImgWrap>
-														);
-													})}
-												</GrandsonItemWrap>
+												<ChildrenImageWrap
+													key={index}
+													fromItem={
+														fromItemList !== null &&
+														fromItemList !== undefined &&
+														fromItemList[index]?.from !== undefined
+													}>
+													<Image
+														src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${fromItem}.png`}
+														width={35}
+														height={35}
+														alt="combination"
+														onClick={() => changeItem(fromItem)}
+													/>
+												</ChildrenImageWrap>
 											);
 										})}
-									</SecondCombination>
-								)}
-							</Combination>
-						)}
-					</ItemCombination>
-					<ItemDescription>
-						{item !== undefined && (
-							<>
-								<MainInfoWrap>
-									<Image
-										src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${item?.image?.full}`}
-										width={40}
-										height={40}
-										alt="itemImage"
-									/>
-									<ItemMainInfo>
-										<ItemName>{item?.name}</ItemName>
-										<ItemGold>
-											<Image src={doge} width={18} height={18} alt="coin" />
-											{item?.gold.total}
-											<br />
-										</ItemGold>
-									</ItemMainInfo>
-								</MainInfoWrap>
-								<DescriptionWrap>
-									{description.map((content: string) => {
-										return <Descriptions>{content}</Descriptions>;
-									})}
-									<FlavorText>{flavorText}</FlavorText>
-								</DescriptionWrap>
-							</>
-						)}
-					</ItemDescription>
-				</>
-			)}
+									</FirstCombination>
+									{spreadFromItem.length > 0 && (
+										<SecondCombination numberOfItems={item?.from.length}>
+											{fromItemList?.map((fromItem, fromItemIdx) => {
+												return (
+													<GrandsonItemWrap
+														key={fromItemIdx}
+														grandSonLength={fromItem?.from?.length}>
+														{fromItem?.from?.map((id, grandsonIdx) => {
+															return (
+																<GrandSonImgWrap key={grandsonIdx}>
+																	<Image
+																		src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${id}.png`}
+																		width={35}
+																		height={35}
+																		alt="combination"
+																		onClick={() =>
+																			changeItem(id)
+																		}
+																	/>
+																</GrandSonImgWrap>
+															);
+														})}
+													</GrandsonItemWrap>
+												);
+											})}
+										</SecondCombination>
+									)}
+								</Combination>
+							)}
+						</ItemCombination>
+						<ItemDescription>
+							{item !== undefined && (
+								<>
+									<MainInfoWrap>
+										<Image
+											src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${item?.image?.full}`}
+											width={40}
+											height={40}
+											alt="itemImage"
+										/>
+										<ItemMainInfo>
+											<ItemName>{item?.name}</ItemName>
+											<ItemGold>
+												<Image
+													src={doge}
+													width={18}
+													height={18}
+													alt="coin"
+												/>
+												{item?.gold.total}
+												<br />
+											</ItemGold>
+										</ItemMainInfo>
+									</MainInfoWrap>
+									<DescriptionWrap>
+										{description.map((content: string, index: number) => {
+											return (
+												<Descriptions key={index}>
+													{content} <br />
+												</Descriptions>
+											);
+										})}
+										<FlavorText>{flavorText}</FlavorText>
+									</DescriptionWrap>
+								</>
+							)}
+						</ItemDescription>
+					</>
+				)}
+			</SrollbarContainer>
+			<CloseButton onClick={() => dispatch(closeDetail())}>닫기</CloseButton>
 		</ItemDetailContainer>
 	);
 }

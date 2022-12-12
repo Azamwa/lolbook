@@ -10,6 +10,7 @@ type ItemsState = {
 	}[];
 	itemDetail?: ItemProps;
 	fromItemList?: ItemProps[] | null;
+	openDetail: boolean;
 };
 
 const initialState: ItemsState = {
@@ -77,7 +78,8 @@ const initialState: ItemsState = {
 		}
 	],
 	itemDetail: undefined,
-	fromItemList: null
+	fromItemList: null,
+	openDetail: false
 };
 
 const items = createSlice({
@@ -99,13 +101,17 @@ const items = createSlice({
 		},
 		setItemDetail(state, action) {
 			state.itemDetail = action.payload;
+			state.openDetail = true;
 		},
 		setFromItem(state, action) {
 			state.fromItemList = action.payload;
+		},
+		closeDetail(state) {
+			state.openDetail = false;
 		}
 	}
 });
 
-export const { setItemsByGroup, setItemDetail, setFromItem } = items.actions;
+export const { setItemsByGroup, setItemDetail, setFromItem, closeDetail } = items.actions;
 
 export default items;

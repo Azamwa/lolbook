@@ -12,6 +12,11 @@ const ListContainer = styled.div`
 	background-color: rgb(33, 47, 61);
 	overflow-x: hidden;
 	overflow-y: auto;
+
+	@media screen and (max-width: 1300px) {
+		padding: 15px;
+		max-height: 570px;
+	}
 `;
 
 const ItemGroup = styled.div`
@@ -26,6 +31,10 @@ const ItemGroupName = styled.div`
 
 	:hover {
 		cursor: pointer;
+	}
+
+	@media screen and (max-width: 1300px) {
+		padding-left: 15px;
 	}
 `;
 
@@ -50,6 +59,11 @@ const ItemContainer = styled.div<{ selected: boolean }>`
 
 	img {
 		border: ${(props) => (props.selected ? '2px solid rgb(174, 214, 241)' : 'none')};
+
+		@media screen and (max-width: 767px) {
+			width: 35px;
+			height: 35px;
+		}
 	}
 `;
 

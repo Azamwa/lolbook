@@ -30,12 +30,17 @@ const ItemWrap = styled.div`
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
+
+	@media screen and (max-width: 767px) {
+		justify-content: center;
+	}
 `;
 
-const ItemListBox = styled.div`
+const ItemListBox = styled.div<{ openDetail: boolean }>`
 	min-width: 310px;
 	width: 45%;
-	min-height: 641px;
+	min-height: 691px;
+	height: 90%;
 	background-color: rgb(44, 62, 80);
 	display: grid;
 	grid-template-rows: 50px auto;
@@ -52,6 +57,19 @@ const ItemListBox = styled.div`
 	& ::-webkit-scrollbar-track {
 		background-color: rgb(26, 36, 46);
 	}
+
+	@media screen and (max-width: 1300px) {
+		grid-template-columns: 40px auto;
+		min-height: 620px;
+	}
+
+	@media screen and (max-width: 767px) {
+		display: ${(props) => (props.openDetail ? 'none' : 'grid')};
+		width: 55%;
+		grid-template-rows: 40px auto;
+		grid-template-columns: 35px auto;
+		min-height: 540px;
+	}
 `;
 
 const Spacer = styled.div`
@@ -59,6 +77,15 @@ const Spacer = styled.div`
 	height: 50px;
 	border-bottom: 1px solid rgb(93, 109, 126);
 	border-right: 1px solid rgb(93, 109, 126);
+
+	@media screen and (max-width: 1300px) {
+		width: 40px;
+	}
+
+	@media screen and (max-width: 767px) {
+		width: 35px;
+		height: 40px;
+	}
 `;
 
 const SearchContainer = styled.div`
@@ -81,6 +108,11 @@ const SearchInput = styled.input`
 	::placeholder {
 		color: rgb(93, 109, 126);
 	}
+
+	@media screen and (max-width: 767px) {
+		height: 30px;
+		padding: 3px 30px;
+	}
 `;
 
 const SearchIcon = styled.div`
@@ -88,6 +120,10 @@ const SearchIcon = styled.div`
 	color: rgb(93, 109, 126);
 	position: absolute;
 	left: 7%;
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.7rem;
+	}
 `;
 
 const FilterContainer = styled.div``;
@@ -102,6 +138,14 @@ const ItemFilterBox = styled.div`
 		cursor: pointer;
 		background-color: rgb(93, 109, 126);
 	}
+
+	@media screen and (max-width: 1300px) {
+		height: 40px;
+	}
+
+	@media screen and (max-width: 767px) {
+		height: 35px;
+	}
 `;
 
 const Label = styled.label``;
@@ -112,6 +156,16 @@ const FilterCheckBox = styled.input<{ filterImage: string; smallSize: boolean }>
 	height: 45px;
 	opacity: 0;
 	z-index: 0;
+
+	@media screen and (max-width: 1300px) {
+		width: 40px;
+		height: 40px;
+	}
+
+	@media screen and (max-width: 767px) {
+		width: 35px;
+		height: 35px;
+	}
 
 	& + ${Label} {
 		display: block;
@@ -126,6 +180,16 @@ const FilterCheckBox = styled.input<{ filterImage: string; smallSize: boolean }>
 
 		&:hover {
 			cursor: pointer;
+		}
+
+		@media screen and (max-width: 1300px) {
+			width: ${(props) => (props.smallSize ? '55%' : '45%')};
+			height: ${(props) => (props.smallSize ? '55%' : '45%')};
+		}
+
+		@media screen and (max-width: 767px) {
+			width: ${(props) => (props.smallSize ? '50%' : '40%')};
+			height: ${(props) => (props.smallSize ? '50%' : '40%')};
 		}
 	}
 
@@ -154,6 +218,7 @@ function Items({ itemData }: ItemDataProps) {
 	const dispatch = useAppDispatch();
 	const itemList = useAppSelector((state) => state.items.itemGroup);
 	const version = useAppSelector((state) => state.version.lastVersion);
+	const openDetail = useAppSelector((state) => state.items.openDetail);
 	const { data }: any = itemData;
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
@@ -238,7 +303,7 @@ function Items({ itemData }: ItemDataProps) {
 		<>
 			<Background />
 			<ItemWrap>
-				<ItemListBox>
+				<ItemListBox openDetail={openDetail}>
 					<Spacer />
 					<SearchContainer>
 						<SearchInput

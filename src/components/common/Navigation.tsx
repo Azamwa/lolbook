@@ -18,16 +18,28 @@ const NavigationContainer = styled.div`
 const LogoHeader = styled.div`
 	font-size: 4rem;
 	margin-left: 30px;
+
+	@media screen and (max-width: 767px) {
+		font-size: 2.5rem;
+	}
 `;
 
 const MenuList = styled.div`
 	display: flex;
 	margin-left: 50px;
 	gap: 20px;
+
+	@media screen and (max-width: 767px) {
+		margin-left: 20px;
+	}
 `;
 
 const Menu = styled.div`
 	font-size: 2rem;
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.5rem;
+	}
 `;
 
 const Version = styled.div`
@@ -35,6 +47,12 @@ const Version = styled.div`
 	font-size: 2rem;
 	position: absolute;
 	right: 30px;
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.5rem;
+		right: 10px;
+		bottom: -20px;
+	}
 `;
 
 function Navigation() {
