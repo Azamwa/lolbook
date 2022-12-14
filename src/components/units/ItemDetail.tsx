@@ -8,8 +8,9 @@ import doge from '/public/img/doge.png';
 const ItemDetailContainer = styled.div<{ openDetail: boolean }>`
 	min-width: 310px;
 	width: 40%;
+	max-width: 650px;
 	min-height: 691px;
-	height: 90%;
+	height: 85%;
 	background-color: rgb(33, 47, 61);
 	position: relative;
 

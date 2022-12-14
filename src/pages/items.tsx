@@ -27,7 +27,7 @@ const ItemWrap = styled.div`
 	padding: 50px;
 	padding-top: 120px;
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-evenly;
 	align-items: center;
 
 	@media screen and (max-width: 767px) {
@@ -37,9 +37,10 @@ const ItemWrap = styled.div`
 
 const ItemListBox = styled.div<{ openDetail: boolean }>`
 	min-width: 310px;
-	width: 45%;
+	width: 40%;
+	max-width: 650px;
 	min-height: 691px;
-	height: 90%;
+	height: 85%;
 	background-color: rgb(44, 62, 80);
 	display: grid;
 	grid-template-rows: 50px auto;
@@ -118,7 +119,8 @@ const SearchIcon = styled.div`
 	font-size: 2rem;
 	color: rgb(93, 109, 126);
 	position: absolute;
-	left: 7%;
+	top: 15px;
+	left: 6.5%;
 
 	@media screen and (max-width: 767px) {
 		font-size: 1.7rem;

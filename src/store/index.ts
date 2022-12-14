@@ -1,13 +1,15 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { useSelector, useDispatch, TypedUseSelectorHook } from 'react-redux';
-import common from './common';
 import { version } from './csrFetch/version';
+import champions from './champions';
+import common from './common';
 import items from './items';
 
 const rootReducer = combineReducers({
 	common: common.reducer,
 	version: version.reducer,
-	items: items.reducer
+	items: items.reducer,
+	champions: champions.reducer
 });
 
 const store = configureStore({

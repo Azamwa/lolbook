@@ -8,14 +8,12 @@ import { setItemDetail } from 'store/items';
 const ListContainer = styled.div`
 	padding: 20px;
 	height: 100%;
-	max-height: 640px;
 	background-color: rgb(33, 47, 61);
 	overflow-x: hidden;
 	overflow-y: auto;
 
 	@media screen and (max-width: 1300px) {
 		padding: 15px;
-		max-height: 570px;
 	}
 `;
 
