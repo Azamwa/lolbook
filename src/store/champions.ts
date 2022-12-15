@@ -1,11 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ChampionProps } from 'utils/types';
+import { ChampionDetailProps, ChampionProps } from 'utils/types';
+import { csrFetch } from './csrFetch';
 
 interface ChampionState {
+	status: string;
 	championList?: ChampionProps[];
+	championDetail?: ChampionDetailProps;
 }
 
 const initialState: ChampionState = {
+	status: 'complete',
 	championList: []
 };
 
@@ -24,6 +28,19 @@ const champions = createSlice({
 				return a.name < b.name ? -1 : 1;
 			});
 		}
+	},
+	extraReducers: (builder) => {
+		builder
+			.addCase(csrFetch.getChampionDetail.pending, (state) => {
+				state.status = 'pending';
+			})
+			.addCase(csrFetch.getChampionDetail.fulfilled, (state, action) => {
+				state.championDetail = action.payload.data.data;
+				state.status = 'complete';
+			})
+			.addCase(csrFetch.getChampionDetail.rejected, (state) => {
+				state.status = 'error';
+			});
 	}
 });
 
