@@ -6,11 +6,12 @@ import { useAppDispatch, useAppSelector } from 'store';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { csrFetch } from 'store/csrFetch';
 import tips from '/public/img/tips.png';
+import Link from 'next/link';
 
 const SlideContainer = styled.div`
 	width: 90vw;
 	height: 350px;
-	margin-top: 50px;
+	margin-top: 30px;
 	position: relative;
 	user-select: none;
 
@@ -62,7 +63,7 @@ const Slider = styled.div`
 `;
 
 const CardContainer = styled.div`
-	height: 300px;
+	height: 280px;
 	display: flex;
 	position: relative;
 
@@ -82,8 +83,8 @@ const CardContainer = styled.div`
 `;
 
 const Card = styled.div`
-	width: 170px;
-	height: 300px;
+	width: 150px;
+	height: 260px;
 	position: relative;
 
 	:hover {
@@ -92,7 +93,7 @@ const Card = styled.div`
 `;
 
 const ChampionName = styled.span`
-	width: 170px;
+	width: 150px;
 	height: 50px;
 	display: flex;
 	justify-content: center;
@@ -108,7 +109,7 @@ const ChampionName = styled.span`
 
 const ChampionInfo = styled.div`
 	width: 350px;
-	height: 100%;
+	height: 260px;
 	padding: 20px 15px;
 	background-color: rgb(26, 36, 46);
 	position: relative;
@@ -119,7 +120,7 @@ const ChampionInfo = styled.div`
 const CardTopArea = styled.div`
 	display: flex;
 	justify-content: space-between;
-	align-items: flex-end;
+	align-items: flex-start;
 `;
 
 const CardSubject = styled.div`
@@ -204,7 +205,7 @@ const Tips = styled.div``;
 const TipsText = styled.span`
 	margin-bottom: 10px;
 	display: inline-block;
-	font-size: 2.1rem;
+	font-size: 1.9rem;
 
 	img {
 		margin-right: 5px;
@@ -218,16 +219,17 @@ const TipList = styled.ul`
 const Tip = styled.li`
 	list-style: circle;
 	margin-bottom: 5px;
-	font-size: 1.8rem;
+	font-size: 1.6rem;
 `;
 
 interface ChampionListProps {
 	championList?: ChampionProps[];
+	selectChampion: ChampionProps | null;
 }
 
-function ChampionSlide({ championList }: ChampionListProps) {
+function ChampionSlide({ championList, selectChampion }: ChampionListProps) {
 	const dispatch = useAppDispatch();
-	const championDetail = useAppSelector((state) => state.champions.championDetail);
+	const championDetail: any = useAppSelector((state) => state.champions.championDetail);
 	const slider = useRef<HTMLDivElement>(null);
 	const [mouseIsDown, setMouseDown] = useState<boolean>(false);
 	const [startX, setStartX] = useState<number>(0);
@@ -235,12 +237,24 @@ function ChampionSlide({ championList }: ChampionListProps) {
 	const [championInfo, openChampionInfo] = useState<string>('');
 
 	useEffect(() => {
-		console.log(championDetail);
-	}, [championDetail]);
+		if (selectChampion !== null && championList !== undefined) {
+			dispatch(csrFetch.getChampionDetail(selectChampion.id));
+			openChampionInfo(selectChampion.id);
 
-	const clickChmpionDetail = (name: string) => {
-		openChampionInfo(name);
-		dispatch(csrFetch.getChampionDetail(name));
+			championList.forEach((champion, index) => {
+				if (champion.id === selectChampion.id && slider.current !== null) {
+					slider.current.scrollTo({
+						left: 165 * index,
+						behavior: 'smooth'
+					});
+				}
+			});
+		}
+	}, [selectChampion, championList, slider]);
+
+	const clickChmpionDetail = (id: string) => {
+		openChampionInfo(id);
+		dispatch(csrFetch.getChampionDetail(id));
 	};
 
 	const scrollMoveLeft = () => {
@@ -315,8 +329,8 @@ function ChampionSlide({ championList }: ChampionListProps) {
 								<Card onClick={() => clickChmpionDetail(champion.id)}>
 									<Image
 										src={`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${champion.id}_0.jpg`}
-										width={170}
-										height={300}
+										width={150}
+										height={260}
 										alt="ChampionLoadingImg"
 									/>
 									<ChampionName>{champion.name}</ChampionName>
@@ -328,7 +342,9 @@ function ChampionSlide({ championList }: ChampionListProps) {
 												<CardName>{champion.name}</CardName>
 												<CardTitle>{champion.title}</CardTitle>
 											</CardSubject>
-											<MoveDetailPage>챔피언 상세보기</MoveDetailPage>
+											<Link href={`/champions/${champion.id}`}>
+												<MoveDetailPage>챔피언 상세보기</MoveDetailPage>
+											</Link>
 										</CardTopArea>
 										<Info>
 											<Attack attack={champion.info.attack}>
@@ -354,7 +370,7 @@ function ChampionSlide({ championList }: ChampionListProps) {
 												{championDetail !== undefined &&
 													championDetail[champion.id] !== undefined &&
 													championDetail[champion.id].allytips.map(
-														(tip, tipIdx) => {
+														(tip: string, tipIdx: number) => {
 															return <Tip key={tipIdx}>{tip}</Tip>;
 														}
 													)}

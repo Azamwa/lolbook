@@ -23,7 +23,7 @@ const Background = styled.div`
 const ChampionPageWrap = styled.div`
 	width: 100%;
 	height: 100%;
-	padding: 130px 100px 80px;
+	padding: 110px 100px 80px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -197,6 +197,7 @@ function champions({ championData }: ChampionDataProps) {
 			label: '모든 챔피언'
 		}
 	);
+	const [selectChampion, setSelectChampion] = useState<ChampionProps | null>(null);
 	const dispatch = useAppDispatch();
 
 	const changeGroup = (e: SingleValue<{ value: string; label: string }>) => {
@@ -273,6 +274,7 @@ function champions({ championData }: ChampionDataProps) {
 												width={70}
 												height={70}
 												alt="champion-image"
+												onClick={() => setSelectChampion(champion)}
 											/>
 											<ChampionName>{champion.name}</ChampionName>
 										</Champion>
@@ -281,7 +283,7 @@ function champions({ championData }: ChampionDataProps) {
 							</ChampionList>
 						</ChampionListBox>
 					</ChampionListWrap>
-					<ChampionSlide championList={championList} />
+					<ChampionSlide championList={championList} selectChampion={selectChampion} />
 				</ChampionPageWrap>
 			)}
 		</>
