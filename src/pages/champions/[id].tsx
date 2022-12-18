@@ -6,6 +6,7 @@ import { ChampionProps, ChampionDetailProps } from 'utils/types';
 import ChampionSkill from 'components/units/ChampionSkill';
 import ChampionSummary from 'components/units/ChampionSummary';
 import { MdKeyboardBackspace } from 'react-icons/md';
+import ChampionSkin from 'components/units/ChampionSkin';
 
 const Background = styled.div`
 	width: 100vw;
@@ -31,7 +32,7 @@ const PageWrap = styled.div`
 const DetailContainer = styled.div`
 	width: 80%;
 	height: 90%;
-	padding: 50px;
+	padding: 30px 50px;
 	position: relative;
 	background-color: #000;
 	color: #fff;
@@ -45,7 +46,7 @@ const ChampionBackground = styled.div<{ champion: string }>`
 			`url(http://ddragon.leagueoflegends.com/cdn/img/champion/splash/${props.champion}_0.jpg)`},
 		no-repeat;
 	background-size: cover;
-	background-position: center center;
+	background-position: right center;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -73,7 +74,7 @@ const InfoArea = styled.div`
 	min-width: 290px;
 	width: 23%;
 	position: absolute;
-	z-index: 2;
+	z-index: 12;
 `;
 
 const ChampionName = styled.div`
@@ -129,7 +130,6 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 	useEffect(() => {
 		if (router.query.id !== undefined) {
 			setDetailInfo(data[router.query.id.toString()]);
-			console.log(detailInfo);
 		}
 	}, [data, router]);
 	return (
@@ -173,6 +173,7 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 							{activeTap === 'skill' && <ChampionSkill detailInfo={detailInfo} />}
 						</InfoArea>
 						<ChampionBackground champion={detailInfo.id} />
+						{activeTap === 'skin' && <ChampionSkin detailInfo={detailInfo} />}
 					</DetailContainer>
 				</PageWrap>
 			)}

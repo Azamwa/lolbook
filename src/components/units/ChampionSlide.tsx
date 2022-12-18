@@ -1,12 +1,12 @@
 import React, { useRef, useState, useEffect, MouseEvent } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import styled, { keyframes } from 'styled-components';
 import { ChampionProps } from 'utils/types';
 import { useAppDispatch, useAppSelector } from 'store';
-import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { csrFetch } from 'store/csrFetch';
+import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import tips from '/public/img/tips.png';
-import Link from 'next/link';
 
 const SlideContainer = styled.div`
 	width: 90vw;

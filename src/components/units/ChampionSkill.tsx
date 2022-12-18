@@ -61,7 +61,7 @@ interface SkillProps {
 }
 
 function ChampionSkill({ detailInfo }: SkillProps) {
-	const [selectedSkill, SetSelectedSkill] = useState<string>('');
+	const [selectedSkill, SetSelectedSkill] = useState<string>('0');
 
 	const currentSkill = useMemo(() => {
 		if (selectedSkill !== 'passive') {
@@ -157,9 +157,9 @@ function ChampionSkill({ detailInfo }: SkillProps) {
 					<Description>
 						{!currentSkill.tooltip.includes('br')
 							? spellDescription
-							: spellDescription.split('<br />').map((line) => {
+							: spellDescription.split('<br />').map((line, lineIndex) => {
 									return (
-										<span>
+										<span key={lineIndex}>
 											{line} <br />
 										</span>
 									);
