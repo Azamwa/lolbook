@@ -23,17 +23,30 @@ const Skill = styled.div<{ selectedSkill: boolean }>`
 			border: 2px solid rgb(174, 214, 241);
 		}
 		border: 2px solid ${(props) => (props.selectedSkill ? 'violet' : 'none')};
+
+		@media screen and (max-width: 1300px) {
+			width: 50px;
+			height: 50px;
+		}
 	}
 `;
 
 const SkillDescription = styled.div`
 	margin-top: 30px;
+
+	@media screen and (max-width: 1300px) {
+		margin-top: 20px;
+	}
 `;
 
 const SkillName = styled.span`
 	display: inline-block;
 	font-size: 2.5rem;
 	margin-bottom: 10px;
+
+	@media screen and (max-width: 1300px) {
+		font-size: 1.8rem;
+	}
 `;
 
 const DefaultValue = styled.div``;
@@ -43,17 +56,29 @@ const Value = styled.p`
 	color: #555;
 	font-style: italic;
 	margin-bottom: 5px;
+
+	@media screen and (max-width: 1300px) {
+		font-size: 1.3rem;
+	}
 `;
 
 const Description = styled.p`
 	margin: 15px 0;
 	font-size: 1.7rem;
+
+	@media screen and (max-width: 1300px) {
+		font-size: 1.3rem;
+	}
 `;
 
 const Postscript = styled.p`
 	font-size: 1.5rem;
 	font-style: italic;
 	color: #008b8b;
+
+	@media screen and (max-width: 1300px) {
+		font-size: 1.2rem;
+	}
 `;
 
 interface SkillProps {

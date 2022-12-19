@@ -10,7 +10,7 @@ import tips from '/public/img/tips.png';
 
 const SlideContainer = styled.div`
 	width: 90vw;
-	height: 350px;
+	max-height: 350px;
 	margin-top: 30px;
 	position: relative;
 	user-select: none;
@@ -27,6 +27,14 @@ const SlideContainer = styled.div`
 	& ::-webkit-scrollbar-track {
 		background-color: rgb(26, 36, 46);
 		border-radius: 20px;
+	}
+
+	@media screen and (max-width: 1300px) {
+		max-height: 250px;
+	}
+
+	@media screen and (max-width: 767px) {
+		margin-top: 50px;
 	}
 `;
 
@@ -48,6 +56,10 @@ const Slider = styled.div`
 		:hover {
 			cursor: pointer;
 		}
+
+		@media screen and (max-width: 767px) {
+			display: none;
+		}
 	}
 
 	.navForward {
@@ -58,6 +70,10 @@ const Slider = styled.div`
 
 		:hover {
 			cursor: pointer;
+		}
+
+		@media screen and (max-width: 767px) {
+			display: none;
 		}
 	}
 `;
@@ -80,6 +96,14 @@ const CardContainer = styled.div`
 		background-color: rgb(26, 36, 46);
 		border-radius: 0;
 	}
+
+	@media screen and (max-width: 1300px) {
+		height: 230px;
+	}
+
+	@media screen and (max-width: 767px) {
+		height: 200px;
+	}
 `;
 
 const Card = styled.div`
@@ -89,6 +113,26 @@ const Card = styled.div`
 
 	:hover {
 		cursor: pointer;
+	}
+
+	@media screen and (max-width: 1300px) {
+		width: 125px;
+		height: 210px;
+
+		img {
+			width: 125px;
+			height: 210px;
+		}
+	}
+
+	@media screen and (max-width: 767px) {
+		width: 105px;
+		height: 180px;
+
+		img {
+			width: 105px;
+			height: 180px;
+		}
 	}
 `;
 
@@ -105,6 +149,17 @@ const ChampionName = styled.span`
 	color: #fff;
 	background-color: #000;
 	opacity: 0.7;
+
+	@media screen and (max-width: 1300px) {
+		width: 125px;
+		height: 40px;
+	}
+
+	@media screen and (max-width: 767px) {
+		width: 105px;
+		height: 35px;
+		font-size: 1.5rem;
+	}
 `;
 
 const ChampionInfo = styled.div`
@@ -115,6 +170,16 @@ const ChampionInfo = styled.div`
 	position: relative;
 	color: #fff;
 	overflow-y: auto;
+
+	@media screen and (max-width: 1300px) {
+		width: 300px;
+		height: 210px;
+	}
+
+	@media screen and (max-width: 767px) {
+		width: 220px;
+		height: 180px;
+	}
 `;
 
 const CardTopArea = styled.div`
@@ -130,10 +195,22 @@ const CardSubject = styled.div`
 
 const CardName = styled.span`
 	font-size: 2.3rem;
+
+	@media screen and (max-width: 1300px) {
+		font-size: 2rem;
+	}
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.8rem;
+	}
 `;
 
 const CardTitle = styled.span`
 	font-size: 1.7rem;
+
+	@media screen and (max-width: 1300px) {
+		font-size: 1.3rem;
+	}
 `;
 
 const MoveDetailPage = styled.button`
@@ -144,10 +221,21 @@ const MoveDetailPage = styled.button`
 	font-family: inherit;
 	font-size: 1.6rem;
 	background-color: #fff;
+	border: none;
 
 	:hover {
 		cursor: pointer;
 		background-color: skyblue;
+	}
+
+	@media screen and (max-width: 1300px) {
+		height: 30px;
+		font-size: 1.4rem;
+	}
+
+	@media screen and (max-width: 767px) {
+		height: 25px;
+		font-size: 1.2rem;
 	}
 `;
 
@@ -173,29 +261,37 @@ const Graph = styled.div`
 		left: 100px;
 		animation: ${barGraph} linear 0.5s;
 	}
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.3rem;
+
+		::after {
+			left: 70px;
+		}
+	}
 `;
 
 const Attack = styled(Graph)<{ attack: number }>`
 	::after {
-		width: ${(props) => props.attack * 15}px;
+		width: ${(props) => props.attack * 10}px;
 		background: linear-gradient(to bottom, hotpink, red);
 	}
 `;
 const Magic = styled(Graph)<{ magic: number }>`
 	::after {
-		width: ${(props) => props.magic * 15}px;
+		width: ${(props) => props.magic * 10}px;
 		background: linear-gradient(to bottom, cornflowerblue, blue);
 	}
 `;
 const Defense = styled(Graph)<{ defense: number }>`
 	::after {
-		width: ${(props) => props.defense * 15}px;
+		width: ${(props) => props.defense * 10}px;
 		background: linear-gradient(to bottom, lightGreen, darkGreen);
 	}
 `;
 const Difficulty = styled(Graph)<{ difficulty: number }>`
 	::after {
-		width: ${(props) => props.difficulty * 15}px;
+		width: ${(props) => props.difficulty * 10}px;
 		background: linear-gradient(to bottom, indianred, purple);
 	}
 `;
@@ -210,6 +306,10 @@ const TipsText = styled.span`
 	img {
 		margin-right: 5px;
 	}
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.5rem;
+	}
 `;
 
 const TipList = styled.ul`
@@ -220,14 +320,19 @@ const Tip = styled.li`
 	list-style: circle;
 	margin-bottom: 5px;
 	font-size: 1.6rem;
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.3rem;
+	}
 `;
 
 interface ChampionListProps {
 	championList?: ChampionProps[];
 	selectChampion: ChampionProps | null;
+	screenSize: string;
 }
 
-function ChampionSlide({ championList, selectChampion }: ChampionListProps) {
+function ChampionSlide({ championList, selectChampion, screenSize }: ChampionListProps) {
 	const dispatch = useAppDispatch();
 	const championDetail: any = useAppSelector((state) => state.champions.championDetail);
 	const slider = useRef<HTMLDivElement>(null);
@@ -235,6 +340,9 @@ function ChampionSlide({ championList, selectChampion }: ChampionListProps) {
 	const [startX, setStartX] = useState<number>(0);
 	const [scrollLeft, setScrollLeft] = useState<number>(0);
 	const [championInfo, openChampionInfo] = useState<string>('');
+
+	const scrollLeftValue = screenSize === 'big' ? 165 : screenSize === 'middle' ? 140 : 120;
+	const scrollButtonValue = screenSize === 'big' ? 1000 : 750;
 
 	useEffect(() => {
 		if (selectChampion !== null && championList !== undefined) {
@@ -244,7 +352,7 @@ function ChampionSlide({ championList, selectChampion }: ChampionListProps) {
 			championList.forEach((champion, index) => {
 				if (champion.id === selectChampion.id && slider.current !== null) {
 					slider.current.scrollTo({
-						left: 165 * index,
+						left: scrollLeftValue * index,
 						behavior: 'smooth'
 					});
 				}
@@ -259,9 +367,9 @@ function ChampionSlide({ championList, selectChampion }: ChampionListProps) {
 
 	const scrollMoveLeft = () => {
 		if (slider.current !== null) {
-			setScrollLeft(scrollLeft - 1000);
+			setScrollLeft(scrollLeft - scrollButtonValue);
 			slider.current.scrollTo({
-				left: scrollLeft - 1000,
+				left: scrollLeft - scrollButtonValue,
 				behavior: 'smooth'
 			});
 		}
@@ -269,9 +377,9 @@ function ChampionSlide({ championList, selectChampion }: ChampionListProps) {
 
 	const scrollMoveRight = () => {
 		if (slider.current !== null) {
-			setScrollLeft(scrollLeft + 1000);
+			setScrollLeft(scrollLeft + scrollButtonValue);
 			slider.current.scrollTo({
-				left: scrollLeft + 1000,
+				left: scrollLeft + scrollButtonValue,
 				behavior: 'smooth'
 			});
 		}

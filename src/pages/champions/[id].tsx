@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { ChampionProps, ChampionDetailProps } from 'utils/types';
+import { ChampionDetailProps } from 'utils/types';
 import ChampionSkill from 'components/units/ChampionSkill';
 import ChampionSummary from 'components/units/ChampionSummary';
-import { MdKeyboardBackspace } from 'react-icons/md';
 import ChampionSkin from 'components/units/ChampionSkin';
+import { MdKeyboardBackspace } from 'react-icons/md';
+import { useAppSelector } from 'store';
 
 const Background = styled.div`
 	width: 100vw;
@@ -36,6 +37,15 @@ const DetailContainer = styled.div`
 	position: relative;
 	background-color: #000;
 	color: #fff;
+
+	@media screen and (max-width: 1300px) {
+		padding: 30px 40px;
+	}
+
+	@media screen and (max-width: 767px) {
+		width: 90%;
+		padding: 0;
+	}
 `;
 
 const ChampionBackground = styled.div<{ champion: string }>`
@@ -48,9 +58,34 @@ const ChampionBackground = styled.div<{ champion: string }>`
 	background-size: cover;
 	background-position: right center;
 	position: absolute;
+	border-left: 1px solid #000;
 	top: 0;
 	right: 0;
 	z-index: 1;
+`;
+
+const ChampionLoadingImg = styled.div<{ champion: string }>`
+	width: 100%;
+	height: 100%;
+	background: ${(props) =>
+			`url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${props.champion}_0.jpg)`},
+		no-repeat;
+	background-position: center center;
+	background-size: cover;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 1;
+`;
+
+const TopArea = styled.div`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+
+	@media screen and (max-width: 767px) {
+	}
 `;
 
 const GoBack = styled.p`
@@ -58,7 +93,6 @@ const GoBack = styled.p`
 	align-items: center;
 	gap: 10px;
 	font-size: 2rem;
-	margin-bottom: 20px;
 	user-select: none;
 
 	svg {
@@ -70,11 +104,26 @@ const GoBack = styled.p`
 	}
 `;
 
+const ChampionSplashImg = styled.div`
+	width: 100px;
+	height: 20px;
+	background-color: #fff;
+	color: #000;
+	font-size: 1.5rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
 const InfoArea = styled.div`
-	min-width: 290px;
-	width: 23%;
+	width: 30%;
 	position: absolute;
 	z-index: 12;
+
+	@media screen and (max-width: 767px) {
+		width: 100%;
+		padding: 25px;
+	}
 `;
 
 const ChampionName = styled.div`
@@ -82,14 +131,37 @@ const ChampionName = styled.div`
 	align-items: flex-end;
 	gap: 20px;
 	margin-bottom: 20px;
+
+	@media screen and (max-width: 1300px) {
+		gap: 10px;
+	}
+
+	@media screen and (max-width: 767px) {
+		gap: 5px;
+		margin-bottom: 10px;
+		img {
+			width: 30px;
+			height: 30px;
+		}
+	}
 `;
 
 const Name = styled.span`
 	font-size: 3rem;
+	@media screen and (max-width: 1300px) {
+		font-size: 2.5rem;
+	}
 `;
 const Title = styled.span`
 	font-size: 2.5rem;
 	opacity: 0.8;
+	@media screen and (max-width: 1300px) {
+		font-size: 2rem;
+	}
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.8rem;
+	}
 `;
 
 const TapGroup = styled.div`
@@ -98,7 +170,7 @@ const TapGroup = styled.div`
 	border-bottom: 2px solid #fff;
 	display: flex;
 	justify-content: center;
-	margin-bottom: 50px;
+	margin-bottom: 30px;
 `;
 
 const Tap = styled.div<{ active: boolean }>`
@@ -125,8 +197,19 @@ interface ChampionInfoProps {
 function ChampionInfo({ championInfo }: ChampionInfoProps) {
 	const router = useRouter();
 	const { data } = championInfo;
+	const version = useAppSelector((state) => state.version);
+	const skinNumber = useAppSelector((state) => state.champions.skinNumber);
 	const [detailInfo, setDetailInfo] = useState<ChampionDetailProps>();
 	const [activeTap, setActiveTap] = useState<string>('summary');
+
+	const screenSize = useMemo(() => {
+		let value = '';
+		if (version.status === 'complete') {
+			value = screen.availWidth > 1300 ? 'big' : screen.availWidth > 768 ? 'middle' : 'small';
+		}
+		return value;
+	}, [version]);
+
 	useEffect(() => {
 		if (router.query.id !== undefined) {
 			setDetailInfo(data[router.query.id.toString()]);
@@ -139,9 +222,21 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 				<PageWrap>
 					<DetailContainer>
 						<InfoArea>
-							<GoBack>
-								<MdKeyboardBackspace onClick={() => router.back()} /> 뒤로가기
-							</GoBack>
+							<TopArea>
+								<GoBack>
+									<MdKeyboardBackspace onClick={() => router.back()} /> 뒤로가기
+								</GoBack>
+								{screenSize === 'small' && (
+									<ChampionSplashImg
+										onClick={() =>
+											window.open(
+												`http://ddragon.leagueoflegends.com/cdn/img/champion/splash/${detailInfo.id}_${skinNumber}.jpg`
+											)
+										}>
+										스플래시이미지
+									</ChampionSplashImg>
+								)}
+							</TopArea>
 							<ChampionName>
 								<Image
 									src={`/img/positions/${detailInfo.tags[0]}.png`}
@@ -172,8 +267,14 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 							{activeTap === 'summary' && <ChampionSummary detailInfo={detailInfo} />}
 							{activeTap === 'skill' && <ChampionSkill detailInfo={detailInfo} />}
 						</InfoArea>
-						<ChampionBackground champion={detailInfo.id} />
-						{activeTap === 'skin' && <ChampionSkin detailInfo={detailInfo} />}
+						{activeTap === 'skin' && (
+							<ChampionSkin detailInfo={detailInfo} screenSize={screenSize} />
+						)}
+						{screenSize === 'big' ? (
+							<ChampionBackground champion={detailInfo.id} />
+						) : (
+							<ChampionLoadingImg champion={detailInfo.id} />
+						)}
 					</DetailContainer>
 				</PageWrap>
 			)}

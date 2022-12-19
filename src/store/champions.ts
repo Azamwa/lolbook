@@ -6,11 +6,13 @@ interface ChampionState {
 	status: string;
 	championList?: ChampionProps[];
 	championDetail?: ChampionDetailProps;
+	skinNumber: number;
 }
 
 const initialState: ChampionState = {
 	status: 'complete',
-	championList: []
+	championList: [],
+	skinNumber: 0
 };
 
 const champions = createSlice({
@@ -27,6 +29,9 @@ const champions = createSlice({
 			state.championList?.sort((a, b) => {
 				return a.name < b.name ? -1 : 1;
 			});
+		},
+		setSkinNumber(state, action) {
+			state.skinNumber = action.payload;
 		}
 	},
 	extraReducers: (builder) => {
@@ -44,6 +49,6 @@ const champions = createSlice({
 	}
 });
 
-export const { setChampionList } = champions.actions;
+export const { setChampionList, setSkinNumber } = champions.actions;
 
 export default champions;

@@ -6,14 +6,26 @@ const SummaryContainer = styled.div``;
 
 const Description = styled.p`
 	font-size: 1.7rem;
+
+	@media screen and (max-width: 1300px) {
+		font-size: 1.5rem;
+	}
 `;
 
 const StatsContainer = styled.div`
 	margin-top: 40px;
+
+	@media screen and (max-width: 1300px) {
+		margin-top: 30px;
+	}
 `;
 
 const Subject = styled.span`
 	font-size: 2.5rem;
+
+	@media screen and (max-width: 1300px) {
+		font-size: 2.2.rem;
+	}
 `;
 
 const SubjectExplain = styled.span`
@@ -34,11 +46,24 @@ const Stats = styled.div`
 
 const StatsValue = styled.span`
 	font-size: 1.8rem;
+
+	@media screen and (max-width: 1300px) {
+		font-size: 1.5rem;
+	}
+
+    @media screen and (max-width: 767px) {
+		font-size: 1.3rem;
+	}
 `;
 
 const StatsPerLevelUp = styled.span`
 	font-size: 1.5rem;
 	color: #2aff00;
+	font-style: italic;
+
+	@media screen and (max-width: 1300px) {
+		font-size: 1.3rem;
+	}
 `;
 
 interface SummaryProps {
@@ -68,9 +93,9 @@ function ChampionSummary({ detailInfo }: SummaryProps) {
 				<StatsList>
 					{statsList.map((stats, index) => {
 						return (
-							<Stats>
+							<Stats key={index}>
 								{detailInfo.stats[stats.value] !== 0 && (
-									<StatsValue key={index}>
+									<StatsValue>
 										{stats.name}: {detailInfo.stats[stats.value]}
 									</StatsValue>
 								)}

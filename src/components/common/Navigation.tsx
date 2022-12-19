@@ -13,6 +13,14 @@ const NavigationContainer = styled.div`
 	position: fixed;
 	opacity: 0.8;
 	background-color: rgb(235, 102, 45);
+
+	@media screen and (max-width: 1300px) {
+		height: 60px;
+	}
+
+	@media screen and (max-width: 767px) {
+		height: 50px;
+	}
 `;
 
 const LogoHeader = styled.div`

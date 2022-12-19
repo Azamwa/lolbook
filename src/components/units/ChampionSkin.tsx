@@ -3,6 +3,8 @@ import Image from 'next/image';
 import styled from 'styled-components';
 import { ChampionDetailProps } from 'utils/types';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
+import { setSkinNumber } from 'store/champions';
+import { useAppDispatch } from 'store';
 
 const ChampionSkinContainer = styled.div`
 	position: absolute;
@@ -26,11 +28,18 @@ const SkinBackground = styled.div<{ champion: string; skinId: number }>`
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: right top;
+
+	@media screen and (max-width: 767px) {
+		background: ${(props) =>
+			`url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${props.champion}_${props.skinId}.jpg)`};
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center center;
+	}
 `;
 
 const SkinContainer = styled.div`
 	width: 100%;
-	height: 200px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -62,6 +71,10 @@ const SkinName = styled.span`
 	::after {
 		margin-left: 10px;
 	}
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.8rem;
+	}
 `;
 
 const SkinList = styled.div`
@@ -75,6 +88,11 @@ const SkinList = styled.div`
 
 	svg:hover {
 		cursor: pointer;
+	}
+
+	@media screen and (max-width: 767px) {
+		font-size: 4rem;
+		gap: 10px;
 	}
 `;
 
@@ -103,6 +121,7 @@ const SkinImage = styled.div<{ skinNumber: boolean }>`
 
 interface ChampionSkinProps {
 	detailInfo: ChampionDetailProps;
+	screenSize: string;
 }
 interface Skin {
 	id: string;
@@ -111,29 +130,32 @@ interface Skin {
 	chromas: boolean;
 }
 
-function ChampionSkin({ detailInfo }: ChampionSkinProps) {
+function ChampionSkin({ detailInfo, screenSize }: ChampionSkinProps) {
+	const dispatch = useAppDispatch();
 	const [currentSkin, setCurrentSkin] = useState<Skin>(detailInfo.skins[0]);
 	const slider = useRef<HTMLDivElement>(null);
 	const [scrollLeft, setScrollLeft] = useState<number>(0);
+	const scrollLeftValue = screenSize === 'big' ? 500 : screenSize === 'middle' ? 350 : 165;
 
-	const changeskinNumber = (index: number) => {
+	const changeskinNumber = (skinNumber: number, index: number) => {
 		setCurrentSkin(detailInfo.skins[index]);
 		if (slider.current !== null) {
 			setScrollLeft(index * 130);
 			slider.current.scrollTo({
-				left: 130 * index,
+				left: 165 * index,
 				behavior: 'smooth'
 			});
 		}
+		dispatch(setSkinNumber(skinNumber));
 	};
 
 	const scrollMoveLeft = () => {
 		if (slider.current !== null) {
-			if (scrollLeft >= 500) {
-				setScrollLeft(scrollLeft - 500);
+			if (scrollLeft >= scrollLeftValue) {
+				setScrollLeft(scrollLeft - scrollLeftValue);
 			}
 			slider.current.scrollTo({
-				left: scrollLeft - 500,
+				left: scrollLeft - scrollLeftValue,
 				behavior: 'smooth'
 			});
 		}
@@ -141,11 +163,11 @@ function ChampionSkin({ detailInfo }: ChampionSkinProps) {
 
 	const scrollMoveRight = () => {
 		if (slider.current !== null) {
-			if (scrollLeft < detailInfo.skins.length * 130 - 500) {
-				setScrollLeft(scrollLeft + 500);
+			if (scrollLeft < detailInfo.skins.length * 130 - scrollLeftValue) {
+				setScrollLeft(scrollLeft + scrollLeftValue);
 			}
 			slider.current.scrollTo({
-				left: scrollLeft + 500,
+				left: scrollLeft + scrollLeftValue,
 				behavior: 'smooth'
 			});
 		}
@@ -166,7 +188,7 @@ function ChampionSkin({ detailInfo }: ChampionSkinProps) {
 								<SkinImage
 									key={index}
 									skinNumber={skin.num === currentSkin.num}
-									onClick={() => changeskinNumber(index)}>
+									onClick={() => changeskinNumber(skin.num, index)}>
 									<Image
 										src={`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${detailInfo.id}_${skin.num}.jpg`}
 										width={135}

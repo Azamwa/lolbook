@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, useMemo } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { ChampionProps } from 'utils/types';
@@ -23,14 +23,21 @@ const Background = styled.div`
 const ChampionPageWrap = styled.div`
 	width: 100%;
 	height: 100%;
-	padding: 110px 100px 80px;
+	padding: 70px 100px 0;
 	display: flex;
 	flex-direction: column;
+	justify-content: center;
 	align-items: center;
+	gap: 30px;
+
+	@media screen and (max-width: 1300px) {
+		padding: 50px 30px 0;
+		gap: 25px;
+	}
 `;
 
 const ChampionListWrap = styled.div`
-	width: 90%;
+	width: 95%;
 `;
 
 const Title = styled.span`
@@ -38,12 +45,15 @@ const Title = styled.span`
 	margin-bottom: 10px;
 	font-size: 2.5rem;
 	color: #fff;
+
+	@media screen and (max-width: 767px) {
+		font-size: 2rem;
+	}
 `;
 
 const ChampionListBox = styled.div`
 	width: 100%;
-	min-height: 400px;
-	height: 30%;
+	height: 400px;
 	background-color: rgb(33, 47, 61);
 
 	& ::-webkit-scrollbar {
@@ -57,6 +67,14 @@ const ChampionListBox = styled.div`
 	& ::-webkit-scrollbar-track {
 		background-color: rgb(26, 36, 46);
 	}
+
+	@media screen and (max-width: 1300px) {
+		height: 300px;
+	}
+
+	@media screen and (max-width: 767px) {
+		height: 250px;
+	}
 `;
 
 const SearchContainer = styled.div`
@@ -68,6 +86,14 @@ const SearchContainer = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	background-color: rgb(44, 62, 80);
+
+	@media screen and (max-width: 1300px) {
+		height: 45px;
+	}
+
+	@media screen and (max-width: 767px) {
+		padding: 0 10px;
+	}
 `;
 
 const SearchBox = styled.div`
@@ -80,12 +106,19 @@ const SearchBox = styled.div`
 		left: 8px;
 		font-size: 2.3rem;
 		opacity: 0.8;
+
+		@media screen and (max-width: 1300px) {
+			font-size: 2rem;
+		}
+
+		@media screen and (max-width: 767px) {
+			display: none;
+		}
 	}
 `;
 
 const SearchInput = styled.input`
-	min-width: 300px;
-	width: 30%;
+	width: 300px;
 	height: 40px;
 	padding-left: 35px;
 	outline: none;
@@ -93,6 +126,19 @@ const SearchInput = styled.input`
 	border: 1px solid rgb(86, 101, 115);
 	color: rgb(171, 178, 185);
 	font-size: 1.8rem;
+	display: flex;
+	align-items: center;
+
+	@media screen and (max-width: 1300px) {
+		height: 33px;
+		font-size: 1.5rem;
+	}
+
+	@media screen and (max-width: 767px) {
+		width: 150px;
+		padding-left: 10px;
+		font-size: 1.5rem;
+	}
 `;
 
 const FilterBox = styled.div``;
@@ -108,6 +154,19 @@ const ChampionList = styled.div`
 	grid-template-rows: repeat(auto-fill, 90px);
 	grid-gap: 20px;
 	justify-content: center;
+
+	@media screen and (max-width: 1300px) {
+		height: 255px;
+		grid-template-columns: repeat(auto-fill, 60px);
+		grid-template-rows: repeat(auto-fill, 80px);
+	}
+
+	@media screen and (max-width: 767px) {
+		padding: 10px;
+		height: 205px;
+		grid-template-columns: repeat(auto-fill, 50px);
+		grid-template-rows: repeat(auto-fill, 70px);
+	}
 `;
 
 const Champion = styled.div`
@@ -117,10 +176,30 @@ const Champion = styled.div`
 	flex-direction: column;
 	align-items: center;
 
+	@media screen and (max-width: 1300px) {
+		width: 60px;
+		height: 80px;
+	}
+
+	@media screen and (max-width: 767px) {
+		width: 50px;
+		height: 70px;
+	}
+
 	img {
 		:hover {
 			cursor: pointer;
 			border: 1px solid rgb(174, 214, 241);
+		}
+
+		@media screen and (max-width: 1300px) {
+			width: 60px;
+			height: 60px;
+		}
+
+		@media screen and (max-width: 767px) {
+			width: 50px;
+			height: 50px;
 		}
 	}
 `;
@@ -130,6 +209,11 @@ const ChampionName = styled.span`
 	margin-top: 5px;
 	font-size: 1.5rem;
 	color: #fff;
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.2rem;
+		font-weight: 500;
+	}
 `;
 
 interface ChampionDataProps {
@@ -153,14 +237,13 @@ const roleGroup = [
 const selectStyle = {
 	control: (base: any) => ({
 		...base,
-		width: '15vw',
-		height: 25,
-		minWidth: 150,
+		height: '15px',
+		minWidth: 130,
 		background: '#212F3D',
 		border: 'none',
 		margin: 0,
 		borderRadius: 0,
-		fontSize: '1.8rem',
+		fontSize: '1.5rem',
 		fontFamily: 'system-ui',
 		fontWeight: 700
 	}),
@@ -170,7 +253,7 @@ const selectStyle = {
 		background: '#212F3D',
 		color: '#ABB2B9',
 		borderRadius: 0,
-		fontSize: '1.8rem',
+		fontSize: '1.5rem',
 		fontFamily: 'system-ui',
 		fontWeight: 700
 	}),
@@ -199,6 +282,14 @@ function champions({ championData }: ChampionDataProps) {
 	);
 	const [selectChampion, setSelectChampion] = useState<ChampionProps | null>(null);
 	const dispatch = useAppDispatch();
+
+	const screenSize = useMemo(() => {
+		let value = '';
+		if (version.status === 'complete') {
+            value =  screen.availWidth > 1300 ? 'big' : screen.availWidth > 768 ? 'middle' : 'small';
+		}
+		return value;
+	}, [version]);
 
 	const changeGroup = (e: SingleValue<{ value: string; label: string }>) => {
 		setSelectedRole(e);
@@ -244,7 +335,7 @@ function champions({ championData }: ChampionDataProps) {
 			{version.status === 'complete' && (
 				<ChampionPageWrap>
 					<ChampionListWrap>
-						<Title>챔피언 목록</Title>
+						<Title>챔피언 도감</Title>
 						<ChampionListBox>
 							<SearchContainer>
 								<SearchBox>
@@ -283,7 +374,11 @@ function champions({ championData }: ChampionDataProps) {
 							</ChampionList>
 						</ChampionListBox>
 					</ChampionListWrap>
-					<ChampionSlide championList={championList} selectChampion={selectChampion} />
+					<ChampionSlide
+						championList={championList}
+						selectChampion={selectChampion}
+						screenSize={screenSize}
+					/>
 				</ChampionPageWrap>
 			)}
 		</>
