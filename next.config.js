@@ -4,10 +4,10 @@
 const path = require('path');
 
 module.exports = {
-	reactStrictMode: true,
+	reactStrictMode: false,
 	swcMinify: true,
 	images: {
-		domains: ['ddragon.leagueoflegends.com']
+		domains: ['ddragon.leagueoflegends.com', 'images.contentstack.io']
 	},
 	sassOptions: {
 		includePaths: [path.join(__dirname, 'styles')]

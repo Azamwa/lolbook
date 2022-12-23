@@ -4,11 +4,23 @@ import { csrFetch } from '.';
 type VersionListState = {
 	lastVersion: string;
 	status: string;
+	patchNoteList: {
+		list: {
+			title: string;
+			imgURL: string;
+			author: string[];
+			date: string;
+			version: string;
+		}[];
+	};
 };
 
 const initialState: VersionListState = {
 	lastVersion: '',
-	status: ''
+	status: '',
+	patchNoteList: {
+		list: []
+	}
 };
 
 export const version = createSlice({
@@ -26,6 +38,10 @@ export const version = createSlice({
 			})
 			.addCase(csrFetch.getVersionList.rejected, (state) => {
 				state.status = 'error';
+			})
+			.addCase(csrFetch.getPatchNoteList.fulfilled, (state, action) => {
+				state.status = 'complete';
+				state.patchNoteList = action.payload.data;
 			});
 	}
 });
