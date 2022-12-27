@@ -11,6 +11,7 @@ type VersionListState = {
 			author: string[];
 			date: string;
 			version: string;
+			totalElements: number;
 		}[];
 	};
 };
@@ -40,7 +41,6 @@ export const version = createSlice({
 				state.status = 'error';
 			})
 			.addCase(csrFetch.getPatchNoteList.fulfilled, (state, action) => {
-				state.status = 'complete';
 				state.patchNoteList = action.payload.data;
 			});
 	}

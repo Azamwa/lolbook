@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from 'store';
 import { setFromItem, setItemDetail, setItemsByGroup } from 'store/items';
 import { setComplete, setPending } from 'store/common';
 import { BiSearchAlt2 } from 'react-icons/bi';
+import Head from 'next/head';
 
 const Background = styled.div`
 	width: 100vw;
@@ -302,6 +303,9 @@ function Items({ itemData }: ItemDataProps) {
 
 	return (
 		<>
+			<Head>
+				<title>Lolipop | 아이템도감</title>
+			</Head>
 			<Background />
 			<ItemWrap>
 				<ItemListBox openDetail={openDetail}>

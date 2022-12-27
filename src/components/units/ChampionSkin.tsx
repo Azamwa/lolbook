@@ -194,6 +194,7 @@ function ChampionSkin({ detailInfo, screenSize }: ChampionSkinProps) {
 										width={135}
 										height={80}
 										alt="skinListImage"
+										priority={false}
 									/>
 								</SkinImage>
 							);

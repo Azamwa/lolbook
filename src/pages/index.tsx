@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from 'store';
 import { csrFetch } from 'store/csrFetch';
 import dayjs from 'dayjs';
-import Select, { SingleValue } from 'react-select';
+import Head from 'next/head';
 
 const Background = styled.div`
 	width: 100vw;
@@ -53,18 +53,12 @@ const Title = styled.span`
 const PatchNoteListBox = styled.div`
 	width: 100%;
 	height: calc(100% - 50px);
+	padding: 50px 0;
 	background-color: rgb(26, 36, 46);
 	overflow-y: auto;
 `;
 
-const FilterLine = styled.div`
-	padding: 20px;
-	display: flex;
-	justify-content: flex-end;
-`;
-
 const PatchNoteList = styled.ul`
-	padding: 10px 20px 50px;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, 350px);
 	grid-gap: 60px;
@@ -109,7 +103,7 @@ const ReleaseDate = styled.p`
 const RequestMore = styled.div`
 	display: flex;
 	justify-content: center;
-	padding: 10px 0 50px;
+	margin-top: 50px;
 `;
 
 const MoreButton = styled.button`
@@ -129,108 +123,43 @@ const MoreButton = styled.button`
 	}
 `;
 
-const yearGroup = new Array(8).fill({}).map((noUse, index) => {
-	return {
-		label: `시즌 ${12 - index}`,
-		value: 2022 - index + ''
-	};
-});
-
-const selectStyle = {
-	control: (base: any) => ({
-		...base,
-		height: '15px',
-		minWidth: 130,
-		background: '#212F3D',
-		border: 'none',
-		margin: 0,
-		borderRadius: 0,
-		fontSize: '1.5rem',
-		fontFamily: 'system-ui',
-		fontWeight: 700
-	}),
-
-	menu: (base: any) => ({
-		...base,
-		background: '#212F3D',
-		color: '#ABB2B9',
-		borderRadius: 0,
-		fontSize: '1.5rem',
-		fontFamily: 'system-ui',
-		fontWeight: 700
-	}),
-
-	menuList: (base: any) => ({
-		...base,
-		borderRadius: 0
-	}),
-
-	singleValue: (base: any) => ({
-		...base,
-		color: '#ABB2B9'
-	})
-};
-
 interface listProps {
 	title: string;
 	imgURL: string;
 	author: string[];
 	date: string;
 	version: string;
+	totalElements: number;
 }
 
 export default function Home() {
 	const dispatch = useAppDispatch();
 	const version = useAppSelector((state) => state.version);
-	const { status, patchNoteList, lastVersion } = version;
+	const { patchNoteList, lastVersion } = version;
 	const [requestCount, setRequestCount] = useState<number>(0);
-	const [year, setYear] = useState<SingleValue<{ value: string; label: string }>>({
-		value: '2022',
-		label: '2022년'
-	});
-	const [list, setList] = useState<listProps[]>(patchNoteList.list);
-
-	const lastVersionIdx = useMemo(() => {
-		return Number(lastVersion.split('.')[1]);
-	}, [lastVersion]);
-
-	const changeYear = (e: SingleValue<{ value: string; label: string }>) => {
-		setYear(e);
-	};
-
-	const requestList = () => {
-		// if (requestCount < Math.ceil(lastVersionIdx / 6) && year !== null) {
-		// 	setRequestCount(requestCount + 1);
-		// 	dispatch(csrFetch.getPatchNoteList({ year: year.value, idx: requestCount }));
-		// 	setList([...list, ...patchNoteList.list]);
-		// }
-	};
+	const [list, setList] = useState<listProps[]>([]);
 
 	useEffect(() => {
-		if (status === 'complete' && year !== null && requestCount === 0) {
-			dispatch(csrFetch.getPatchNoteList({ year: year.value, idx: 0 }));
+		dispatch(csrFetch.getPatchNoteList(requestCount));
+	}, [requestCount]);
+
+	useEffect(() => {
+		if (patchNoteList.list.length > 0) {
+			setList([...list, ...patchNoteList.list]);
 		}
-	}, [status, year, requestCount, csrFetch]);
+	}, [patchNoteList]);
 	return (
 		<>
+			<Head>
+				<title>Lolipop | 리그오브레전드</title>
+			</Head>
 			<Background />
-			(status === 'complete' &&
 			<PageWrap>
 				<PatchNoteConatiner>
 					<Title>패치노트</Title>
 					<PatchNoteListBox>
-						<FilterLine>
-							<Select
-								instanceId="season"
-								defaultValue={{ value: '2022', label: '시즌 12' }}
-								onChange={(e) => changeYear(e)}
-								isSearchable={false}
-								options={yearGroup}
-								styles={selectStyle}
-							/>
-						</FilterLine>
 						<PatchNoteList>
-							{patchNoteList.list.map((patchNote, index) => {
+							{list.map((patchNote, index) => {
 								return (
 									<a
 										key={index}
@@ -242,6 +171,7 @@ export default function Home() {
 												width={350}
 												height={210}
 												alt="banner"
+												priority={true}
 											/>
 											<Description>
 												<PatchNoteTitle>{patchNote.title}</PatchNoteTitle>
@@ -257,15 +187,16 @@ export default function Home() {
 								);
 							})}
 						</PatchNoteList>
-						{requestCount < Math.ceil(lastVersionIdx / 6) && (
+						{list.length > 0 && list.length < list[0].totalElements && (
 							<RequestMore>
-								<MoreButton onClick={() => requestList()}>더 불러오기</MoreButton>
+								<MoreButton onClick={() => setRequestCount(requestCount + 1)}>
+									더 불러오기
+								</MoreButton>
 							</RequestMore>
 						)}
 					</PatchNoteListBox>
 				</PatchNoteConatiner>
 			</PageWrap>
-			)
 		</>
 	);
 }

@@ -8,6 +8,7 @@ import ChampionSummary from 'components/units/ChampionSummary';
 import ChampionSkin from 'components/units/ChampionSkin';
 import { MdKeyboardBackspace } from 'react-icons/md';
 import { useAppSelector } from 'store';
+import Head from 'next/head';
 
 const Background = styled.div`
 	width: 100vw;
@@ -217,6 +218,9 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 	}, [data, router]);
 	return (
 		<>
+			<Head>
+				<title>{`Lolipop | ${detailInfo?.name} - 챔피언도감`}</title>
+			</Head>
 			<Background />
 			{detailInfo !== undefined && (
 				<PageWrap>

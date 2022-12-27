@@ -7,6 +7,7 @@ import { setChampionList } from 'store/champions';
 import ChampionSlide from 'components/units/ChampionSlide';
 import Select, { SingleValue } from 'react-select';
 import { BiSearchAlt2 } from 'react-icons/bi';
+import Head from 'next/head';
 
 const Background = styled.div`
 	width: 100vw;
@@ -286,7 +287,7 @@ function champions({ championData }: ChampionDataProps) {
 	const screenSize = useMemo(() => {
 		let value = '';
 		if (version.status === 'complete') {
-            value =  screen.availWidth > 1300 ? 'big' : screen.availWidth > 768 ? 'middle' : 'small';
+			value = screen.availWidth > 1300 ? 'big' : screen.availWidth > 768 ? 'middle' : 'small';
 		}
 		return value;
 	}, [version]);
@@ -331,6 +332,9 @@ function champions({ championData }: ChampionDataProps) {
 
 	return (
 		<>
+			<Head>
+				<title>Lolipop | 챔피언도감</title>
+			</Head>
 			<Background />
 			{version.status === 'complete' && (
 				<ChampionPageWrap>

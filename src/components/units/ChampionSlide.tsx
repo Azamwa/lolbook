@@ -450,7 +450,7 @@ function ChampionSlide({ championList, selectChampion, screenSize }: ChampionLis
 												<CardName>{champion.name}</CardName>
 												<CardTitle>{champion.title}</CardTitle>
 											</CardSubject>
-											<Link href={`/champions/${champion.id}`}>
+											<Link href={`/champions/${champion.id}`} shallow={true}>
 												<MoveDetailPage>챔피언 상세보기</MoveDetailPage>
 											</Link>
 										</CardTopArea>

@@ -14,12 +14,8 @@ export const csrFetch = {
 		const response = await axios.get(`${championDetailURL}${name}.json`);
 		return response;
 	}),
-	getPatchNoteList: createAsyncThunk(
-		'csrFetch/getPatchNoteList',
-		async (props: { year: string; idx: number }) => {
-			const { year, idx } = props;
-			const response = await axios.get(`${patchNoteURL}/${year}/${idx}`);
-			return response;
-		}
-	)
+	getPatchNoteList: createAsyncThunk('csrFetch/getPatchNoteList', async (idx: number) => {
+		const response = await axios.get(`${patchNoteURL}/${idx}`);
+		return response;
+	})
 };
