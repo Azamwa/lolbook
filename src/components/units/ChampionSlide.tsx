@@ -299,16 +299,22 @@ const Tips = styled.div``;
 
 const TipsText = styled.span`
 	margin-bottom: 10px;
-	display: inline-block;
+	display: flex;
+	gap: 5px;
+	align-items: center;
 	font-size: 1.9rem;
-
-	img {
-		margin-right: 5px;
-	}
 
 	@media screen and (max-width: 767px) {
 		font-size: 1.5rem;
 	}
+`;
+
+const TipsImage = styled.div`
+	width: 20px;
+	height: 20px;
+	background: url('/img/tips.png') no-repeat;
+	background-size: cover;
+	background-position: center center;
 `;
 
 const TipList = styled.ul`
@@ -465,12 +471,7 @@ function ChampionSlide({ championList, selectChampion, screenSize }: ChampionLis
 										</Info>
 										<Tips>
 											<TipsText>
-												<Image
-													src={'/img/tips.png'}
-													width={20}
-													height={20}
-													alt="tips"
-												/>
+												<TipsImage />
 												Tips
 											</TipsText>
 											<TipList>

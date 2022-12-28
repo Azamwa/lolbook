@@ -237,10 +237,15 @@ const ItemGold = styled.div`
 	gap: 3px;
 	font-size: 1.8rem;
 	color: orange;
+`;
 
-	img {
-		margin-bottom: 3px;
-	}
+const CoinImage = styled.div`
+	width: 18px;
+	height: 18px;
+	margin-bottom: 3px;
+	background: url('/img/doge.png') no-repeat;
+	background-size: cover;
+	background-position: center;
 `;
 
 const DescriptionWrap = styled.div`
@@ -450,12 +455,7 @@ function ItemDetail({ changeItem }: itemDetailProps) {
 										<ItemMainInfo>
 											<ItemName>{item?.name}</ItemName>
 											<ItemGold>
-												<Image
-													src={'/img/doge.png'}
-													width={18}
-													height={18}
-													alt="coin"
-												/>
+												<CoinImage />
 												{item?.gold.total}
 												<br />
 											</ItemGold>
