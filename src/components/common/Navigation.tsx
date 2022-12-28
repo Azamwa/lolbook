@@ -75,7 +75,7 @@ function Navigation() {
 		<NavigationContainer>
 			<LogoHeader>
 				<Link href="/">
-					<span>LOLIPOP</span>
+					<span>LOLBOOK</span>
 				</Link>
 			</LogoHeader>
 			<MenuList>
