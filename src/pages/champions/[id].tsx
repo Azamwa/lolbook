@@ -140,10 +140,19 @@ const ChampionName = styled.div`
 	@media screen and (max-width: 767px) {
 		gap: 5px;
 		margin-bottom: 10px;
-		img {
-			width: 30px;
-			height: 30px;
-		}
+	}
+`;
+
+const ChampionGroupImage = styled.div<{ imgSrc: string }>`
+	width: 40px;
+	height: 40px;
+	background: url(${(props) => props.imgSrc}) no-repeat;
+	background-size: cover;
+	background-position: center;
+
+	@media screen and (max-width: 767px) {
+		width: 30px;
+		height: 30px;
 	}
 `;
 
@@ -242,11 +251,8 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 								)}
 							</TopArea>
 							<ChampionName>
-								<Image
-									src={`/img/positions/${detailInfo.tags[0]}.png`}
-									width={40}
-									height={40}
-									alt="championRole"
+								<ChampionGroupImage
+									imgSrc={`/img/positions/${detailInfo.tags[0]}.png`}
 								/>
 								<Name>{detailInfo.name}</Name>
 								<Title>{detailInfo.title}</Title>
@@ -274,11 +280,12 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 						{activeTap === 'skin' && (
 							<ChampionSkin detailInfo={detailInfo} screenSize={screenSize} />
 						)}
-						{screenSize === 'big' ? (
-							<ChampionBackground champion={detailInfo.id} />
-						) : (
-							<ChampionLoadingImg champion={detailInfo.id} />
-						)}
+						{activeTap !== 'skin' &&
+							(screenSize === 'big' ? (
+								<ChampionBackground champion={detailInfo.id} />
+							) : (
+								<ChampionLoadingImg champion={detailInfo.id} />
+							))}
 					</DetailContainer>
 				</PageWrap>
 			)}
