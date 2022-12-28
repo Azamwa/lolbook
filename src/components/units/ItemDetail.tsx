@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from 'store';
 import { closeDetail } from 'store/items';
 import Image from 'next/image';
-import doge from '/public/img/doge.png';
 
 const ItemDetailContainer = styled.div<{ openDetail: boolean }>`
 	min-width: 310px;
@@ -452,7 +451,7 @@ function ItemDetail({ changeItem }: itemDetailProps) {
 											<ItemName>{item?.name}</ItemName>
 											<ItemGold>
 												<Image
-													src={doge}
+													src={'/img/doge.png'}
 													width={18}
 													height={18}
 													alt="coin"

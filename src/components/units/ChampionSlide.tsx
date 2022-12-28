@@ -6,7 +6,6 @@ import { ChampionProps } from 'utils/types';
 import { useAppDispatch, useAppSelector } from 'store';
 import { csrFetch } from 'store/csrFetch';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
-import tips from '/public/img/tips.png';
 
 const SlideContainer = styled.div`
 	width: 90vw;
@@ -467,7 +466,7 @@ function ChampionSlide({ championList, selectChampion, screenSize }: ChampionLis
 										<Tips>
 											<TipsText>
 												<Image
-													src={tips}
+													src={'/img/tips.png'}
 													width={20}
 													height={20}
 													alt="tips"
