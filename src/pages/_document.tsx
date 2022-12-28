@@ -5,10 +5,10 @@ function document() {
 	return (
 		<Html>
 			<Head>
-				<title>Lolipop - 리그오브레전드</title>
 				<link
 					href="https://fonts.googleapis.com/css2?family=Jua&display=swap"
-					rel="stylesheet"></link>
+					rel="stylesheet"
+				/>
 			</Head>
 			<body>
 				<Main />

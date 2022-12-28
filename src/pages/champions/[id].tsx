@@ -54,7 +54,7 @@ const ChampionBackground = styled.div<{ champion: string }>`
 	height: 100%;
 	background: linear-gradient(to left, transparent, #000),
 		${(props) =>
-			`url(http://ddragon.leagueoflegends.com/cdn/img/champion/splash/${props.champion}_0.jpg)`},
+			`url(https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${props.champion}_0.jpg)`},
 		no-repeat;
 	background-size: cover;
 	background-position: right center;
@@ -69,7 +69,7 @@ const ChampionLoadingImg = styled.div<{ champion: string }>`
 	width: 100%;
 	height: 100%;
 	background: ${(props) =>
-			`url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${props.champion}_0.jpg)`},
+			`url(https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${props.champion}_0.jpg)`},
 		no-repeat;
 	background-position: center center;
 	background-size: cover;
