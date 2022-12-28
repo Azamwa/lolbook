@@ -333,7 +333,7 @@ function champions({ championData }: ChampionDataProps) {
 	return (
 		<>
 			<Head>
-				<title>LolBook | 챔피언도감</title>
+				<title>LOLBook | 챔피언도감</title>
 			</Head>
 			<Background />
 			{version.status === 'complete' && (

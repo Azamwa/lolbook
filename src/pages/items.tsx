@@ -304,7 +304,7 @@ function Items({ itemData }: ItemDataProps) {
 	return (
 		<>
 			<Head>
-				<title>LolBook | 아이템도감</title>
+				<title>LOLBook | 아이템도감</title>
 			</Head>
 			<Background />
 			<ItemWrap>

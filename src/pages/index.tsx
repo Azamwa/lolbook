@@ -151,7 +151,7 @@ export default function Home() {
 	return (
 		<>
 			<Head>
-				<title>LolBook | 리그오브레전드</title>
+				<title>LOLBook | 리그오브레전드</title>
 			</Head>
 			<Background />
 			<PageWrap>
