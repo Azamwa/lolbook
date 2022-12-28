@@ -219,7 +219,7 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 	return (
 		<>
 			<Head>
-				<title>{`Lolipop | ${detailInfo?.name} - 챔피언도감`}</title>
+				<title>{`LolBook | ${detailInfo?.name} - 챔피언도감`}</title>
 			</Head>
 			<Background />
 			{detailInfo !== undefined && (
