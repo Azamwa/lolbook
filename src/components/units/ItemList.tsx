@@ -125,7 +125,7 @@ function ItemList({ itemList, fromItemDetail }: ItemListProps) {
 											selected={item === selectedItem}>
 											{version !== '' && (
 												<Image
-													src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item?.image?.full}`}
+													src={`http://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item?.image?.full}`}
 													width={40}
 													height={40}
 													alt="itemImage"

@@ -367,7 +367,7 @@ function ItemDetail({ changeItem }: itemDetailProps) {
 									{item.into?.map((id, index) => {
 										return (
 											<Image
-												src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${id}.png`}
+												src={`http://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${id}.png`}
 												width={35}
 												height={35}
 												alt="intoItem"
@@ -385,7 +385,7 @@ function ItemDetail({ changeItem }: itemDetailProps) {
 								<Combination>
 									<CombinedItem>
 										<Image
-											src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${item?.image?.full}`}
+											src={`http://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${item?.image?.full}`}
 											width={35}
 											height={35}
 											alt="combinedItem"
@@ -402,7 +402,7 @@ function ItemDetail({ changeItem }: itemDetailProps) {
 														fromItemList[index]?.from !== undefined
 													}>
 													<Image
-														src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${fromItem}.png`}
+														src={`http://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${fromItem}.png`}
 														width={35}
 														height={35}
 														alt="combination"
@@ -423,7 +423,7 @@ function ItemDetail({ changeItem }: itemDetailProps) {
 															return (
 																<GrandSonImgWrap key={grandsonIdx}>
 																	<Image
-																		src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${id}.png`}
+																		src={`http://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${id}.png`}
 																		width={35}
 																		height={35}
 																		alt="combination"
@@ -447,7 +447,7 @@ function ItemDetail({ changeItem }: itemDetailProps) {
 								<>
 									<MainInfoWrap>
 										<Image
-											src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${item?.image?.full}`}
+											src={`http://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/item/${item?.image?.full}`}
 											width={40}
 											height={40}
 											alt="itemImage"
