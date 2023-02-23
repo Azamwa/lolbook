@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+import { RankingType } from 'utils/recordType';
 
 export const riotAPI = 'https://kr.api.riotgames.com';
 export const riotAsiaAPI = 'https://asia.api.riotgames.com';
@@ -14,4 +15,13 @@ const currentPage = atom(1);
 export const currentPageState = atom(
 	(get) => get(currentPage),
 	(get, set, page: number) => set(currentPage, page)
+);
+
+const rankList = atom<RankingType[]>([]);
+export const rankListState = atom(
+	(get) => get(rankList),
+	(get, set, addList: RankingType[]) => {
+		const combinedList = get(rankList).concat(addList);
+		set(rankList, combinedList);
+	}
 );

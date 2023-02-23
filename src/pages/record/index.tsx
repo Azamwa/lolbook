@@ -1,13 +1,14 @@
+import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
-import { riotAPI } from 'store/record';
+import { useAtom } from 'jotai';
+import { rankListState, riotAPI } from 'store/record';
 import SearchForm from 'components/common/SearchForm';
 import { RankingType } from 'utils/recordType';
 import Ranking from 'components/units/Ranking';
 import Pagenation from 'components/common/Pagenation';
-import { useEffect } from 'react';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	const page = context.query.page ?? 1;
@@ -43,6 +44,11 @@ interface RecordProps {
 }
 
 export default function index({ ranking }: RecordProps) {
+	const [rankList, setRankList] = useAtom(rankListState);
+
+	useEffect(() => {
+		setRankList(ranking);
+	}, [ranking]);
 	return (
 		<>
 			<Background>
@@ -55,7 +61,7 @@ export default function index({ ranking }: RecordProps) {
 						<RankingTitle>
 							# 랭킹<span>그랜드마스터 이상의 소환사만 표시합니다. </span>
 						</RankingTitle>
-						<Ranking rankers={ranking} />
+						<Ranking rankers={rankList} />
 					</RankingSection>
 					{/* <Pagenation /> */}
 				</PageContent>

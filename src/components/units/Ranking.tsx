@@ -20,13 +20,15 @@ export default function Ranking({ rankers }: RankingProps) {
 	useEffect(() => {
 		let pageRankers: RankingType[] = [];
 		let numbers: number[] = [];
-		for (let i = (page - 1) * 15; i < page * 15; i++) {
-			pageRankers = [...pageRankers, rankers[i]];
-			numbers = [...numbers, i + 1];
+		if (rankers.length > 0) {
+			for (let i = (page - 1) * 15; i < page * 15; i++) {
+				pageRankers = [...pageRankers, rankers[i]];
+				numbers = [...numbers, i + 1];
+			}
 		}
 		setPageNumber(numbers);
 		setCurrentRanker(pageRankers);
-	}, [page]);
+	}, [rankers, page]);
 
 	const searchSummoner = (ranker: RankingType) => {
 		setSummonerName(ranker.summonerName);
@@ -53,43 +55,46 @@ export default function Ranking({ rankers }: RankingProps) {
 			</thead>
 			<tbody>
 				<TableBody>
-					{currentRanker.map((ranker, index) => (
-						<TableContent
-							key={ranker.summonerId}
-							onClick={() => searchSummoner(ranker)}>
-							<RankingNumber>{pageNumber[index]}</RankingNumber>
-							<SummonerName>{currentRanker[index].summonerName}</SummonerName>
-							<Tier>{pageNumber[index] <= 300 ? 'Challenger' : 'GrandMaster'}</Tier>
-							<LeaguePoint>{`${currentRanker[index].leaguePoints} LP`}</LeaguePoint>
-							<WinningRate>
-								<WinningGraph>
-									<WinRate
-										winsRate={winningRate(
-											currentRanker[index].wins,
-											currentRanker[index].losses
-										)}>
-										<Wins>{currentRanker[index].wins}W</Wins>
-									</WinRate>
-									<LoseRate
-										lossesRate={
-											100 -
-											winningRate(
+					{currentRanker.length > 0 &&
+						currentRanker.map((ranker, index) => (
+							<TableContent
+								key={ranker.summonerId}
+								onClick={() => searchSummoner(ranker)}>
+								<RankingNumber>{pageNumber[index]}</RankingNumber>
+								<SummonerName>{currentRanker[index].summonerName}</SummonerName>
+								<Tier>
+									{pageNumber[index] <= 300 ? 'Challenger' : 'GrandMaster'}
+								</Tier>
+								<LeaguePoint>{`${currentRanker[index].leaguePoints} LP`}</LeaguePoint>
+								<WinningRate>
+									<WinningGraph>
+										<WinRate
+											winsRate={winningRate(
 												currentRanker[index].wins,
 												currentRanker[index].losses
-											)
-										}>
-										<Losses>{currentRanker[index].losses}L</Losses>
-									</LoseRate>
-								</WinningGraph>
-								<WinningRateText>
-									{`${winningRate(
-										currentRanker[index].wins,
-										currentRanker[index].losses
-									)} %`}
-								</WinningRateText>
-							</WinningRate>
-						</TableContent>
-					))}
+											)}>
+											<Wins>{currentRanker[index].wins}W</Wins>
+										</WinRate>
+										<LoseRate
+											lossesRate={
+												100 -
+												winningRate(
+													currentRanker[index].wins,
+													currentRanker[index].losses
+												)
+											}>
+											<Losses>{currentRanker[index].losses}L</Losses>
+										</LoseRate>
+									</WinningGraph>
+									<WinningRateText>
+										{`${winningRate(
+											currentRanker[index].wins,
+											currentRanker[index].losses
+										)} %`}
+									</WinningRateText>
+								</WinningRate>
+							</TableContent>
+						))}
 				</TableBody>
 			</tbody>
 		</RankingTable>
