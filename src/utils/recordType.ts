@@ -30,11 +30,15 @@ export interface matchListType {
     gameStartTimeStamp: number;
     game_length_second: number;
     matchId: string;
+    gameType: string;
     summonerData: {
         assist: number;
         death: number;
         kill: number;
         championId: number;
+        championLevel: number;
+        championName: string;
+        championEngName: string;
         items: number[];
         minionKill: number;
         position: string;
@@ -52,6 +56,9 @@ export interface matchListType {
         kill: number;
         goldEarned: number;
         championId: number;
+        championLevel: number;
+        championName: string;
+        championEngName: string;
         items: number[];
         minionKill: number;
         position: string;

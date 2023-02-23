@@ -1,5 +1,7 @@
+import Image from 'next/image';
 import { useEffect, useMemo } from 'react'
 import styled from 'styled-components';
+import { versionListState } from 'store/common';
 import { matchListType } from 'utils/recordType';
 
 interface RecentChampionsType {
@@ -7,10 +9,14 @@ interface RecentChampionsType {
 }
 
 export default function RecentChampions({ matchList }: RecentChampionsType) {
+    const { version } = versionListState();
+	const currentVersion = version[0];
     const recentChampions = useMemo(() => {
         const championMap = new Map();
         let chunk = {
             championId: 0,
+            championName: '',
+            championEngName: '',
             kill: 0,
             assist: 0,
             death: 0,
@@ -29,6 +35,8 @@ export default function RecentChampions({ matchList }: RecentChampionsType) {
             }
             return {
                 championId: championId,
+                championName: match.summonerData.championName,
+                championEngName: match.summonerData.championEngName,
                 teamTotalKill: match.ourTeam.kill,
                 kill: match.summonerData.kill,
                 assist: match.summonerData.assist,
@@ -49,6 +57,8 @@ export default function RecentChampions({ matchList }: RecentChampionsType) {
                 if(chunk.championId !== 0) result.push(chunk);
                 chunk = {
                     championId: match.championId,
+                    championName: match.championName,
+                    championEngName: match.championEngName,
                     assist: match.assist,
                     kill: match.kill,
                     death: match.death,
@@ -83,8 +93,13 @@ export default function RecentChampions({ matchList }: RecentChampionsType) {
             <Title>최근 10게임동안 플레이 한 챔피언</Title>
             {recentChampions.map((champion) => 
                 <PlayedChampionInfo key={champion.championId}>
-                    {/* <ChampionImage></ChampionImage> */}
-                    <ChampionName>{champion.championId}</ChampionName>
+                    <Image
+                        src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/champion/${champion.championEngName}.png`}
+                        width={40}
+                        height={40}
+                        alt="championImage"
+                    />
+                    <ChampionName>{champion.championName}</ChampionName>
                     <PlayCount>{`${champion.playedChampionCount}게임`}</PlayCount>
                     <KillInfo>
                         <Kda>
@@ -97,7 +112,7 @@ export default function RecentChampions({ matchList }: RecentChampionsType) {
                         <KdaRating>{ `평점 ${((champion.kill + champion.death) / champion.assist).toFixed(2)}`}</KdaRating>
                     </KillInfo>
                     <KillInvolvement>
-                        <span>킬관여율</span> {champion.killInvolvementRate / champion.playedChampionCount}%
+                        <span>킬관여율</span> {(champion.killInvolvementRate / champion.playedChampionCount).toFixed(2)}%
                     </KillInvolvement>
                 </PlayedChampionInfo>
             )}
@@ -133,14 +148,19 @@ const PlayedChampionInfo = styled.div`
 `;
 
 const ChampionName = styled.span`
+    width: 60px;
+    text-align: center;
     font-size: 1.3rem;
 `;
 
 const PlayCount = styled.p`
     font-size: 1.3rem;
+    width: 35px;
+    text-align: center;
 `;
 
 const KillInfo = styled.div`
+    width: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;

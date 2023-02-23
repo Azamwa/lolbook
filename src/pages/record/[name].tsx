@@ -106,7 +106,7 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
                                     <SummonerRank rankInfo={soloRank} rankType="솔로랭크" />
                                     <SummonerRank rankInfo={freeRank} rankType="자유랭크" />
                                 </SummonerHistory>
-                                <RecentChampions matchList={matchList} />
+                                <RecentChampions matchList={matchList}/>
                             </InfoSide>
 						</MainSection>
 					</>
@@ -133,6 +133,7 @@ const PageWrap = styled.div`
 	height: 100vh;
 	padding: 60px;
 	padding-top: 100px;
+    overflow: auto;
 `;
 
 const UtilForm = styled.section`
