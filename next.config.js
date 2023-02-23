@@ -7,7 +7,9 @@ module.exports = {
 	reactStrictMode: false,
 	swcMinify: true,
 	images: {
-		domains: ['ddragon.leagueoflegends.com', 'images.contentstack.io']
+		domains: ['ddragon.leagueoflegends.com', 'images.contentstack.io'],
+		loader: 'imgix',
+		path: ['lolbook.me']
 	},
 	sassOptions: {
 		includePaths: [path.join(__dirname, 'styles')]
