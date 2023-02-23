@@ -365,7 +365,7 @@ function champions({ championData }: ChampionDataProps) {
 									return (
 										<Champion key={index}>
 											<Image
-												src={`http://ddragon.leagueoflegends.com/cdn/13.3.1/img/champion/${champion.id}.png`}
+												src={`/img/championImage/${champion.id}.png`}
 												width={70}
 												height={70}
 												alt="champion-image"
@@ -378,11 +378,11 @@ function champions({ championData }: ChampionDataProps) {
 							</ChampionList>
 						</ChampionListBox>
 					</ChampionListWrap>
-					{/* <ChampionSlide
+					<ChampionSlide
 						championList={championList}
 						selectChampion={selectChampion}
 						screenSize={screenSize}
-					/> */}
+					/>
 				</ChampionPageWrap>
 			)}
 		</>
