@@ -125,7 +125,7 @@ function ItemList({ itemList, fromItemDetail }: ItemListProps) {
 											selected={item === selectedItem}>
 											{version !== '' && (
 												<Image
-													src={`${process.env.PUBLIC_URL}/img/itemImage/${item?.image?.full}`}
+													src={`/img/itemImage/${item?.image?.full}`}
 													width={40}
 													height={40}
 													alt="itemImage"
