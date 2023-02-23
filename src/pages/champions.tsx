@@ -378,11 +378,11 @@ function champions({ championData }: ChampionDataProps) {
 							</ChampionList>
 						</ChampionListBox>
 					</ChampionListWrap>
-					<ChampionSlide
+					{/* <ChampionSlide
 						championList={championList}
 						selectChampion={selectChampion}
 						screenSize={screenSize}
-					/>
+					/> */}
 				</ChampionPageWrap>
 			)}
 		</>
