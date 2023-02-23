@@ -11,5 +11,8 @@ module.exports = {
 	},
 	sassOptions: {
 		includePaths: [path.join(__dirname, 'styles')]
+	},
+	complier: {
+		styledComponents: true
 	}
 };
