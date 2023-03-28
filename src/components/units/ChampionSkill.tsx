@@ -131,7 +131,7 @@ function ChampionSkill({ detailInfo }: SkillProps) {
 				<>
 					<Skill selectedSkill={selectedSkill === 'passive'}>
 						<Image
-							src={`http://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/passive/${detailInfo.passive.image.full}`}
+							src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/passive/${detailInfo.passive.image.full}`}
 							width={55}
 							height={55}
 							alt="skillImage"
@@ -144,7 +144,7 @@ function ChampionSkill({ detailInfo }: SkillProps) {
 						return (
 							<Skill selectedSkill={selectedSkill === index.toString()} key={index}>
 								<Image
-									src={`http://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/spell/${spell.image.full}`}
+									src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/spell/${spell.image.full}`}
 									width={55}
 									height={55}
 									alt="skillImage"
