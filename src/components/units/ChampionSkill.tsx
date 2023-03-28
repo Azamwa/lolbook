@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { ChampionDetailProps } from 'utils/types';
+import { useAppSelector } from 'store';
 
 const SkillContainer = styled.div``;
 
@@ -87,6 +88,7 @@ interface SkillProps {
 
 function ChampionSkill({ detailInfo }: SkillProps) {
 	const [selectedSkill, SetSelectedSkill] = useState<string>('0');
+	const version = useAppSelector((state) => state.version);
 
 	const currentSkill = useMemo(() => {
 		if (selectedSkill !== 'passive') {
@@ -129,7 +131,7 @@ function ChampionSkill({ detailInfo }: SkillProps) {
 				<>
 					<Skill selectedSkill={selectedSkill === 'passive'}>
 						<Image
-							src={`http://ddragon.leagueoflegends.com/cdn/13.6.1/img/passive/${detailInfo.passive.image.full}`}
+							src={`http://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/passive/${detailInfo.passive.image.full}`}
 							width={55}
 							height={55}
 							alt="skillImage"
@@ -142,7 +144,7 @@ function ChampionSkill({ detailInfo }: SkillProps) {
 						return (
 							<Skill selectedSkill={selectedSkill === index.toString()} key={index}>
 								<Image
-									src={`http://ddragon.leagueoflegends.com/cdn/13.6.1/img/spell/${spell.image.full}`}
+									src={`http://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/spell/${spell.image.full}`}
 									width={55}
 									height={55}
 									alt="skillImage"

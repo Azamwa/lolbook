@@ -365,11 +365,7 @@ function champions({ championData }: ChampionDataProps) {
 									return (
 										<Champion key={index}>
 											<Image
-<<<<<<< HEAD
-												src={`http://ddragon.leagueoflegends.com/cdn/13.6.1/img/champion/${champion.id}.png`}
-=======
-												src={`/img/championImage/${champion.id}.png`}
->>>>>>> b9698e48e21c4085df44ef2da016eb92b9e48a35
+												src={`http://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/champion/${champion.id}.png`}
 												width={70}
 												height={70}
 												alt="champion-image"
