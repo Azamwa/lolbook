@@ -365,7 +365,7 @@ function champions({ championData }: ChampionDataProps) {
 									return (
 										<Champion key={index}>
 											<Image
-												src={`http://ddragon.leagueoflegends.com/cdn/13.3.1/img/champion/${champion.id}.png`}
+												src={`http://ddragon.leagueoflegends.com/cdn/13.6.1/img/champion/${champion.id}.png`}
 												width={70}
 												height={70}
 												alt="champion-image"
@@ -391,7 +391,7 @@ function champions({ championData }: ChampionDataProps) {
 
 export const getStaticProps = async () => {
 	const response = await fetch(
-		'http://ddragon.leagueoflegends.com/cdn/13.3.1/data/ko_KR/champion.json'
+		'http://ddragon.leagueoflegends.com/cdn/13.6.1/data/ko_KR/champion.json'
 	);
 	const championData = await response.json();
 

@@ -296,7 +296,7 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 export const getStaticProps = async (context: { params: { id: string } }) => {
 	const { id } = context.params;
 	const response = await fetch(
-		`http://ddragon.leagueoflegends.com/cdn/13.3.1/data/ko_KR/champion/${id}.json`
+		`http://ddragon.leagueoflegends.com/cdn/13.6.1/data/ko_KR/champion/${id}.json`
 	);
 
 	const championInfo = await response.json();
@@ -310,7 +310,7 @@ export const getStaticProps = async (context: { params: { id: string } }) => {
 
 export const getStaticPaths = async () => {
 	const response = await fetch(
-		'http://ddragon.leagueoflegends.com/cdn/13.3.1/data/ko_KR/champion.json'
+		'http://ddragon.leagueoflegends.com/cdn/13.6.1/data/ko_KR/champion.json'
 	);
 	const champion = await response.json();
 	const { data } = champion;
