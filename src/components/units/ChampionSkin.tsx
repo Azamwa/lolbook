@@ -24,14 +24,14 @@ const SkinBackground = styled.div<{ champion: string; skinId: number }>`
 	z-index: 11;
 	background: linear-gradient(to left top, transparent 30%, black) right top / cover,
 		${(props) =>
-			`url(http://ddragon.leagueoflegends.com/cdn/img/champion/splash/${props.champion}_${props.skinId}.jpg)`};
+			`url(https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${props.champion}_${props.skinId}.jpg)`};
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: right top;
 
 	@media screen and (max-width: 767px) {
 		background: ${(props) =>
-			`url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${props.champion}_${props.skinId}.jpg)`};
+			`url(https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${props.champion}_${props.skinId}.jpg)`};
 		background-size: cover;
 		background-repeat: no-repeat;
 		background-position: center center;
@@ -190,7 +190,7 @@ function ChampionSkin({ detailInfo, screenSize }: ChampionSkinProps) {
 									skinNumber={skin.num === currentSkin.num}
 									onClick={() => changeskinNumber(skin.num, index)}>
 									<Image
-										src={`http://ddragon.leagueoflegends.com/cdn/img/champion/splash/${detailInfo.id}_${skin.num}.jpg`}
+										src={`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${detailInfo.id}_${skin.num}.jpg`}
 										width={135}
 										height={80}
 										alt="skinListImage"
