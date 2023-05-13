@@ -3,7 +3,8 @@ import axios from 'axios';
 
 const versionApiURL = 'https://ddragon.leagueoflegends.com/api/versions.json';
 const championDetailURL = 'https://ddragon.leagueoflegends.com/cdn/13.6.1/data/ko_KR/champion/';
-const patchNoteURL = 'https://lol-version.herokuapp.com/patchNoteList';
+const patchNoteURL =
+	'http://ec2-3-39-112-172.ap-northeast-2.compute.amazonaws.com:8080/patchNoteList';
 
 export const csrFetch = {
 	getVersionList: createAsyncThunk('csrFetch/getVersionList', async () => {
