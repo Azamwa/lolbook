@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const versionApiURL = 'https://ddragon.leagueoflegends.com/api/versions.json';
-const championDetailURL = 'https://ddragon.leagueoflegends.com/cdn/13.6.1/data/ko_KR/champion/';
+const championDetailURL = 'https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/champion/';
 const patchNoteURL = 'https://api.lolbook-server.store/patchNoteList';
 
 export const csrFetch = {

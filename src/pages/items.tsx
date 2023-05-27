@@ -349,7 +349,7 @@ function Items({ itemData }: ItemDataProps) {
 
 export const getStaticProps = async () => {
 	const response = await fetch(
-		`https://ddragon.leagueoflegends.com/cdn/12.22.1/data/ko_KR/item.json`
+		`https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/item.json`
 	);
 	const itemData = await response.json();
 	return {
