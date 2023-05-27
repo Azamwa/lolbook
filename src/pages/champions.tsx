@@ -391,7 +391,7 @@ function champions({ championData }: ChampionDataProps) {
 
 export const getStaticProps = async () => {
 	const response = await fetch(
-		'https://ddragon.leagueoflegends.com/cdn/13.6.1/data/ko_KR/champion.json'
+		'https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/champion.json'
 	);
 	const championData = await response.json();
 
