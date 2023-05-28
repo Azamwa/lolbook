@@ -1,4 +1,6 @@
 import React, { ChangeEvent, useEffect, useState, useCallback } from 'react';
+import { GetServerSideProps } from 'next';
+import Head from 'next/head';
 import styled from 'styled-components';
 import ItemList from 'components/units/ItemList';
 import ItemDetail from 'components/units/ItemDetail';
@@ -8,7 +10,6 @@ import { useAppDispatch, useAppSelector } from 'store';
 import { setFromItem, setItemDetail, setItemsByGroup } from 'store/items';
 import { setComplete, setPending } from 'store/common';
 import { BiSearchAlt2 } from 'react-icons/bi';
-import Head from 'next/head';
 
 const Background = styled.div`
 	width: 100vw;
@@ -347,9 +348,9 @@ function Items({ itemData }: ItemDataProps) {
 	);
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
 	const response = await fetch(
-		`https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/item.json`
+		`https://ddragon.leagueoflegends.com/cdn/${context.query.version}/data/ko_KR/item.json`
 	);
 	const itemData = await response.json();
 	return {

@@ -79,10 +79,10 @@ function Navigation() {
 				</Link>
 			</LogoHeader>
 			<MenuList>
-				<Link href="/items">
+				<Link href={`/items?version=${version}`}>
 					<Menu>아이템 도감</Menu>
 				</Link>
-				<Link href="/champions">
+				<Link href={`/champions?version=${version}`}>
 					<Menu>챔피언 도감</Menu>
 				</Link>
 			</MenuList>
