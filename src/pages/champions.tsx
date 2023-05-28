@@ -1,4 +1,5 @@
 import React, { useState, useEffect, ChangeEvent, useMemo } from 'react';
+import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { ChampionProps } from 'utils/types';
@@ -389,9 +390,9 @@ function champions({ championData }: ChampionDataProps) {
 	);
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
 	const response = await fetch(
-		'https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/champion.json'
+		`https://ddragon.leagueoflegends.com/cdn/${context.query.version}/data/ko_KR/champion.json`
 	);
 	const championData = await response.json();
 
