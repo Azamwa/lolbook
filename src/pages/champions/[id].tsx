@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import styled from 'styled-components';
 import { ChampionDetailProps } from 'utils/types';
 import ChampionSkill from 'components/units/ChampionSkill';
@@ -293,14 +293,11 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 	);
 }
 
-export const getStaticProps = async (context: { params: { id: string } }) => {
-	const { id } = context.params;
+export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const response = await fetch(
-		`https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/champion/${id}.json`
+		`https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/champion/${params?.id}.json`
 	);
-
 	const championInfo = await response.json();
-
 	return {
 		props: {
 			championInfo
@@ -308,21 +305,15 @@ export const getStaticProps = async (context: { params: { id: string } }) => {
 	};
 };
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async (context) => {
 	const response = await fetch(
 		'https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/champion.json'
 	);
 	const champion = await response.json();
-	const { data } = champion;
-	let idx = [];
-	for (let name in data) {
-		idx.push(name);
+	let paths = [];
+	for (let name in champion.data) {
+		paths.push({ params: { id: name } });
 	}
-	const paths = idx.map((id: string) => {
-		return {
-			params: { id }
-		};
-	});
 	return { paths, fallback: false };
 };
 
