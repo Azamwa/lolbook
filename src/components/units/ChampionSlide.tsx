@@ -441,7 +441,7 @@ function ChampionSlide({ championList, selectChampion, screenSize }: ChampionLis
 							<CardContainer key={index}>
 								<Card onClick={() => clickChmpionDetail(champion.id)}>
 									<Image
-										src={`/img/championSlideImage/${champion.id}.png`}
+										src={`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${champion.id}_0.jpg`}
 										width={150}
 										height={260}
 										alt="ChampionLoadingImg"

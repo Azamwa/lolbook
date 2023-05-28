@@ -54,7 +54,7 @@ const ChampionBackground = styled.div<{ champion: string }>`
 	height: 100%;
 	background: linear-gradient(to left, transparent, #000),
 		${(props) =>
-			`url(http://ddragon.leagueoflegends.com/cdn/img/champion/splash/${props.champion}_0.jpg)`},
+			`url(https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${props.champion}_0.jpg)`},
 		no-repeat;
 	background-size: cover;
 	background-position: right center;
@@ -69,7 +69,7 @@ const ChampionLoadingImg = styled.div<{ champion: string }>`
 	width: 100%;
 	height: 100%;
 	background: ${(props) =>
-			`url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${props.champion}_0.jpg)`},
+			`url(https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${props.champion}_0.jpg)`},
 		no-repeat;
 	background-position: center center;
 	background-size: cover;
@@ -243,7 +243,7 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 									<ChampionSplashImg
 										onClick={() =>
 											window.open(
-												`http://ddragon.leagueoflegends.com/cdn/img/champion/splash/${detailInfo.id}_${skinNumber}.jpg`
+												`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${detailInfo.id}_${skinNumber}.jpg`
 											)
 										}>
 										스플래시이미지
@@ -296,7 +296,7 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 export const getStaticProps = async (context: { params: { id: string } }) => {
 	const { id } = context.params;
 	const response = await fetch(
-		`http://ddragon.leagueoflegends.com/cdn/13.3.1/data/ko_KR/champion/${id}.json`
+		`https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/champion/${id}.json`
 	);
 
 	const championInfo = await response.json();
@@ -310,7 +310,7 @@ export const getStaticProps = async (context: { params: { id: string } }) => {
 
 export const getStaticPaths = async () => {
 	const response = await fetch(
-		'http://ddragon.leagueoflegends.com/cdn/13.3.1/data/ko_KR/champion.json'
+		'https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/champion.json'
 	);
 	const champion = await response.json();
 	const { data } = champion;

@@ -8,8 +8,8 @@ module.exports = {
 	swcMinify: true,
 	images: {
 		domains: ['ddragon.leagueoflegends.com', 'images.contentstack.io'],
-		loader: 'imgix',
-		path: ['lolbook.me']
+		formats: ['image/avif', 'image/webp'],
+		imageSizes: [35, 40, 55, 70, 135, 150, 350]
 	},
 	sassOptions: {
 		includePaths: [path.join(__dirname, 'styles')]
