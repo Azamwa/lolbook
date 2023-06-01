@@ -4,6 +4,35 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from 'store';
 import { csrFetch } from 'store/csrFetch';
 
+function Navigation() {
+	const version = useAppSelector((state) => state.version.lastVersion);
+	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		dispatch(csrFetch.getVersionList());
+	}, [dispatch, version]);
+
+	return (
+		<NavigationContainer>
+			<LogoHeader>
+				<Link href="/">
+					<span>LOLBOOK</span>
+				</Link>
+			</LogoHeader>
+			<MenuList>
+				<Link href={`/items?version=${version}`}>
+					<Menu>아이템 도감</Menu>
+				</Link>
+				<Link href={`/champions?version=${version}`}>
+					<Menu>챔피언 도감</Menu>
+				</Link>
+			</MenuList>
+
+			<Version>Version {version}</Version>
+		</NavigationContainer>
+	);
+}
+
 const NavigationContainer = styled.div`
 	width: 100%;
 	height: 70px;
@@ -62,34 +91,5 @@ const Version = styled.div`
 		bottom: -20px;
 	}
 `;
-
-function Navigation() {
-	const version = useAppSelector((state) => state.version.lastVersion);
-	const dispatch = useAppDispatch();
-
-	useEffect(() => {
-		dispatch(csrFetch.getVersionList());
-	}, [dispatch, version]);
-
-	return (
-		<NavigationContainer>
-			<LogoHeader>
-				<Link href="/">
-					<span>LOLBOOK</span>
-				</Link>
-			</LogoHeader>
-			<MenuList>
-				<Link href={`/items?version=${version}`}>
-					<Menu>아이템 도감</Menu>
-				</Link>
-				<Link href={`/champions?version=${version}`}>
-					<Menu>챔피언 도감</Menu>
-				</Link>
-			</MenuList>
-
-			<Version>Version {version}</Version>
-		</NavigationContainer>
-	);
-}
 
 export default Navigation;

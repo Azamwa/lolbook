@@ -10,6 +10,138 @@ import Select, { SingleValue } from 'react-select';
 import { BiSearchAlt2 } from 'react-icons/bi';
 import Head from 'next/head';
 
+export const getServerSideProps: GetServerSideProps = async (context) => {
+	const response = await fetch(
+		`https://ddragon.leagueoflegends.com/cdn/${context.query.version}/data/ko_KR/champion.json`
+	);
+	const championData = await response.json();
+
+	return {
+		props: {
+			championData
+		}
+	};
+};
+
+function champions({ championData }: ChampionDataProps) {
+	const version = useAppSelector((state) => state.version);
+	const championList = useAppSelector((state) => state.champions.championList);
+	const { data }: any = championData;
+	const [searchValue, setSearchValue] = useState<string>('');
+	const [selectedRole, setSelectedRole] = useState<SingleValue<{ value: string; label: string }>>(
+		{
+			value: 'all',
+			label: '모든 챔피언'
+		}
+	);
+	const [selectChampion, setSelectChampion] = useState<ChampionProps | null>(null);
+	const dispatch = useAppDispatch();
+
+	const screenSize = useMemo(() => {
+		let value = '';
+		if (version.status === 'complete') {
+			value = screen.availWidth > 1300 ? 'big' : screen.availWidth > 768 ? 'middle' : 'small';
+		}
+		return value;
+	}, [version]);
+
+	const changeGroup = (e: SingleValue<{ value: string; label: string }>) => {
+		setSelectedRole(e);
+	};
+
+	const searchChampion = (e: ChangeEvent<HTMLInputElement>) => {
+		setSearchValue(e.target.value);
+	};
+
+	useEffect(() => {
+		if (version.status === 'complete') {
+			dispatch(setChampionList(data));
+		}
+	}, [version, data, dispatch]);
+
+	useEffect(() => {
+		let searchedData: any = {};
+		let selectedData: any = {};
+		if (searchValue !== '') {
+			for (let name in data) {
+				if (data[name].name.includes(searchValue)) {
+					searchedData[name] = data[name];
+				}
+			}
+		} else {
+			searchedData = data;
+		}
+		if (selectedRole !== null && selectedRole.value !== 'all') {
+			for (let name in searchedData) {
+				if (searchedData[name].tags.includes(selectedRole.value)) {
+					selectedData[name] = searchedData[name];
+				}
+			}
+		} else {
+			selectedData = searchedData;
+		}
+		dispatch(setChampionList(selectedData));
+	}, [dispatch, searchValue, selectedRole, data]);
+
+	return (
+		<>
+			<Head>
+				<title>LOLBook | 챔피언도감</title>
+			</Head>
+			<Background />
+			{version.status === 'complete' && (
+				<ChampionPageWrap>
+					<ChampionListWrap>
+						<Title>챔피언 도감</Title>
+						<ChampionListBox>
+							<SearchContainer>
+								<SearchBox>
+									<SearchInput
+										type="text"
+										placeholder="챔피언 검색"
+										onChange={(e) => searchChampion(e)}
+									/>
+									<BiSearchAlt2 />
+								</SearchBox>
+								<FilterBox>
+									<Select
+										defaultValue={{ value: 'all', label: '모든 챔피언' }}
+										onChange={(e) => changeGroup(e)}
+										isSearchable={false}
+										options={roleGroup}
+										styles={selectStyle}
+									/>
+								</FilterBox>
+							</SearchContainer>
+							<ChampionList>
+								{championList?.map((champion, index) => {
+									return (
+										<Champion key={index}>
+											<Image
+												src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/champion/${champion.id}.png`}
+												width={70}
+												height={70}
+												alt="champion-image"
+												onClick={() => setSelectChampion(champion)}
+											/>
+											<ChampionName>{champion.name}</ChampionName>
+										</Champion>
+									);
+								})}
+							</ChampionList>
+						</ChampionListBox>
+					</ChampionListWrap>
+					<ChampionSlide
+						championList={championList}
+						selectChampion={selectChampion}
+						screenSize={screenSize}
+					/>
+				</ChampionPageWrap>
+			)}
+		</>
+	);
+}
+
 const Background = styled.div`
 	width: 100vw;
 	height: 100vh;
@@ -269,138 +401,6 @@ const selectStyle = {
 		...base,
 		color: '#ABB2B9'
 	})
-};
-
-function champions({ championData }: ChampionDataProps) {
-	const version = useAppSelector((state) => state.version);
-	const championList = useAppSelector((state) => state.champions.championList);
-	const { data }: any = championData;
-	const [searchValue, setSearchValue] = useState<string>('');
-	const [selectedRole, setSelectedRole] = useState<SingleValue<{ value: string; label: string }>>(
-		{
-			value: 'all',
-			label: '모든 챔피언'
-		}
-	);
-	const [selectChampion, setSelectChampion] = useState<ChampionProps | null>(null);
-	const dispatch = useAppDispatch();
-
-	const screenSize = useMemo(() => {
-		let value = '';
-		if (version.status === 'complete') {
-			value = screen.availWidth > 1300 ? 'big' : screen.availWidth > 768 ? 'middle' : 'small';
-		}
-		return value;
-	}, [version]);
-
-	const changeGroup = (e: SingleValue<{ value: string; label: string }>) => {
-		setSelectedRole(e);
-	};
-
-	const searchChampion = (e: ChangeEvent<HTMLInputElement>) => {
-		setSearchValue(e.target.value);
-	};
-
-	useEffect(() => {
-		if (version.status === 'complete') {
-			dispatch(setChampionList(data));
-		}
-	}, [version, data, dispatch]);
-
-	useEffect(() => {
-		let searchedData: any = {};
-		let selectedData: any = {};
-		if (searchValue !== '') {
-			for (let name in data) {
-				if (data[name].name.includes(searchValue)) {
-					searchedData[name] = data[name];
-				}
-			}
-		} else {
-			searchedData = data;
-		}
-		if (selectedRole !== null && selectedRole.value !== 'all') {
-			for (let name in searchedData) {
-				if (searchedData[name].tags.includes(selectedRole.value)) {
-					selectedData[name] = searchedData[name];
-				}
-			}
-		} else {
-			selectedData = searchedData;
-		}
-		dispatch(setChampionList(selectedData));
-	}, [dispatch, searchValue, selectedRole, data]);
-
-	return (
-		<>
-			<Head>
-				<title>LOLBook | 챔피언도감</title>
-			</Head>
-			<Background />
-			{version.status === 'complete' && (
-				<ChampionPageWrap>
-					<ChampionListWrap>
-						<Title>챔피언 도감</Title>
-						<ChampionListBox>
-							<SearchContainer>
-								<SearchBox>
-									<SearchInput
-										type="text"
-										placeholder="챔피언 검색"
-										onChange={(e) => searchChampion(e)}
-									/>
-									<BiSearchAlt2 />
-								</SearchBox>
-								<FilterBox>
-									<Select
-										defaultValue={{ value: 'all', label: '모든 챔피언' }}
-										onChange={(e) => changeGroup(e)}
-										isSearchable={false}
-										options={roleGroup}
-										styles={selectStyle}
-									/>
-								</FilterBox>
-							</SearchContainer>
-							<ChampionList>
-								{championList?.map((champion, index) => {
-									return (
-										<Champion key={index}>
-											<Image
-												src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/champion/${champion.id}.png`}
-												width={70}
-												height={70}
-												alt="champion-image"
-												onClick={() => setSelectChampion(champion)}
-											/>
-											<ChampionName>{champion.name}</ChampionName>
-										</Champion>
-									);
-								})}
-							</ChampionList>
-						</ChampionListBox>
-					</ChampionListWrap>
-					<ChampionSlide
-						championList={championList}
-						selectChampion={selectChampion}
-						screenSize={screenSize}
-					/>
-				</ChampionPageWrap>
-			)}
-		</>
-	);
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const response = await fetch(
-		`https://ddragon.leagueoflegends.com/cdn/${context.query.version}/data/ko_KR/champion.json`
-	);
-	const championData = await response.json();
-
-	return {
-		props: {
-			championData
-		}
-	};
 };
 
 export default champions;

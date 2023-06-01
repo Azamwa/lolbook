@@ -6,6 +6,94 @@ import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { setSkinNumber } from 'store/champions';
 import { useAppDispatch } from 'store';
 
+interface ChampionSkinProps {
+	detailInfo: ChampionDetailProps;
+	screenSize: string;
+}
+interface Skin {
+	id: string;
+	num: number;
+	name: string;
+	chromas: boolean;
+}
+
+function ChampionSkin({ detailInfo, screenSize }: ChampionSkinProps) {
+	const dispatch = useAppDispatch();
+	const [currentSkin, setCurrentSkin] = useState<Skin>(detailInfo.skins[0]);
+	const slider = useRef<HTMLDivElement>(null);
+	const [scrollLeft, setScrollLeft] = useState<number>(0);
+	const scrollLeftValue = screenSize === 'big' ? 500 : screenSize === 'middle' ? 350 : 165;
+
+	const changeskinNumber = (skinNumber: number, index: number) => {
+		setCurrentSkin(detailInfo.skins[index]);
+		if (slider.current !== null) {
+			setScrollLeft(index * 130);
+			slider.current.scrollTo({
+				left: 165 * index,
+				behavior: 'smooth'
+			});
+		}
+		dispatch(setSkinNumber(skinNumber));
+	};
+
+	const scrollMoveLeft = () => {
+		if (slider.current !== null) {
+			if (scrollLeft >= scrollLeftValue) {
+				setScrollLeft(scrollLeft - scrollLeftValue);
+			}
+			slider.current.scrollTo({
+				left: scrollLeft - scrollLeftValue,
+				behavior: 'smooth'
+			});
+		}
+	};
+
+	const scrollMoveRight = () => {
+		if (slider.current !== null) {
+			if (scrollLeft < detailInfo.skins.length * 130 - scrollLeftValue) {
+				setScrollLeft(scrollLeft + scrollLeftValue);
+			}
+			slider.current.scrollTo({
+				left: scrollLeft + scrollLeftValue,
+				behavior: 'smooth'
+			});
+		}
+	};
+
+	return (
+		<ChampionSkinContainer>
+			<SkinBackground champion={detailInfo.id} skinId={currentSkin.num} />
+			<SkinContainer>
+				<SkinName>
+					{currentSkin.name === 'default' ? detailInfo.name : currentSkin.name}
+				</SkinName>
+				<SkinList>
+					<MdArrowBackIos className="navBack" onClick={scrollMoveLeft} />
+					<SliderContainer ref={slider}>
+						{detailInfo.skins.map((skin, index) => {
+							return (
+								<SkinImage
+									key={index}
+									skinNumber={skin.num === currentSkin.num}
+									onClick={() => changeskinNumber(skin.num, index)}>
+									<Image
+										src={`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${detailInfo.id}_${skin.num}.jpg`}
+										width={135}
+										height={80}
+										alt="skinListImage"
+										priority={false}
+									/>
+								</SkinImage>
+							);
+						})}
+					</SliderContainer>
+					<MdArrowForwardIos className="navForward" onClick={scrollMoveRight} />
+				</SkinList>
+			</SkinContainer>
+		</ChampionSkinContainer>
+	);
+}
+
 const ChampionSkinContainer = styled.div`
 	position: absolute;
 	width: 100%;
@@ -118,93 +206,5 @@ const SkinImage = styled.div<{ skinNumber: boolean }>`
 		}
 	}
 `;
-
-interface ChampionSkinProps {
-	detailInfo: ChampionDetailProps;
-	screenSize: string;
-}
-interface Skin {
-	id: string;
-	num: number;
-	name: string;
-	chromas: boolean;
-}
-
-function ChampionSkin({ detailInfo, screenSize }: ChampionSkinProps) {
-	const dispatch = useAppDispatch();
-	const [currentSkin, setCurrentSkin] = useState<Skin>(detailInfo.skins[0]);
-	const slider = useRef<HTMLDivElement>(null);
-	const [scrollLeft, setScrollLeft] = useState<number>(0);
-	const scrollLeftValue = screenSize === 'big' ? 500 : screenSize === 'middle' ? 350 : 165;
-
-	const changeskinNumber = (skinNumber: number, index: number) => {
-		setCurrentSkin(detailInfo.skins[index]);
-		if (slider.current !== null) {
-			setScrollLeft(index * 130);
-			slider.current.scrollTo({
-				left: 165 * index,
-				behavior: 'smooth'
-			});
-		}
-		dispatch(setSkinNumber(skinNumber));
-	};
-
-	const scrollMoveLeft = () => {
-		if (slider.current !== null) {
-			if (scrollLeft >= scrollLeftValue) {
-				setScrollLeft(scrollLeft - scrollLeftValue);
-			}
-			slider.current.scrollTo({
-				left: scrollLeft - scrollLeftValue,
-				behavior: 'smooth'
-			});
-		}
-	};
-
-	const scrollMoveRight = () => {
-		if (slider.current !== null) {
-			if (scrollLeft < detailInfo.skins.length * 130 - scrollLeftValue) {
-				setScrollLeft(scrollLeft + scrollLeftValue);
-			}
-			slider.current.scrollTo({
-				left: scrollLeft + scrollLeftValue,
-				behavior: 'smooth'
-			});
-		}
-	};
-
-	return (
-		<ChampionSkinContainer>
-			<SkinBackground champion={detailInfo.id} skinId={currentSkin.num} />
-			<SkinContainer>
-				<SkinName>
-					{currentSkin.name === 'default' ? detailInfo.name : currentSkin.name}
-				</SkinName>
-				<SkinList>
-					<MdArrowBackIos className="navBack" onClick={scrollMoveLeft} />
-					<SliderContainer ref={slider}>
-						{detailInfo.skins.map((skin, index) => {
-							return (
-								<SkinImage
-									key={index}
-									skinNumber={skin.num === currentSkin.num}
-									onClick={() => changeskinNumber(skin.num, index)}>
-									<Image
-										src={`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${detailInfo.id}_${skin.num}.jpg`}
-										width={135}
-										height={80}
-										alt="skinListImage"
-										priority={false}
-									/>
-								</SkinImage>
-							);
-						})}
-					</SliderContainer>
-					<MdArrowForwardIos className="navForward" onClick={scrollMoveRight} />
-				</SkinList>
-			</SkinContainer>
-		</ChampionSkinContainer>
-	);
-}
 
 export default ChampionSkin;

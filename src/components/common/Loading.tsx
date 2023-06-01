@@ -2,6 +2,14 @@ import React from 'react';
 import { Watch } from 'react-loader-spinner';
 import styled from 'styled-components';
 
+function Loading() {
+	return (
+		<Background>
+			<Watch width={70} height={70} color={'#a5a5a5'} />
+		</Background>
+	);
+}
+
 const Background = styled.div`
 	width: 100vw;
 	height: 100vh;
@@ -15,13 +23,5 @@ const Background = styled.div`
 	justify-content: center;
 	align-items: center;
 `;
-
-function Loading() {
-	return (
-		<Background>
-			<Watch width={70} height={70} color={'#a5a5a5'} />
-		</Background>
-	);
-}
 
 export default Loading;

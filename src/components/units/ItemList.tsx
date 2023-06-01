@@ -5,71 +5,6 @@ import { ItemProps } from 'utils/types';
 import { useAppDispatch, useAppSelector } from 'store';
 import { setItemDetail } from 'store/items';
 
-const ListContainer = styled.div`
-	padding: 20px;
-	height: 100%;
-	background-color: rgb(33, 47, 61);
-	overflow-x: hidden;
-	overflow-y: auto;
-
-	@media screen and (max-width: 1300px) {
-		padding: 15px;
-	}
-`;
-
-const ItemGroup = styled.div`
-	margin-bottom: 20px;
-`;
-
-const ItemGroupName = styled.div`
-	padding-left: 20px;
-	color: #fff;
-	font-size: 2rem;
-	margin-bottom: 10px;
-
-	:hover {
-		cursor: pointer;
-	}
-
-	@media screen and (max-width: 1300px) {
-		padding-left: 15px;
-	}
-`;
-
-const ItemListByGroup = styled.div<{ toggleOn: boolean }>`
-	display: ${(props) => (props.toggleOn ? 'grid' : 'none')};
-	justify-content: center;
-	grid-template-columns: repeat(auto-fill, 40px);
-	grid-gap: 10px;
-	margin-bottom: 50px;
-`;
-
-const ItemContainer = styled.div<{ selected: boolean }>`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	gap: 10px;
-
-	:hover {
-		cursor: pointer;
-	}
-
-	img {
-		border: ${(props) => (props.selected ? '2px solid rgb(174, 214, 241)' : 'none')};
-
-		@media screen and (max-width: 767px) {
-			width: 35px;
-			height: 35px;
-		}
-	}
-`;
-
-const ItemPrice = styled.span`
-	font-size: 1.2rem;
-	color: #fff;
-`;
-
 type ItemListProps = {
 	itemList: {
 		id: string;
@@ -144,5 +79,70 @@ function ItemList({ itemList, fromItemDetail }: ItemListProps) {
 		</ListContainer>
 	);
 }
+
+const ListContainer = styled.div`
+	padding: 20px;
+	height: 100%;
+	background-color: rgb(33, 47, 61);
+	overflow-x: hidden;
+	overflow-y: auto;
+
+	@media screen and (max-width: 1300px) {
+		padding: 15px;
+	}
+`;
+
+const ItemGroup = styled.div`
+	margin-bottom: 20px;
+`;
+
+const ItemGroupName = styled.div`
+	padding-left: 20px;
+	color: #fff;
+	font-size: 2rem;
+	margin-bottom: 10px;
+
+	:hover {
+		cursor: pointer;
+	}
+
+	@media screen and (max-width: 1300px) {
+		padding-left: 15px;
+	}
+`;
+
+const ItemListByGroup = styled.div<{ toggleOn: boolean }>`
+	display: ${(props) => (props.toggleOn ? 'grid' : 'none')};
+	justify-content: center;
+	grid-template-columns: repeat(auto-fill, 40px);
+	grid-gap: 10px;
+	margin-bottom: 50px;
+`;
+
+const ItemContainer = styled.div<{ selected: boolean }>`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+
+	:hover {
+		cursor: pointer;
+	}
+
+	img {
+		border: ${(props) => (props.selected ? '2px solid rgb(174, 214, 241)' : 'none')};
+
+		@media screen and (max-width: 767px) {
+			width: 35px;
+			height: 35px;
+		}
+	}
+`;
+
+const ItemPrice = styled.span`
+	font-size: 1.2rem;
+	color: #fff;
+`;
 
 export default ItemList;

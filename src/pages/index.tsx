@@ -6,6 +6,84 @@ import { csrFetch } from 'store/csrFetch';
 import dayjs from 'dayjs';
 import Head from 'next/head';
 
+interface listProps {
+	title: string;
+	imgURL: string;
+	author: string[];
+	date: string;
+	version: string;
+	totalElements: number;
+}
+
+export default function Home() {
+	const dispatch = useAppDispatch();
+	const version = useAppSelector((state) => state.version);
+	const { patchNoteList } = version;
+	const [requestCount, setRequestCount] = useState<number>(0);
+	const [list, setList] = useState<listProps[]>([]);
+
+	useEffect(() => {
+		dispatch(csrFetch.getPatchNoteList(requestCount));
+	}, [requestCount]);
+
+	useEffect(() => {
+		if (patchNoteList.list.length > 0) {
+			setList([...list, ...patchNoteList.list]);
+		}
+	}, [patchNoteList]);
+	return (
+		<>
+			<Head>
+				<title>LOLBook | 리그오브레전드</title>
+			</Head>
+			<Background />
+			<PageWrap>
+				<PatchNoteConatiner>
+					<Title>패치노트</Title>
+					<PatchNoteListBox>
+						<PatchNoteList>
+							{list.map((patchNote, index) => {
+								return (
+									<a
+										key={index}
+										href={`https://www.leagueoflegends.com/ko-kr/news/game-updates/patch-${patchNote.version}-notes/`}
+										target="_blank">
+										<UpdateContent>
+											<Image
+												src={patchNote.imgURL}
+												width={350}
+												height={210}
+												alt="banner"
+												priority={true}
+											/>
+											<Description>
+												<PatchNoteTitle>{patchNote.title}</PatchNoteTitle>
+												<MoreInfo>
+													<Author>{patchNote.author.join(', ')}</Author>
+													<ReleaseDate>
+														{dayjs(patchNote.date).format('YYYY-MM-DD')}
+													</ReleaseDate>
+												</MoreInfo>
+											</Description>
+										</UpdateContent>
+									</a>
+								);
+							})}
+						</PatchNoteList>
+						{list.length > 0 && list.length < list[0].totalElements && (
+							<RequestMore>
+								<MoreButton onClick={() => setRequestCount(requestCount + 1)}>
+									더 불러오기
+								</MoreButton>
+							</RequestMore>
+						)}
+					</PatchNoteListBox>
+				</PatchNoteConatiner>
+			</PageWrap>
+		</>
+	);
+}
+
 const Background = styled.div`
 	width: 100vw;
 	height: 100vh;
@@ -122,81 +200,3 @@ const MoreButton = styled.button`
 		cursor: pointer;
 	}
 `;
-
-interface listProps {
-	title: string;
-	imgURL: string;
-	author: string[];
-	date: string;
-	version: string;
-	totalElements: number;
-}
-
-export default function Home() {
-	const dispatch = useAppDispatch();
-	const version = useAppSelector((state) => state.version);
-	const { patchNoteList, lastVersion } = version;
-	const [requestCount, setRequestCount] = useState<number>(0);
-	const [list, setList] = useState<listProps[]>([]);
-
-	useEffect(() => {
-		dispatch(csrFetch.getPatchNoteList(requestCount));
-	}, [requestCount]);
-
-	useEffect(() => {
-		if (patchNoteList.list.length > 0) {
-			setList([...list, ...patchNoteList.list]);
-		}
-	}, [patchNoteList]);
-	return (
-		<>
-			<Head>
-				<title>LOLBook | 리그오브레전드</title>
-			</Head>
-			<Background />
-			<PageWrap>
-				<PatchNoteConatiner>
-					<Title>패치노트</Title>
-					<PatchNoteListBox>
-						<PatchNoteList>
-							{list.map((patchNote, index) => {
-								return (
-									<a
-										key={index}
-										href={`https://www.leagueoflegends.com/ko-kr/news/game-updates/patch-${patchNote.version}-notes/`}
-										target="_blank">
-										<UpdateContent>
-											<Image
-												src={patchNote.imgURL}
-												width={350}
-												height={210}
-												alt="banner"
-												priority={true}
-											/>
-											<Description>
-												<PatchNoteTitle>{patchNote.title}</PatchNoteTitle>
-												<MoreInfo>
-													<Author>{patchNote.author.join(', ')}</Author>
-													<ReleaseDate>
-														{dayjs(patchNote.date).format('YYYY-MM-DD')}
-													</ReleaseDate>
-												</MoreInfo>
-											</Description>
-										</UpdateContent>
-									</a>
-								);
-							})}
-						</PatchNoteList>
-						{list.length > 0 && list.length < list[0].totalElements && (
-							<RequestMore>
-								<MoreButton onClick={() => setRequestCount(requestCount + 1)}>
-									더 불러오기
-								</MoreButton>
-							</RequestMore>
-						)}
-					</PatchNoteListBox>
-				</PatchNoteConatiner>
-			</PageWrap>
-		</>
-	);
-}

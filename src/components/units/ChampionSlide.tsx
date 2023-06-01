@@ -7,6 +7,169 @@ import { useAppDispatch, useAppSelector } from 'store';
 import { csrFetch } from 'store/csrFetch';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 
+interface ChampionListProps {
+	championList?: ChampionProps[];
+	selectChampion: ChampionProps | null;
+	screenSize: string;
+}
+
+function ChampionSlide({ championList, selectChampion, screenSize }: ChampionListProps) {
+	const dispatch = useAppDispatch();
+	const championDetail: any = useAppSelector((state) => state.champions.championDetail);
+	const slider = useRef<HTMLDivElement>(null);
+	const [mouseIsDown, setMouseDown] = useState<boolean>(false);
+	const [startX, setStartX] = useState<number>(0);
+	const [scrollLeft, setScrollLeft] = useState<number>(0);
+	const [championInfo, openChampionInfo] = useState<string>('');
+
+	const scrollLeftValue = screenSize === 'big' ? 165 : screenSize === 'middle' ? 140 : 120;
+	const scrollButtonValue = screenSize === 'big' ? 1000 : 750;
+
+	useEffect(() => {
+		if (selectChampion !== null && championList !== undefined) {
+			dispatch(csrFetch.getChampionDetail(selectChampion.id));
+			openChampionInfo(selectChampion.id);
+
+			championList.forEach((champion, index) => {
+				if (champion.id === selectChampion.id && slider.current !== null) {
+					slider.current.scrollTo({
+						left: scrollLeftValue * index,
+						behavior: 'smooth'
+					});
+				}
+			});
+		}
+	}, [selectChampion, championList, slider]);
+
+	const clickChmpionDetail = (id: string) => {
+		openChampionInfo(id);
+		dispatch(csrFetch.getChampionDetail(id));
+	};
+
+	const scrollMoveLeft = () => {
+		if (slider.current !== null) {
+			setScrollLeft(scrollLeft - scrollButtonValue);
+			slider.current.scrollTo({
+				left: scrollLeft - scrollButtonValue,
+				behavior: 'smooth'
+			});
+		}
+	};
+
+	const scrollMoveRight = () => {
+		if (slider.current !== null) {
+			setScrollLeft(scrollLeft + scrollButtonValue);
+			slider.current.scrollTo({
+				left: scrollLeft + scrollButtonValue,
+				behavior: 'smooth'
+			});
+		}
+	};
+
+	const mouseLeave = (e: MouseEvent<HTMLDivElement>) => {
+		setMouseDown(false);
+		if (slider.current !== null) {
+			slider.current.classList.remove('active');
+		}
+	};
+
+	const mouseUp = (e: MouseEvent<HTMLDivElement>) => {
+		setMouseDown(false);
+		if (slider.current !== null) {
+			slider.current.classList.remove('active');
+		}
+	};
+
+	const mouseDown = (e: MouseEvent<HTMLDivElement>) => {
+		setMouseDown(true);
+		if (slider.current !== null) {
+			slider.current.classList.add('active');
+			setStartX(e.pageX - slider.current.offsetLeft);
+			setScrollLeft(slider.current.scrollLeft);
+		}
+	};
+
+	const mouseMove = (e: MouseEvent<HTMLDivElement>) => {
+		if (!mouseIsDown) {
+			return false;
+		}
+		e.preventDefault();
+		if (slider.current !== null) {
+			const x = e.pageX - slider.current.offsetLeft;
+			const walk = x - startX;
+			slider.current.scrollLeft = scrollLeft - walk;
+		}
+	};
+
+	return (
+		<SlideContainer>
+			<Slider
+				ref={slider}
+				onMouseDown={(e) => mouseDown(e)}
+				onMouseLeave={(e) => mouseLeave(e)}
+				onMouseUp={(e) => mouseUp(e)}
+				onMouseMove={(e) => mouseMove(e)}>
+				<MdArrowBackIos className="navBack" onClick={scrollMoveLeft} />
+				<MdArrowForwardIos className="navForward" onClick={scrollMoveRight} />
+				{championList !== undefined &&
+					championList.map((champion, index) => {
+						return (
+							<CardContainer key={index}>
+								<Card onClick={() => clickChmpionDetail(champion.id)}>
+									<Image
+										src={`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${champion.id}_0.jpg`}
+										width={150}
+										height={260}
+										alt="ChampionLoadingImg"
+									/>
+									<ChampionName>{champion.name}</ChampionName>
+								</Card>
+								{championInfo === champion.id && (
+									<ChampionInfo>
+										<CardTopArea>
+											<CardSubject>
+												<CardName>{champion.name}</CardName>
+												<CardTitle>{champion.title}</CardTitle>
+											</CardSubject>
+											<Link href={`/champions/${champion.id}`} shallow={true}>
+												<MoveDetailPage>챔피언 상세보기</MoveDetailPage>
+											</Link>
+										</CardTopArea>
+										<Info>
+											<Attack attack={champion.info.attack}>
+												평타데미지
+											</Attack>
+											<Magic magic={champion.info.magic}>스킬데미지</Magic>
+											<Defense defense={champion.info.defense}>방어</Defense>
+											<Difficulty difficulty={champion.info.difficulty}>
+												난이도
+											</Difficulty>
+										</Info>
+										<Tips>
+											<TipsText>
+												<TipsImage />
+												Tips
+											</TipsText>
+											<TipList>
+												{championDetail !== undefined &&
+													championDetail[champion.id] !== undefined &&
+													championDetail[champion.id].allytips.map(
+														(tip: string, tipIdx: number) => {
+															return <Tip key={tipIdx}>{tip}</Tip>;
+														}
+													)}
+											</TipList>
+										</Tips>
+									</ChampionInfo>
+								)}
+							</CardContainer>
+						);
+					})}
+			</Slider>
+		</SlideContainer>
+	);
+}
+
 const SlideContainer = styled.div`
 	width: 90vw;
 	max-height: 350px;
@@ -330,168 +493,5 @@ const Tip = styled.li`
 		font-size: 1.3rem;
 	}
 `;
-
-interface ChampionListProps {
-	championList?: ChampionProps[];
-	selectChampion: ChampionProps | null;
-	screenSize: string;
-}
-
-function ChampionSlide({ championList, selectChampion, screenSize }: ChampionListProps) {
-	const dispatch = useAppDispatch();
-	const championDetail: any = useAppSelector((state) => state.champions.championDetail);
-	const slider = useRef<HTMLDivElement>(null);
-	const [mouseIsDown, setMouseDown] = useState<boolean>(false);
-	const [startX, setStartX] = useState<number>(0);
-	const [scrollLeft, setScrollLeft] = useState<number>(0);
-	const [championInfo, openChampionInfo] = useState<string>('');
-
-	const scrollLeftValue = screenSize === 'big' ? 165 : screenSize === 'middle' ? 140 : 120;
-	const scrollButtonValue = screenSize === 'big' ? 1000 : 750;
-
-	useEffect(() => {
-		if (selectChampion !== null && championList !== undefined) {
-			dispatch(csrFetch.getChampionDetail(selectChampion.id));
-			openChampionInfo(selectChampion.id);
-
-			championList.forEach((champion, index) => {
-				if (champion.id === selectChampion.id && slider.current !== null) {
-					slider.current.scrollTo({
-						left: scrollLeftValue * index,
-						behavior: 'smooth'
-					});
-				}
-			});
-		}
-	}, [selectChampion, championList, slider]);
-
-	const clickChmpionDetail = (id: string) => {
-		openChampionInfo(id);
-		dispatch(csrFetch.getChampionDetail(id));
-	};
-
-	const scrollMoveLeft = () => {
-		if (slider.current !== null) {
-			setScrollLeft(scrollLeft - scrollButtonValue);
-			slider.current.scrollTo({
-				left: scrollLeft - scrollButtonValue,
-				behavior: 'smooth'
-			});
-		}
-	};
-
-	const scrollMoveRight = () => {
-		if (slider.current !== null) {
-			setScrollLeft(scrollLeft + scrollButtonValue);
-			slider.current.scrollTo({
-				left: scrollLeft + scrollButtonValue,
-				behavior: 'smooth'
-			});
-		}
-	};
-
-	const mouseLeave = (e: MouseEvent<HTMLDivElement>) => {
-		setMouseDown(false);
-		if (slider.current !== null) {
-			slider.current.classList.remove('active');
-		}
-	};
-
-	const mouseUp = (e: MouseEvent<HTMLDivElement>) => {
-		setMouseDown(false);
-		if (slider.current !== null) {
-			slider.current.classList.remove('active');
-		}
-	};
-
-	const mouseDown = (e: MouseEvent<HTMLDivElement>) => {
-		setMouseDown(true);
-		if (slider.current !== null) {
-			slider.current.classList.add('active');
-			setStartX(e.pageX - slider.current.offsetLeft);
-			setScrollLeft(slider.current.scrollLeft);
-		}
-	};
-
-	const mouseMove = (e: MouseEvent<HTMLDivElement>) => {
-		if (!mouseIsDown) {
-			return false;
-		}
-		e.preventDefault();
-		if (slider.current !== null) {
-			const x = e.pageX - slider.current.offsetLeft;
-			const walk = x - startX;
-			slider.current.scrollLeft = scrollLeft - walk;
-		}
-	};
-
-	return (
-		<SlideContainer>
-			<Slider
-				ref={slider}
-				onMouseDown={(e) => mouseDown(e)}
-				onMouseLeave={(e) => mouseLeave(e)}
-				onMouseUp={(e) => mouseUp(e)}
-				onMouseMove={(e) => mouseMove(e)}>
-				<MdArrowBackIos className="navBack" onClick={scrollMoveLeft} />
-				<MdArrowForwardIos className="navForward" onClick={scrollMoveRight} />
-				{championList !== undefined &&
-					championList.map((champion, index) => {
-						return (
-							<CardContainer key={index}>
-								<Card onClick={() => clickChmpionDetail(champion.id)}>
-									<Image
-										src={`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${champion.id}_0.jpg`}
-										width={150}
-										height={260}
-										alt="ChampionLoadingImg"
-									/>
-									<ChampionName>{champion.name}</ChampionName>
-								</Card>
-								{championInfo === champion.id && (
-									<ChampionInfo>
-										<CardTopArea>
-											<CardSubject>
-												<CardName>{champion.name}</CardName>
-												<CardTitle>{champion.title}</CardTitle>
-											</CardSubject>
-											<Link href={`/champions/${champion.id}`} shallow={true}>
-												<MoveDetailPage>챔피언 상세보기</MoveDetailPage>
-											</Link>
-										</CardTopArea>
-										<Info>
-											<Attack attack={champion.info.attack}>
-												평타데미지
-											</Attack>
-											<Magic magic={champion.info.magic}>스킬데미지</Magic>
-											<Defense defense={champion.info.defense}>방어</Defense>
-											<Difficulty difficulty={champion.info.difficulty}>
-												난이도
-											</Difficulty>
-										</Info>
-										<Tips>
-											<TipsText>
-												<TipsImage />
-												Tips
-											</TipsText>
-											<TipList>
-												{championDetail !== undefined &&
-													championDetail[champion.id] !== undefined &&
-													championDetail[champion.id].allytips.map(
-														(tip: string, tipIdx: number) => {
-															return <Tip key={tipIdx}>{tip}</Tip>;
-														}
-													)}
-											</TipList>
-										</Tips>
-									</ChampionInfo>
-								)}
-							</CardContainer>
-						);
-					})}
-			</Slider>
-		</SlideContainer>
-	);
-}
 
 export default ChampionSlide;
