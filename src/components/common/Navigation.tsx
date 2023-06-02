@@ -1,16 +1,20 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
+import axios from 'axios';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from 'store';
-import { csrFetch } from 'store/csrFetch';
+import { useRecoilState } from 'recoil';
+import { useQuery } from 'react-query';
+import { versionListState } from 'store/version';
+
+const versionAPI = () => {
+	axios.get('https://ddragon.leagueoflegends.com/api/versions.json');
+};
 
 function Navigation() {
-	const version = useAppSelector((state) => state.version.lastVersion);
-	const dispatch = useAppDispatch();
-
-	useEffect(() => {
-		dispatch(csrFetch.getVersionList());
-	}, [dispatch, version]);
+	const [version, setVersion] = useRecoilState(versionListState);
+	const _ = useQuery('getVersionList', versionAPI, {
+		onSuccess: (data: string[]) => setVersion(data)
+	});
 
 	return (
 		<NavigationContainer>

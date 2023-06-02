@@ -1,36 +1,43 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from 'store';
-import { csrFetch } from 'store/csrFetch';
-import dayjs from 'dayjs';
 import Head from 'next/head';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import { patchNoteListState } from 'store/version';
+import { useRecoilState } from 'recoil';
+import { useQuery } from 'react-query';
 
-interface listProps {
-	title: string;
-	imgURL: string;
-	author: string[];
-	date: string;
-	version: string;
-	totalElements: number;
-}
+const patchNoteAPI = () => {
+	axios.get('https://api.lolbook-server.store/patchNoteList');
+};
 
 export default function Home() {
-	const dispatch = useAppDispatch();
-	const version = useAppSelector((state) => state.version);
-	const { patchNoteList } = version;
 	const [requestCount, setRequestCount] = useState<number>(0);
-	const [list, setList] = useState<listProps[]>([]);
+	const [patchNoteList, setPatchNoteList] = useRecoilState(patchNoteListState);
 
-	useEffect(() => {
-		dispatch(csrFetch.getPatchNoteList(requestCount));
-	}, [requestCount]);
+	// useEffect(() => {
+	// 	useQuery(
+	//         'getPatchNoteList',
+	//         patchNoteAPI,
+	//         {
+	//             onSuccess: (data: PatchNoteListType) => setPatchNoteList((list) => [...list, ...data])
+	//         }
+	//     )
+	// }, [requestCount]);
 
-	useEffect(() => {
-		if (patchNoteList.list.length > 0) {
-			setList([...list, ...patchNoteList.list]);
-		}
-	}, [patchNoteList]);
+	// const { patchNoteList } = version;
+	// const [list, setList] = useState<listProps[]>([]);
+
+	// useEffect(() => {
+	// 	dispatch(csrFetch.getPatchNoteList(requestCount));
+	// }, [requestCount]);
+
+	// useEffect(() => {
+	// 	if (patchNoteList.list.length > 0) {
+	// 		setList([...list, ...patchNoteList.list]);
+	// 	}
+	// }, [patchNoteList]);
 	return (
 		<>
 			<Head>
@@ -40,7 +47,7 @@ export default function Home() {
 			<PageWrap>
 				<PatchNoteConatiner>
 					<Title>패치노트</Title>
-					<PatchNoteListBox>
+					{/* <PatchNoteListBox>
 						<PatchNoteList>
 							{list.map((patchNote, index) => {
 								return (
@@ -77,7 +84,7 @@ export default function Home() {
 								</MoreButton>
 							</RequestMore>
 						)}
-					</PatchNoteListBox>
+					</PatchNoteListBox> */}
 				</PatchNoteConatiner>
 			</PageWrap>
 		</>

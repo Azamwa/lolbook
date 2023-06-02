@@ -167,3 +167,12 @@ export interface ChampionDetailProps {
 		cooldownBurn: string;
 	};
 }
+
+export interface PatchNoteListType {
+	title: string;
+	imgURL: string;
+	author: string[];
+	date: string;
+	version: string;
+	totalElements: number;
+}
