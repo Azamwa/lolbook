@@ -8,36 +8,19 @@ import { patchNoteListState } from 'store/version';
 import { useRecoilState } from 'recoil';
 import { useQuery } from 'react-query';
 
-const patchNoteAPI = () => {
-	axios.get('https://api.lolbook-server.store/patchNoteList');
+const patchNoteAPI = (n: number) => {
+	return axios.get(`https://api.lolbook-server.store/patchNoteList/${n}`);
 };
 
 export default function Home() {
 	const [requestCount, setRequestCount] = useState<number>(0);
 	const [patchNoteList, setPatchNoteList] = useRecoilState(patchNoteListState);
 
-	// useEffect(() => {
-	// 	useQuery(
-	//         'getPatchNoteList',
-	//         patchNoteAPI,
-	//         {
-	//             onSuccess: (data: PatchNoteListType) => setPatchNoteList((list) => [...list, ...data])
-	//         }
-	//     )
-	// }, [requestCount]);
+	const _ = useQuery(['getPatchNoteList', requestCount], () => patchNoteAPI(requestCount), {
+		onSuccess: ({ data }) => setPatchNoteList([...patchNoteList, ...data.list]),
+		refetchOnWindowFocus: false
+	});
 
-	// const { patchNoteList } = version;
-	// const [list, setList] = useState<listProps[]>([]);
-
-	// useEffect(() => {
-	// 	dispatch(csrFetch.getPatchNoteList(requestCount));
-	// }, [requestCount]);
-
-	// useEffect(() => {
-	// 	if (patchNoteList.list.length > 0) {
-	// 		setList([...list, ...patchNoteList.list]);
-	// 	}
-	// }, [patchNoteList]);
 	return (
 		<>
 			<Head>
@@ -47,9 +30,9 @@ export default function Home() {
 			<PageWrap>
 				<PatchNoteConatiner>
 					<Title>패치노트</Title>
-					{/* <PatchNoteListBox>
+					<PatchNoteListBox>
 						<PatchNoteList>
-							{list.map((patchNote, index) => {
+							{patchNoteList.map((patchNote, index) => {
 								return (
 									<a
 										key={index}
@@ -77,14 +60,15 @@ export default function Home() {
 								);
 							})}
 						</PatchNoteList>
-						{list.length > 0 && list.length < list[0].totalElements && (
-							<RequestMore>
-								<MoreButton onClick={() => setRequestCount(requestCount + 1)}>
-									더 불러오기
-								</MoreButton>
-							</RequestMore>
-						)}
-					</PatchNoteListBox> */}
+						{patchNoteList.length > 0 &&
+							patchNoteList.length < patchNoteList[0].totalElements && (
+								<RequestMore>
+									<MoreButton onClick={() => setRequestCount(requestCount + 1)}>
+										더 불러오기
+									</MoreButton>
+								</RequestMore>
+							)}
+					</PatchNoteListBox>
 				</PatchNoteConatiner>
 			</PageWrap>
 		</>
