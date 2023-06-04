@@ -110,7 +110,7 @@
   dependencies:
     regenerator-runtime "^0.13.10"
 
-"@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2":
+"@babel/runtime@^7.10.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2":
   version "7.22.3"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.3.tgz#0a7fce51d43adbf0f7b517a71f4c3aaca92ebcbb"
   integrity sha512-XsDuspWKLUsxwCp6r7EhsExHtYfbe5oAGQ19kqngTdCPUoPQzOPdUbD/pB9PJiwb2ptYKQDjSJT3R6dC+EPqfQ==
@@ -1938,6 +1938,14 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
+match-sorter@^4.1.0:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/match-sorter/-/match-sorter-4.2.1.tgz#575b4b3737185ba9518b67612b66877ea0b37358"
+  integrity sha512-s+3h9TiZU9U1pWhIERHf8/f4LmBN6IXaRgo2CI17+XGByGS1GvG5VvXK9pcGyCjGe3WM3mSYRC3ipGrd5UEVgw==
+  dependencies:
+    "@babel/runtime" "^7.10.5"
+    remove-accents "0.4.2"
+
 match-sorter@^6.0.2:
   version "6.3.1"
   resolved "https://registry.yarnpkg.com/match-sorter/-/match-sorter-6.3.1.tgz#98cc37fda756093424ddf3cbc62bfe9c75b92bda"
@@ -2295,6 +2303,13 @@ react-loader-spinner@^5.3.4:
     react-is "^18.2.0"
     styled-components "^5.3.5"
     styled-tools "^1.7.2"
+
+react-query-devtools@^2.6.3:
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/react-query-devtools/-/react-query-devtools-2.6.3.tgz#f7c982839d4b0001cee4d5ddfa826493c2f6341f"
+  integrity sha512-pSvWq5Q8zgIP7QbF0+4BerCHLaLn5HPzce7sIXYqz4XEizcYJHkJtcrAwn6bUkCu5JmAt1Y7fViQtZwOIG2SYA==
+  dependencies:
+    match-sorter "^4.1.0"
 
 react-query@^3.39.3:
   version "3.39.3"

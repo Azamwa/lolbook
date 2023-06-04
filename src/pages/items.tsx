@@ -2,14 +2,15 @@ import React, { ChangeEvent, useEffect, useState, useCallback } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { versionListState } from 'store/version';
 import ItemList from 'components/units/ItemList';
 import ItemDetail from 'components/units/ItemDetail';
 import { ItemProps } from 'utils/types';
 import { itemFilter } from 'utils/items/itemListInfo';
-import { useAppDispatch, useAppSelector } from 'store';
-import { setFromItem, setItemDetail, setItemsByGroup } from 'store/items';
-import { setComplete, setPending } from 'store/common';
 import { BiSearchAlt2 } from 'react-icons/bi';
+import { useQueryClient } from 'react-query';
+import { versionAPI } from 'store';
 
 interface ItemDataProps {
 	itemData: {
@@ -22,9 +23,9 @@ interface ItemDataProps {
 	};
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getStaticProps = async () => {
 	const response = await fetch(
-		`https://ddragon.leagueoflegends.com/cdn/${context.query.version}/data/ko_KR/item.json`
+		`https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/item.json`
 	);
 	const itemData = await response.json();
 	return {
@@ -33,11 +34,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 function Items({ itemData }: ItemDataProps) {
-	const dispatch = useAppDispatch();
-	const itemList = useAppSelector((state) => state.items.itemGroup);
-	const version = useAppSelector((state) => state.version.lastVersion);
-	const openDetail = useAppSelector((state) => state.items.openDetail);
-	const { data }: any = itemData;
+	const { data } = itemData;
+	// const itemList = useAppSelector((state) => state.items.itemGroup);
+	// const openDetail = useAppSelector((state) => state.items.openDetail);
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
 
@@ -53,69 +52,74 @@ function Items({ itemData }: ItemDataProps) {
 		}
 	};
 
-	const changeItemDetail = (id: string) => {
-		dispatch(setItemDetail(data[id]));
-		fromItemDetail(data[id]);
-	};
+	// const changeItemDetail = (id: string) => {
+	// 	dispatch(setItemDetail(data[id]));
+	// 	fromItemDetail(data[id]);
+	// };
 
-	const fromItemDetail = useCallback((item: ItemProps) => {
-		if (item.from !== undefined) {
-			let fromItemList: string[] = [];
-			item.from.forEach((fromItem: string) => {
-				fromItemList.push(data[fromItem]);
-			});
-			dispatch(setFromItem(fromItemList));
-		} else {
-			dispatch(setFromItem(null));
-		}
+	// const fromItemDetail = useCallback((item: ItemProps) => {
+	// 	if (item.from !== undefined) {
+	// 		let fromItemList: string[] = [];
+	// 		item.from.forEach((fromItem: string) => {
+	// 			fromItemList.push(data[fromItem]);
+	// 		});
+	// 		dispatch(setFromItem(fromItemList));
+	// 	} else {
+	// 		dispatch(setFromItem(null));
+	// 	}
+	// }, []);
+
+	useEffect(() => {
+		console.log(data);
 	}, []);
 
-	useEffect(() => {
-		let searchItem: any = {};
-		let filteredItem: any = {};
-		dispatch(setPending());
+	// useEffect(() => {
+	// 	let searchItem: ItemProps = {};
+	// 	let filteredItem: any = {};
 
-		for (let id in data) {
-			if (data[id].name.includes(searchValue)) {
-				searchItem[id] = data[id];
-			}
-		}
+	//     //여기서 검색해서 매칭하고
+	// 	for (let id in data) {
+	// 		if (data[id].name.includes(searchValue)) {
+	// 			searchItem[id] = data[id];
+	// 		}
+	// 	}
 
-		filteredItem = searchItem;
-		let filterCount = 0;
+	// 	filteredItem = searchItem;
+	// 	let filterCount = 0;
 
-		if (checkedFilter.length !== 0) {
-			while (filterCount < checkedFilter.length) {
-				filteredItem = {};
-				const filter = checkedFilter[filterCount];
+	//     //여기서 필터링해서 매칭하고
+	// 	if (checkedFilter.length !== 0) {
+	// 		while (filterCount < checkedFilter.length) {
+	// 			filteredItem = {};
+	// 			const filter = checkedFilter[filterCount];
 
-				for (let id in searchItem) {
-					if (filter.length === 1 && searchItem[id].tags.includes(filter[0])) {
-						filteredItem[id] = searchItem[id];
-					} else if (
-						filter.length === 2 &&
-						(searchItem[id].tags.includes(filter[0]) ||
-							searchItem[id].tags.includes(filter[1]))
-					) {
-						filteredItem[id] = searchItem[id];
-					}
-				}
-				searchItem = filteredItem;
-				filterCount++;
-			}
-		}
+	// 			for (let id in searchItem) {
+	// 				if (filter.length === 1 && searchItem[id].tags.includes(filter[0])) {
+	// 					filteredItem[id] = searchItem[id];
+	// 				} else if (
+	// 					filter.length === 2 &&
+	// 					(searchItem[id].tags.includes(filter[0]) ||
+	// 						searchItem[id].tags.includes(filter[1]))
+	// 				) {
+	// 					filteredItem[id] = searchItem[id];
+	// 				}
+	// 			}
+	// 			searchItem = filteredItem;
+	// 			filterCount++;
+	// 		}
+	// 	}
 
-		dispatch(setItemsByGroup(filteredItem));
-		dispatch(setComplete());
-	}, [dispatch, searchValue, checkedFilter]);
+	// 	// dispatch(setItemsByGroup(filteredItem));
+	// 	// dispatch(setComplete());
+	// }, [searchValue, checkedFilter]);
 
-	useEffect(() => {
-		dispatch(setPending());
-		if (version !== '') {
-			dispatch(setItemsByGroup(data));
-			dispatch(setComplete());
-		}
-	}, [dispatch, data, version]);
+	// useEffect(() => {
+	// 	dispatch(setPending());
+	// 	if (version !== '') {
+	// 		dispatch(setItemsByGroup(data));
+	// 		dispatch(setComplete());
+	// 	}
+	// }, [data, version]);
 
 	return (
 		<>
@@ -124,7 +128,7 @@ function Items({ itemData }: ItemDataProps) {
 			</Head>
 			<Background />
 			<ItemWrap>
-				<ItemListBox openDetail={openDetail}>
+				{/* <ItemListBox openDetail={openDetail}>
 					<Spacer />
 					<SearchContainer>
 						<SearchInput
@@ -156,8 +160,8 @@ function Items({ itemData }: ItemDataProps) {
 						})}
 					</FilterContainer>
 					<ItemList itemList={itemList} fromItemDetail={fromItemDetail} />
-				</ItemListBox>
-				<ItemDetail changeItem={changeItemDetail} />
+				</ItemListBox> */}
+				{/* <ItemDetail changeItem={changeItemDetail} /> */}
 			</ItemWrap>
 		</>
 	);

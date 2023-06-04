@@ -1,19 +1,17 @@
 import React from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { useQuery } from 'react-query';
+import { versionAPI } from 'store';
 import { versionListState } from 'store/version';
-
-const versionAPI = () => {
-	return axios.get('https://ddragon.leagueoflegends.com/api/versions.json');
-};
 
 function Navigation() {
 	const [version, setVersion] = useRecoilState(versionListState);
-	const _ = useQuery('getVersionList', versionAPI, {
-		onSuccess: ({ data }) => setVersion(data)
+	useQuery('versionList', versionAPI, {
+		onSuccess: (data) => setVersion(data),
+		staleTime: Infinity,
+		cacheTime: Infinity
 	});
 
 	return (
@@ -24,7 +22,7 @@ function Navigation() {
 				</Link>
 			</LogoHeader>
 			<MenuList>
-				<Link href={`/items?version=${version[0]}`}>
+				<Link href="/items">
 					<Menu>아이템 도감</Menu>
 				</Link>
 				<Link href={`/champions?version=${version[0]}`}>

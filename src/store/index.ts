@@ -1,27 +1,18 @@
-// import { configureStore, combineReducers } from '@reduxjs/toolkit';
-// import { useSelector, useDispatch, TypedUseSelectorHook } from 'react-redux';
-// import { version } from './csrFetch/version';
-// import champions from './champions';
-// import common from './common';
-// import items from './items';
+import axios from 'axios';
 
-// const rootReducer = combineReducers({
-// 	common: common.reducer,
-// 	version: version.reducer,
-// 	items: items.reducer,
-// 	champions: champions.reducer
-// });
+export const versionAPI = async () => {
+	const res = await axios.get('https://ddragon.leagueoflegends.com/api/versions.json');
+	return res.data;
+};
 
-// const store = configureStore({
-// 	reducer: rootReducer,
-// 	middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
-// 	devTools: true,
-// 	enhancers: (defaultEnhancers) => [...defaultEnhancers]
-// });
+export const patchNoteAPI = async (n: number) => {
+	const res = await axios.get(`https://api.lolbook-server.store/patchNoteList/${n}`);
+	return res.data;
+};
 
-// export type RootState = ReturnType<typeof store.getState>;
-// export type AppDispatch = typeof store.dispatch;
-// export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-// export const useAppDispatch = () => useDispatch<AppDispatch>();
-
-// export default store;
+export const itemListAPI = async (version: string) => {
+	const res = await axios.get(
+		`https://ddragon.leagueoflegends.com/cdn/${version}/data/ko_KR/item.json`
+	);
+	return res.data;
+};

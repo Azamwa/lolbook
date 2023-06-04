@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import styled from 'styled-components';
 import Head from 'next/head';
-import axios from 'axios';
-import dayjs from 'dayjs';
-import { patchNoteListState } from 'store/version';
+import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { useQuery } from 'react-query';
-
-const patchNoteAPI = (n: number) => {
-	return axios.get(`https://api.lolbook-server.store/patchNoteList/${n}`);
-};
+import { patchNoteAPI } from 'store';
+import { patchNoteListState } from 'store/version';
+import dayjs from 'dayjs';
 
 export default function Home() {
 	const [requestCount, setRequestCount] = useState<number>(0);
 	const [patchNoteList, setPatchNoteList] = useRecoilState(patchNoteListState);
 
 	const _ = useQuery(['getPatchNoteList', requestCount], () => patchNoteAPI(requestCount), {
-		onSuccess: ({ data }) => setPatchNoteList([...patchNoteList, ...data.list]),
-		refetchOnWindowFocus: false
+		onSuccess: (data) => setPatchNoteList([...patchNoteList, ...data.list]),
+		staleTime: Infinity,
+		cacheTime: Infinity
 	});
 
 	return (
