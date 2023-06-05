@@ -6,18 +6,19 @@ import { useRecoilState } from 'recoil';
 import { versionListState } from 'store/version';
 import ItemList from 'components/units/ItemList';
 import ItemDetail from 'components/units/ItemDetail';
-import { ItemProps } from 'utils/types';
-import { itemFilter } from 'utils/items/itemListInfo';
+import { ItemType } from 'utils/types';
 import { BiSearchAlt2 } from 'react-icons/bi';
 import { useQueryClient } from 'react-query';
-import { versionAPI } from 'store';
+import { itemFilterState } from 'store/items';
 
 interface ItemDataProps {
 	itemData: {
 		type: string;
 		version: string;
 		basic: object;
-		data: ItemProps;
+		data: {
+			[key: string]: ItemType;
+		};
 		groups: object;
 		tree: object;
 	};
@@ -39,6 +40,7 @@ function Items({ itemData }: ItemDataProps) {
 	// const openDetail = useAppSelector((state) => state.items.openDetail);
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
+	const [itemFilter] = useRecoilState(itemFilterState);
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
@@ -57,7 +59,7 @@ function Items({ itemData }: ItemDataProps) {
 	// 	fromItemDetail(data[id]);
 	// };
 
-	// const fromItemDetail = useCallback((item: ItemProps) => {
+	// const fromItemDetail = useCallback((item: ItemType) => {
 	// 	if (item.from !== undefined) {
 	// 		let fromItemList: string[] = [];
 	// 		item.from.forEach((fromItem: string) => {
@@ -70,48 +72,38 @@ function Items({ itemData }: ItemDataProps) {
 	// }, []);
 
 	useEffect(() => {
-		console.log(data);
-	}, []);
-
-	// useEffect(() => {
-	// 	let searchItem: ItemProps = {};
-	// 	let filteredItem: any = {};
-
-	//     //여기서 검색해서 매칭하고
-	// 	for (let id in data) {
-	// 		if (data[id].name.includes(searchValue)) {
-	// 			searchItem[id] = data[id];
-	// 		}
-	// 	}
-
-	// 	filteredItem = searchItem;
-	// 	let filterCount = 0;
-
-	//     //여기서 필터링해서 매칭하고
-	// 	if (checkedFilter.length !== 0) {
-	// 		while (filterCount < checkedFilter.length) {
-	// 			filteredItem = {};
-	// 			const filter = checkedFilter[filterCount];
-
-	// 			for (let id in searchItem) {
-	// 				if (filter.length === 1 && searchItem[id].tags.includes(filter[0])) {
-	// 					filteredItem[id] = searchItem[id];
-	// 				} else if (
-	// 					filter.length === 2 &&
-	// 					(searchItem[id].tags.includes(filter[0]) ||
-	// 						searchItem[id].tags.includes(filter[1]))
-	// 				) {
-	// 					filteredItem[id] = searchItem[id];
-	// 				}
-	// 			}
-	// 			searchItem = filteredItem;
-	// 			filterCount++;
-	// 		}
-	// 	}
-
-	// 	// dispatch(setItemsByGroup(filteredItem));
-	// 	// dispatch(setComplete());
-	// }, [searchValue, checkedFilter]);
+		let searchItem: ItemType[] = [];
+		let filteredItem: ItemType[] = [];
+		//여기서 검색해서 매칭하고
+		for (let id in data) {
+			if (data[id].name.includes(searchValue)) {
+				searchItem.push(data[id]);
+			}
+		}
+		filteredItem = searchItem;
+		if (checkedFilter.length !== 0) {
+			let filterCount = 0;
+			while (filterCount < checkedFilter.length) {
+				filteredItem = [];
+				const filter = checkedFilter[filterCount];
+				// for (let id in searchItem) {
+				// 	if (filter.length === 1 && searchItem[id].tags.includes(filter[0])) {
+				// 		filteredItem[id] = searchItem[id];
+				// 	} else if (
+				// 		filter.length === 2 &&
+				// 		(searchItem[id].tags.includes(filter[0]) ||
+				// 			searchItem[id].tags.includes(filter[1]))
+				// 	) {
+				// 		filteredItem[id] = searchItem[id];
+				// 	}
+				// }
+				searchItem = filteredItem;
+				filterCount++;
+			}
+		}
+		// 	// dispatch(setItemsByGroup(filteredItem));
+		// 	// dispatch(setComplete());
+	}, [searchValue, checkedFilter]);
 
 	// useEffect(() => {
 	// 	dispatch(setPending());
@@ -128,38 +120,38 @@ function Items({ itemData }: ItemDataProps) {
 			</Head>
 			<Background />
 			<ItemWrap>
-				{/* <ItemListBox openDetail={openDetail}>
-					<Spacer />
-					<SearchContainer>
-						<SearchInput
-							onChange={handleInputChange}
-							value={searchValue}
-							placeholder="아이템을 검색해 주세요."
-						/>
-						<SearchIcon>
-							<BiSearchAlt2 />
-						</SearchIcon>
-					</SearchContainer>
-					<FilterContainer>
-						{itemFilter.map((filter, index) => {
-							return (
-								<ItemFilterBox key={filter.id[0]}>
-									<FilterCheckBox
-										type="checkbox"
-										id={filter.id[0]}
-										onChange={(e: ChangeEvent<HTMLInputElement>) =>
-											handleChecked(e, filter.id)
-										}
-										filterImage={filter.url}
-										smallSize={index > 4 && index < 11}
-										title={filter.title}
-									/>
-									<Label htmlFor={filter.id[0]} title={filter.title} />
-								</ItemFilterBox>
-							);
-						})}
-					</FilterContainer>
-					<ItemList itemList={itemList} fromItemDetail={fromItemDetail} />
+				{/* <ItemListBox openDetail={openDetail}>*/}
+				<Spacer />
+				<SearchContainer>
+					<SearchInput
+						onChange={handleInputChange}
+						value={searchValue}
+						placeholder="아이템을 검색해 주세요."
+					/>
+					<SearchIcon>
+						<BiSearchAlt2 />
+					</SearchIcon>
+				</SearchContainer>
+				<FilterContainer>
+					{itemFilter.map((filter, index) => {
+						return (
+							<ItemFilterBox key={filter.id[0]}>
+								<FilterCheckBox
+									type="checkbox"
+									id={filter.id[0]}
+									onChange={(e: ChangeEvent<HTMLInputElement>) =>
+										handleChecked(e, filter.id)
+									}
+									filterImage={filter.url}
+									smallSize={index > 4 && index < 11}
+									title={filter.title}
+								/>
+								<Label htmlFor={filter.id[0]} title={filter.title} />
+							</ItemFilterBox>
+						);
+					})}
+				</FilterContainer>
+				{/* <ItemList itemList={itemList} fromItemDetail={fromItemDetail} />
 				</ItemListBox> */}
 				{/* <ItemDetail changeItem={changeItemDetail} /> */}
 			</ItemWrap>
