@@ -1,13 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
 import { useQuery } from 'react-query';
+import { useAtom } from 'jotai';
 import { versionAPI } from 'store';
 import { versionListState } from 'store/version';
 
 function Navigation() {
-	const [version, setVersion] = useRecoilState(versionListState);
+	const [version, setVersion] = useAtom(versionListState);
 	useQuery('versionList', versionAPI, {
 		onSuccess: (data) => setVersion(data),
 		staleTime: Infinity,

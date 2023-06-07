@@ -1,4 +1,4 @@
-export interface ItemProps {
+export interface ItemType {
 	image?: {
 		full: string;
 		sprite: string;
@@ -29,7 +29,7 @@ export interface ItemProps {
 	requiredChampion?: string;
 	requiredAlly?: string;
 	stats?: object;
-	tags?: [string];
+	tags: [string];
 	maps?: {
 		'11': boolean;
 		'12': boolean;

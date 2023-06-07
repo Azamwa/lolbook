@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState, useCallback } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { versionListState } from 'store/version';
 import ItemList from 'components/units/ItemList';
 import ItemDetail from 'components/units/ItemDetail';
@@ -36,11 +36,10 @@ export const getStaticProps = async () => {
 
 function Items({ itemData }: ItemDataProps) {
 	const { data } = itemData;
-	// const itemList = useAppSelector((state) => state.items.itemGroup);
 	// const openDetail = useAppSelector((state) => state.items.openDetail);
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
-	const [itemFilter] = useRecoilState(itemFilterState);
+	const [itemFilter] = useAtom(itemFilterState);
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
@@ -83,24 +82,26 @@ function Items({ itemData }: ItemDataProps) {
 		filteredItem = searchItem;
 		if (checkedFilter.length !== 0) {
 			let filterCount = 0;
+			searchItem.length = 0;
 			while (filterCount < checkedFilter.length) {
 				filteredItem = [];
 				const filter = checkedFilter[filterCount];
-				// for (let id in searchItem) {
-				// 	if (filter.length === 1 && searchItem[id].tags.includes(filter[0])) {
-				// 		filteredItem[id] = searchItem[id];
-				// 	} else if (
-				// 		filter.length === 2 &&
-				// 		(searchItem[id].tags.includes(filter[0]) ||
-				// 			searchItem[id].tags.includes(filter[1]))
-				// 	) {
-				// 		filteredItem[id] = searchItem[id];
-				// 	}
-				// }
-				searchItem = filteredItem;
+				for (let item of filteredItem) {
+					if (filter.length === 1 && item.tags.includes(filter[0])) {
+						searchItem.push(item);
+					} else if (
+						filter.length === 2 &&
+						(item.tags.includes(filter[0]) || item.tags.includes(filter[1]))
+					) {
+						filteredItem.push(item);
+					}
+				}
+				filteredItem = searchItem;
 				filterCount++;
 			}
 		}
+
+		console.log(filteredItem);
 		// 	// dispatch(setItemsByGroup(filteredItem));
 		// 	// dispatch(setComplete());
 	}, [searchValue, checkedFilter]);

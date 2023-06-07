@@ -1,14 +1,14 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
+import { Provider } from 'jotai';
 import Layout from 'components/common/Layout';
-import { RecoilRoot } from 'recoil';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 const queryClient = new QueryClient();
 export default function App({ Component, pageProps }: AppProps) {
 	return (
-		<RecoilRoot>
+		<Provider>
 			<QueryClientProvider client={queryClient}>
 				<Hydrate state={pageProps.deHydratedState}>
 					<Layout>
@@ -29,6 +29,6 @@ export default function App({ Component, pageProps }: AppProps) {
 					<ReactQueryDevtools />
 				</Hydrate>
 			</QueryClientProvider>
-		</RecoilRoot>
+		</Provider>
 	);
 }

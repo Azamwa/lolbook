@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
 import { useQuery } from 'react-query';
+import { useAtom } from 'jotai';
 import { patchNoteAPI } from 'store';
 import { patchNoteListState } from 'store/version';
 import dayjs from 'dayjs';
 
 export default function Home() {
 	const [requestCount, setRequestCount] = useState<number>(0);
-	const [patchNoteList, setPatchNoteList] = useRecoilState(patchNoteListState);
+	const [patchNoteList, setPatchNoteList] = useAtom(patchNoteListState);
 
 	const _ = useQuery(['getPatchNoteList', requestCount], () => patchNoteAPI(requestCount), {
 		onSuccess: (data) => setPatchNoteList([...patchNoteList, ...data.list]),
