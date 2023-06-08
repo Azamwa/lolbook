@@ -1,21 +1,19 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+// import { createAsyncThunk } from '@reduxjs/toolkit';
+// import axios from 'axios';
 
-const versionApiURL = 'https://ddragon.leagueoflegends.com/api/versions.json';
 const championDetailURL = 'https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/champion/';
-const patchNoteURL = 'https://api.lolbook-server.store/patchNoteList';
 
-export const csrFetch = {
-	getVersionList: createAsyncThunk('csrFetch/getVersionList', async () => {
-		const response = await axios.get(versionApiURL);
-		return response;
-	}),
-	getChampionDetail: createAsyncThunk('csrFetch/getChampionDetail', async (name: string) => {
-		const response = await axios.get(`${championDetailURL}${name}.json`);
-		return response;
-	}),
-	getPatchNoteList: createAsyncThunk('csrFetch/getPatchNoteList', async (idx: number) => {
-		const response = await axios.get(`${patchNoteURL}/${idx}`);
-		return response;
-	})
-};
+// export const csrFetch = {
+// 	getVersionList: createAsyncThunk('csrFetch/getVersionList', async () => {
+// 		const response = await axios.get(versionApiURL);
+// 		return response;
+// 	}),
+// 	getChampionDetail: createAsyncThunk('csrFetch/getChampionDetail', async (name: string) => {
+// 		const response = await axios.get(`${championDetailURL}${name}.json`);
+// 		return response;
+// 	}),
+// 	getPatchNoteList: createAsyncThunk('csrFetch/getPatchNoteList', async (idx: number) => {
+// 		const response = await axios.get(`${patchNoteURL}/${idx}`);
+// 		return response;
+// 	})
+// };

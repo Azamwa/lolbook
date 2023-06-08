@@ -1,36 +1,23 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from 'store';
-import { csrFetch } from 'store/csrFetch';
-import dayjs from 'dayjs';
 import Head from 'next/head';
-
-interface listProps {
-	title: string;
-	imgURL: string;
-	author: string[];
-	date: string;
-	version: string;
-	totalElements: number;
-}
+import styled from 'styled-components';
+import { useQuery } from 'react-query';
+import { useAtom } from 'jotai';
+import { patchNoteAPI } from 'store';
+import { patchNoteListState } from 'store/version';
+import dayjs from 'dayjs';
 
 export default function Home() {
-	const dispatch = useAppDispatch();
-	const version = useAppSelector((state) => state.version);
-	const { patchNoteList } = version;
 	const [requestCount, setRequestCount] = useState<number>(0);
-	const [list, setList] = useState<listProps[]>([]);
+	const [patchNoteList, setPatchNoteList] = useAtom(patchNoteListState);
 
-	useEffect(() => {
-		dispatch(csrFetch.getPatchNoteList(requestCount));
-	}, [requestCount]);
+	const _ = useQuery(['getPatchNoteList', requestCount], () => patchNoteAPI(requestCount), {
+		onSuccess: (data) => setPatchNoteList([...patchNoteList, ...data.list]),
+		staleTime: Infinity,
+		cacheTime: Infinity
+	});
 
-	useEffect(() => {
-		if (patchNoteList.list.length > 0) {
-			setList([...list, ...patchNoteList.list]);
-		}
-	}, [patchNoteList]);
 	return (
 		<>
 			<Head>
@@ -42,7 +29,7 @@ export default function Home() {
 					<Title>패치노트</Title>
 					<PatchNoteListBox>
 						<PatchNoteList>
-							{list.map((patchNote, index) => {
+							{patchNoteList.map((patchNote, index) => {
 								return (
 									<a
 										key={index}
@@ -70,13 +57,14 @@ export default function Home() {
 								);
 							})}
 						</PatchNoteList>
-						{list.length > 0 && list.length < list[0].totalElements && (
-							<RequestMore>
-								<MoreButton onClick={() => setRequestCount(requestCount + 1)}>
-									더 불러오기
-								</MoreButton>
-							</RequestMore>
-						)}
+						{patchNoteList.length > 0 &&
+							patchNoteList.length < patchNoteList[0].totalElements && (
+								<RequestMore>
+									<MoreButton onClick={() => setRequestCount(requestCount + 1)}>
+										더 불러오기
+									</MoreButton>
+								</RequestMore>
+							)}
 					</PatchNoteListBox>
 				</PatchNoteConatiner>
 			</PageWrap>
