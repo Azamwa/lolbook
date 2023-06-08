@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { ItemType } from 'utils/types';
+import { ItemGroupType, ItemListType, ItemType } from 'utils/types';
 
 export const itemFilterState = atom([
 	{
@@ -74,7 +74,7 @@ export const itemFilterState = atom([
 	}
 ]);
 
-export const itemGroupState = atom([
+export const itemGroupState = atom<ItemGroupType[]>([
 	{
 		id: 'boots',
 		name: '신발',
@@ -137,24 +137,33 @@ export const itemGroupState = atom([
 	}
 ]);
 
-// export const itemListState = atom(
-//     (get): get(itemGroupState),
-//     (set, searchItems: ItemType[]) => {
-//         set(itemGroupState, )
-//     }
-// 	set: ({ get, set }, searchItems) => {
-// 		// const itemGroup = get(itemGroupState);
-// 		// itemGroup.forEach((group) => {
-// 		// 	group.value.length = 0;
-// 		// 	for (let item of searchItems) {
-// 		// 		if (group.items.includes(Number(item.full.split('.')[0]))) {
-// 		// 			group.value.push(item);
-// 		// 		}
-// 		// 	}
-// 		// });
-// 		set(itemGroupState);
-// 	}
-// );
+export const itemListState = atom(
+	(get) => get(itemGroupState),
+	(get, set, searchItems: ItemListType) => {
+		const itemGroup = get(itemGroupState);
+		itemGroup.forEach((group) => {
+			group.value.length = 0;
+			for (let id in searchItems) {
+				if (group.items.includes(Number(searchItems[id].image.full.split('.')[0]))) {
+					group.value.push(searchItems[id]);
+				}
+			}
+		});
+		set(itemGroupState, itemGroup);
+	}
+);
+// set: ({ get, set }, searchItems) => {
+// 	// const itemGroup = get(itemGroupState);
+// 	// itemGroup.forEach((group) => {
+// 	// 	group.value.length = 0;
+// 	// 	for (let item of searchItems) {
+// 	// 		if (group.items.includes(Number(item.full.split('.')[0]))) {
+// 	// 			group.value.push(item);
+// 	// 		}
+// 	// 	}
+// 	// });
+// 	set(itemGroupState);
+// }
 
 // type ItemsState = {
 // 	itemDetail?: ItemType;

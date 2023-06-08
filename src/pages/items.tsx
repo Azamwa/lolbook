@@ -6,10 +6,10 @@ import { useAtom } from 'jotai';
 import { versionListState } from 'store/version';
 import ItemList from 'components/units/ItemList';
 import ItemDetail from 'components/units/ItemDetail';
-import { ItemType } from 'utils/types';
+import { ItemListType, ItemType } from 'utils/types';
 import { BiSearchAlt2 } from 'react-icons/bi';
 import { useQueryClient } from 'react-query';
-import { itemFilterState } from 'store/items';
+import { itemFilterState, itemListState } from 'store/items';
 
 interface ItemDataProps {
 	itemData: {
@@ -36,10 +36,11 @@ export const getStaticProps = async () => {
 
 function Items({ itemData }: ItemDataProps) {
 	const { data } = itemData;
-	// const openDetail = useAppSelector((state) => state.items.openDetail);
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
+	const [openDetail, setOpenDetail] = useState<boolean>(false);
 	const [itemFilter] = useAtom(itemFilterState);
+	const [itemList, setItemList] = useAtom(itemListState);
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
@@ -71,48 +72,40 @@ function Items({ itemData }: ItemDataProps) {
 	// }, []);
 
 	useEffect(() => {
-		let searchItem: ItemType[] = [];
-		let filteredItem: ItemType[] = [];
-		//여기서 검색해서 매칭하고
+		let searchItem: ItemListType = {};
+		let filteredItem: ItemListType = {};
+
 		for (let id in data) {
 			if (data[id].name.includes(searchValue)) {
-				searchItem.push(data[id]);
+				searchItem[id] = data[id];
 			}
 		}
+
 		filteredItem = searchItem;
 		if (checkedFilter.length !== 0) {
 			let filterCount = 0;
-			searchItem.length = 0;
 			while (filterCount < checkedFilter.length) {
-				filteredItem = [];
+				filteredItem = {};
 				const filter = checkedFilter[filterCount];
-				for (let item of filteredItem) {
-					if (filter.length === 1 && item.tags.includes(filter[0])) {
-						searchItem.push(item);
+
+				for (let id in searchItem) {
+					if (filter.length === 1 && searchItem[id].tags.includes(filter[0])) {
+						filteredItem[id] = searchItem[id];
 					} else if (
 						filter.length === 2 &&
-						(item.tags.includes(filter[0]) || item.tags.includes(filter[1]))
+						(searchItem[id].tags.includes(filter[0]) ||
+							searchItem[id].tags.includes(filter[1]))
 					) {
-						filteredItem.push(item);
+						filteredItem[id] = searchItem[id];
 					}
 				}
-				filteredItem = searchItem;
+				searchItem = filteredItem;
 				filterCount++;
 			}
 		}
-
-		console.log(filteredItem);
-		// 	// dispatch(setItemsByGroup(filteredItem));
-		// 	// dispatch(setComplete());
+		setItemList(filteredItem);
+		console.log(itemList);
 	}, [searchValue, checkedFilter]);
-
-	// useEffect(() => {
-	// 	dispatch(setPending());
-	// 	if (version !== '') {
-	// 		dispatch(setItemsByGroup(data));
-	// 		dispatch(setComplete());
-	// 	}
-	// }, [data, version]);
 
 	return (
 		<>
@@ -121,39 +114,39 @@ function Items({ itemData }: ItemDataProps) {
 			</Head>
 			<Background />
 			<ItemWrap>
-				{/* <ItemListBox openDetail={openDetail}>*/}
-				<Spacer />
-				<SearchContainer>
-					<SearchInput
-						onChange={handleInputChange}
-						value={searchValue}
-						placeholder="아이템을 검색해 주세요."
-					/>
-					<SearchIcon>
-						<BiSearchAlt2 />
-					</SearchIcon>
-				</SearchContainer>
-				<FilterContainer>
-					{itemFilter.map((filter, index) => {
-						return (
-							<ItemFilterBox key={filter.id[0]}>
-								<FilterCheckBox
-									type="checkbox"
-									id={filter.id[0]}
-									onChange={(e: ChangeEvent<HTMLInputElement>) =>
-										handleChecked(e, filter.id)
-									}
-									filterImage={filter.url}
-									smallSize={index > 4 && index < 11}
-									title={filter.title}
-								/>
-								<Label htmlFor={filter.id[0]} title={filter.title} />
-							</ItemFilterBox>
-						);
-					})}
-				</FilterContainer>
-				{/* <ItemList itemList={itemList} fromItemDetail={fromItemDetail} />
-				</ItemListBox> */}
+				<ItemListBox openDetail={openDetail}>
+					<Spacer />
+					<SearchContainer>
+						<SearchInput
+							onChange={handleInputChange}
+							value={searchValue}
+							placeholder="아이템을 검색해 주세요."
+						/>
+						<SearchIcon>
+							<BiSearchAlt2 />
+						</SearchIcon>
+					</SearchContainer>
+					<FilterContainer>
+						{itemFilter.map((filter, index) => {
+							return (
+								<ItemFilterBox key={filter.id[0]}>
+									<FilterCheckBox
+										type="checkbox"
+										id={filter.id[0]}
+										onChange={(e: ChangeEvent<HTMLInputElement>) =>
+											handleChecked(e, filter.id)
+										}
+										filterImage={filter.url}
+										smallSize={index > 4 && index < 11}
+										title={filter.title}
+									/>
+									<Label htmlFor={filter.id[0]} title={filter.title} />
+								</ItemFilterBox>
+							);
+						})}
+					</FilterContainer>
+					{/* <ItemList itemList={itemList} fromItemDetail={fromItemDetail} /> */}
+				</ItemListBox>
 				{/* <ItemDetail changeItem={changeItemDetail} /> */}
 			</ItemWrap>
 		</>

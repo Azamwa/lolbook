@@ -1,5 +1,16 @@
+export interface ItemGroupType {
+	id: string;
+	name: string;
+	items: number[];
+	value: ItemType[];
+}
+
+export interface ItemListType {
+	[key: string]: ItemType;
+}
+
 export interface ItemType {
-	image?: {
+	image: {
 		full: string;
 		sprite: string;
 		group: string;
