@@ -9,8 +9,7 @@ import { ItemListType, ItemType } from 'utils/types';
 interface ItemDetailProps {
 	allItems: ItemListType;
 }
-
-function ItemDetail({ allItems }: ItemDetailProps) {
+export default function ItemDetail({ allItems }: ItemDetailProps) {
 	const version = useAtomValue(versionListState)[0];
 	const [selectItem, setSelectItem] = useAtom(selectItemState);
 	const [fromItemList, setFromItemList] = useAtom(fromItemState);
@@ -478,5 +477,3 @@ const CloseButton = styled.div`
 		display: flex;
 	}
 `;
-
-export default ItemDetail;

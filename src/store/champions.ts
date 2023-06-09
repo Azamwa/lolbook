@@ -1,5 +1,13 @@
-// import { ChampionDetailProps, ChampionProps } from 'utils/types';
-// import { csrFetch } from './csrFetch';
+import { atom } from 'jotai';
+import { ChampionType } from 'utils/types';
+
+const searchChampion = atom<ChampionType[]>([]);
+export const searchChampionState = atom(
+	(get) => get(searchChampion),
+	(get, set, championList: ChampionType[]) => {
+		set(searchChampion, championList);
+	}
+);
 
 // interface ChampionState {
 // 	status: string;

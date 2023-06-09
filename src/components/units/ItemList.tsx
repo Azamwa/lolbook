@@ -11,7 +11,7 @@ type ItemListProps = {
 	allItems: ItemListType;
 };
 
-function ItemList({ itemList, allItems }: ItemListProps) {
+export default function ItemList({ itemList, allItems }: ItemListProps) {
 	const version = useAtomValue(versionListState)[0];
 	const setFromItem = useSetAtom(fromItemState);
 	const [selectItem, setSelectItem] = useAtom(selectItemState);
@@ -138,5 +138,3 @@ const ItemPrice = styled.span`
 	font-size: 1.2rem;
 	color: #fff;
 `;
-
-export default ItemList;

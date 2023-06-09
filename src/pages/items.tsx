@@ -31,7 +31,7 @@ export const getStaticProps = async () => {
 	};
 };
 
-function Items({ itemData }: ItemDataProps) {
+export default function Items({ itemData }: ItemDataProps) {
 	const { data } = itemData;
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
@@ -326,5 +326,3 @@ const FilterCheckBox = styled.input<{ filterImage: string; smallSize: boolean }>
 			contrast(95%);
 	}
 `;
-
-export default Items;
