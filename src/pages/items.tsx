@@ -1,15 +1,12 @@
-import React, { ChangeEvent, useEffect, useState, useCallback } from 'react';
-import { GetServerSideProps } from 'next';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import Head from 'next/head';
 import styled from 'styled-components';
-import { useAtom } from 'jotai';
-import { versionListState } from 'store/version';
+import { useAtom, useAtomValue } from 'jotai';
 import ItemList from 'components/units/ItemList';
 import ItemDetail from 'components/units/ItemDetail';
 import { ItemListType, ItemType } from 'utils/types';
 import { BiSearchAlt2 } from 'react-icons/bi';
-import { useQueryClient } from 'react-query';
-import { itemFilterState, itemListState } from 'store/items';
+import { itemFilterState, itemListState, openDetailState } from 'store/items';
 
 interface ItemDataProps {
 	itemData: {
@@ -38,7 +35,7 @@ function Items({ itemData }: ItemDataProps) {
 	const { data } = itemData;
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
-	const [openDetail, setOpenDetail] = useState<boolean>(false);
+	const openDetail = useAtomValue(openDetailState);
 	const [itemFilter] = useAtom(itemFilterState);
 	const [itemList, setItemList] = useAtom(itemListState);
 
@@ -53,23 +50,6 @@ function Items({ itemData }: ItemDataProps) {
 			setCheckedFilter(checkedFilter.filter((filter) => id !== filter));
 		}
 	};
-
-	// const changeItemDetail = (id: string) => {
-	// 	dispatch(setItemDetail(data[id]));
-	// 	fromItemDetail(data[id]);
-	// };
-
-	// const fromItemDetail = useCallback((item: ItemType) => {
-	// 	if (item.from !== undefined) {
-	// 		let fromItemList: string[] = [];
-	// 		item.from.forEach((fromItem: string) => {
-	// 			fromItemList.push(data[fromItem]);
-	// 		});
-	// 		dispatch(setFromItem(fromItemList));
-	// 	} else {
-	// 		dispatch(setFromItem(null));
-	// 	}
-	// }, []);
 
 	useEffect(() => {
 		let searchItem: ItemListType = {};
@@ -104,7 +84,6 @@ function Items({ itemData }: ItemDataProps) {
 			}
 		}
 		setItemList(filteredItem);
-		console.log(itemList);
 	}, [searchValue, checkedFilter]);
 
 	return (
@@ -145,9 +124,9 @@ function Items({ itemData }: ItemDataProps) {
 							);
 						})}
 					</FilterContainer>
-					{/* <ItemList itemList={itemList} fromItemDetail={fromItemDetail} /> */}
+					<ItemList itemList={itemList} allItems={data} />
 				</ItemListBox>
-				{/* <ItemDetail changeItem={changeItemDetail} /> */}
+				<ItemDetail allItems={data} />
 			</ItemWrap>
 		</>
 	);

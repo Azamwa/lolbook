@@ -152,6 +152,35 @@ export const itemListState = atom(
 		set(itemGroupState, itemGroup);
 	}
 );
+
+const fromItem = atom<ItemType[]>([]);
+export const fromItemState = atom(
+	(get) => get(fromItem),
+	(get, set, { itemIdList, itemList }) => {
+		let fromItemList = get(fromItem);
+		if (itemIdList !== undefined) {
+			fromItemList = itemIdList.map((id: string) => {
+				return itemList[id];
+			});
+		}
+		set(fromItem, fromItemList);
+	}
+);
+
+const selectItem = atom<ItemType | null>(null);
+export const selectItemState = atom(
+	(get) => get(selectItem),
+	(get, set, item: ItemType) => {
+		set(selectItem, item);
+	}
+);
+
+const openDetail = atom<boolean>(false);
+export const openDetailState = atom(
+	(get) => get(openDetail),
+	(get, set) => set(openDetail, !get(openDetail))
+);
+
 // set: ({ get, set }, searchItems) => {
 // 	// const itemGroup = get(itemGroupState);
 // 	// itemGroup.forEach((group) => {
