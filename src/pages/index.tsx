@@ -12,7 +12,7 @@ export default function Home() {
 	const [requestCount, setRequestCount] = useState<number>(0);
 	const [patchNoteList, setPatchNoteList] = useAtom(patchNoteListState);
 
-	const _ = useQuery(['getPatchNoteList', requestCount], () => patchNoteAPI(requestCount), {
+	useQuery(['getPatchNoteList', requestCount], () => patchNoteAPI(requestCount), {
 		onSuccess: (data) => setPatchNoteList([...patchNoteList, ...data.list]),
 		staleTime: Infinity,
 		cacheTime: Infinity

@@ -12,7 +12,7 @@ import Head from 'next/head';
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const response = await fetch(
-		`https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/champion/${params?.id}.json`
+		`https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/champion/${params?.id}.json`
 	);
 	const championInfo = await response.json();
 	return {
@@ -24,7 +24,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async (context) => {
 	const response = await fetch(
-		'https://ddragon.leagueoflegends.com/cdn/13.10.1/data/ko_KR/champion.json'
+		'https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/champion.json'
 	);
 	const champion = await response.json();
 	let paths = [];

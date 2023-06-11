@@ -2,34 +2,47 @@ import React, { useRef, useState, useEffect, MouseEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styled, { keyframes } from 'styled-components';
-import { ChampionProps } from 'utils/types';
-import { useAppDispatch, useAppSelector } from 'store';
-import { csrFetch } from 'store/csrFetch';
+import { useAtom, useAtomValue } from 'jotai';
+import { useQuery } from 'react-query';
+import { championDetailAPI } from 'store';
+import { championDetailState, searchChampionState, selectChampionState } from 'store/champions';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 
 interface ChampionListProps {
-	championList?: ChampionProps[];
-	selectChampion: ChampionProps | null;
 	screenSize: string;
 }
 
-function ChampionSlide({ championList, selectChampion, screenSize }: ChampionListProps) {
-	const dispatch = useAppDispatch();
-	const championDetail: any = useAppSelector((state) => state.champions.championDetail);
+function ChampionSlide({ screenSize }: ChampionListProps) {
+	const championList = useAtomValue(searchChampionState);
+	const [selectChampion, setSelectChampion] = useAtom(selectChampionState);
+	const [championDetail, setChampionDetail] = useAtom(championDetailState);
 	const slider = useRef<HTMLDivElement>(null);
 	const [mouseIsDown, setMouseDown] = useState<boolean>(false);
 	const [startX, setStartX] = useState<number>(0);
 	const [scrollLeft, setScrollLeft] = useState<number>(0);
-	const [championInfo, openChampionInfo] = useState<string>('');
 
 	const scrollLeftValue = screenSize === 'big' ? 165 : screenSize === 'middle' ? 140 : 120;
 	const scrollButtonValue = screenSize === 'big' ? 1000 : 750;
 
-	useEffect(() => {
-		if (selectChampion !== null && championList !== undefined) {
-			dispatch(csrFetch.getChampionDetail(selectChampion.id));
-			openChampionInfo(selectChampion.id);
+	const { refetch } = useQuery(
+		['championDetail', selectChampion],
+		() => championDetailAPI(selectChampion.id),
+		{
+			onSuccess: ({ data }) => setChampionDetail(data[selectChampion.id]),
+			enabled: false,
+			staleTime: Infinity,
+			cacheTime: Infinity
+		}
+	);
 
+	useEffect(() => {
+		if (selectChampion.id !== undefined) {
+			refetch();
+		}
+	}, [selectChampion]);
+
+	useEffect(() => {
+		if (selectChampion.id !== undefined && championList.length > 0) {
 			championList.forEach((champion, index) => {
 				if (champion.id === selectChampion.id && slider.current !== null) {
 					slider.current.scrollTo({
@@ -40,11 +53,6 @@ function ChampionSlide({ championList, selectChampion, screenSize }: ChampionLis
 			});
 		}
 	}, [selectChampion, championList, slider]);
-
-	const clickChmpionDetail = (id: string) => {
-		openChampionInfo(id);
-		dispatch(csrFetch.getChampionDetail(id));
-	};
 
 	const scrollMoveLeft = () => {
 		if (slider.current !== null) {
@@ -114,8 +122,8 @@ function ChampionSlide({ championList, selectChampion, screenSize }: ChampionLis
 				{championList !== undefined &&
 					championList.map((champion, index) => {
 						return (
-							<CardContainer key={index}>
-								<Card onClick={() => clickChmpionDetail(champion.id)}>
+							<CardContainer key={champion.id}>
+								<Card onClick={() => setSelectChampion(champion)}>
 									<Image
 										src={`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${champion.id}_0.jpg`}
 										width={150}
@@ -124,7 +132,7 @@ function ChampionSlide({ championList, selectChampion, screenSize }: ChampionLis
 									/>
 									<ChampionName>{champion.name}</ChampionName>
 								</Card>
-								{championInfo === champion.id && (
+								{selectChampion.id === champion.id && (
 									<ChampionInfo>
 										<CardTopArea>
 											<CardSubject>
@@ -151,9 +159,8 @@ function ChampionSlide({ championList, selectChampion, screenSize }: ChampionLis
 												Tips
 											</TipsText>
 											<TipList>
-												{championDetail !== undefined &&
-													championDetail[champion.id] !== undefined &&
-													championDetail[champion.id].allytips.map(
+												{championDetail.id !== undefined &&
+													championDetail.allytips.map(
 														(tip: string, tipIdx: number) => {
 															return <Tip key={tipIdx}>{tip}</Tip>;
 														}

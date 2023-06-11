@@ -98,7 +98,7 @@ export interface ChampionType {
 	};
 }
 
-export interface ChampionDetailProps {
+export interface ChampionDetailType {
 	id: string;
 	key: string;
 	name: string;

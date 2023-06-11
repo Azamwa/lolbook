@@ -2,10 +2,10 @@ import React, { useState, useEffect, ChangeEvent, useMemo } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import styled from 'styled-components';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { versionListState } from 'store/version';
-import { searchChampionState } from 'store/champions';
-import { ChampionListType, ChampionType } from 'utils/types';
+import { searchChampionState, selectChampionState } from 'store/champions';
+import { ChampionListType } from 'utils/types';
 import ChampionSlide from 'components/units/ChampionSlide';
 import Select, { SingleValue } from 'react-select';
 import { BiSearchAlt2 } from 'react-icons/bi';
@@ -34,48 +34,31 @@ export const roleGroup = [
 ];
 
 function champions({ championList }: ChampionListType) {
-	useEffect(() => {
-		console.log(championList);
-	}, []);
 	const version = useAtomValue(versionListState)[0];
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [role, setRole] = useState<SingleValue<{ value: string; label: string }>>({
 		value: 'all',
 		label: '모든 챔피언'
 	});
+	const setSelectChampion = useSetAtom(selectChampionState);
 	const [searchChampions, setSearchChampions] = useAtom(searchChampionState);
-	const [selectChampion, setSelectChampion] = useState<ChampionType | null>(null);
 
 	useEffect(() => {
-		let searchChampion: ChampionType[] = Object.values(championList);
-		let filteredChampion: ChampionType[] = [];
-		if (searchValue !== '') {
-			searchChampion = searchChampion.filter((champion) =>
-				champion.name.includes(searchValue)
-			);
-		}
-		if (role !== null && role.value !== 'all') {
-			filteredChampion = searchChampion.filter((champion) =>
-				champion.tags.includes(role.value)
-			);
-		} else {
-			filteredChampion = searchChampion;
-		}
-		setSearchChampions(filteredChampion);
+		const searchChampionProps = { championList, role, searchValue };
+		setSearchChampions(searchChampionProps);
 	}, [searchValue, role]);
 
-	// const screenSize = useMemo(() => {
-	// 	let value = screen.availWidth > 1300 ? 'big' : screen.availWidth > 768 ? 'middle' : 'small';
-	// 	return value;
-	// }, []);
+	const screenSize = useMemo(() => {
+		let value = '';
+		if (searchChampions.length > 0) {
+			value = screen.availWidth > 1300 ? 'big' : screen.availWidth > 768 ? 'middle' : 'small';
+		}
+		return value;
+	}, [searchChampions]);
 
 	const searchChampion = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
 	};
-
-	// useEffect(() => {
-	//     dispatch(setChampionList(data));
-	// }, [data, dispatch]);
 
 	return (
 		<>
@@ -126,11 +109,7 @@ function champions({ championList }: ChampionListType) {
 						</ChampionList>
 					</ChampionListBox>
 				</ChampionListWrap>
-				{/* <ChampionSlide
-						championList={championList}
-						selectChampion={selectChampion}
-						screenSize={screenSize}
-					/> */}
+				<ChampionSlide screenSize={screenSize} />
 			</ChampionPageWrap>
 		</>
 	);
