@@ -1,28 +1,30 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { useRouter } from 'next/router';
+import Head from 'next/head';
 import styled from 'styled-components';
-import { ChampionDetailProps } from 'utils/types';
+import { useAtomValue } from 'jotai';
+import { ChampionDetailType } from 'utils/types';
 import ChampionSkill from 'components/units/ChampionSkill';
 import ChampionSummary from 'components/units/ChampionSummary';
 import ChampionSkin from 'components/units/ChampionSkin';
 import { MdKeyboardBackspace } from 'react-icons/md';
-import { useAppSelector } from 'store';
-import Head from 'next/head';
+import { screenSizeState } from 'store/champions';
+import { useRouter } from 'next/router';
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+	const name = params?.id as string;
 	const response = await fetch(
-		`https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/champion/${params?.id}.json`
+		`https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/champion/${name}.json`
 	);
-	const championInfo = await response.json();
+	const { data } = await response.json();
 	return {
 		props: {
-			championInfo
+			championInfo: data[name]
 		}
 	};
 };
 
-export const getStaticPaths: GetStaticPaths = async (context) => {
+export const getStaticPaths: GetStaticPaths = async () => {
 	const response = await fetch(
 		'https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/champion.json'
 	);
@@ -34,38 +36,31 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 	return { paths, fallback: false };
 };
 
+interface ChampionInfoProps {
+	championInfo: {
+		[key: string]: ChampionDetailType;
+	};
+}
+
 function ChampionInfo({ championInfo }: ChampionInfoProps) {
-	const router = useRouter();
-	const { data } = championInfo;
-	const version = useAppSelector((state) => state.version);
-	const skinNumber = useAppSelector((state) => state.champions.skinNumber);
-	const [detailInfo, setDetailInfo] = useState<ChampionDetailProps>();
-	const [activeTap, setActiveTap] = useState<string>('summary');
-
-	const screenSize = useMemo(() => {
-		let value = '';
-		if (version.status === 'complete') {
-			value = screen.availWidth > 1300 ? 'big' : screen.availWidth > 768 ? 'middle' : 'small';
-		}
-		return value;
-	}, [version]);
-
 	useEffect(() => {
-		if (router.query.id !== undefined) {
-			setDetailInfo(data[router.query.id.toString()]);
-		}
-	}, [data, router]);
+		console.log(championInfo);
+	}, []);
+	const [activeTap, setActiveTap] = useState<string>('summary');
+	const screenSize = useAtomValue(screenSizeState);
+	const router = useRouter();
+	// const skinNumber = useAppSelector((state) => state.champions.skinNumber);
+
 	return (
 		<>
 			<Head>
-				<title>{`LOLBook | ${detailInfo?.name} - 챔피언도감`}</title>
+				<title>{`LOLBook | ${championInfo.name} - 챔피언도감`}</title>
 			</Head>
 			<Background />
-			{detailInfo !== undefined && (
-				<PageWrap>
-					<DetailContainer>
-						<InfoArea>
-							<TopArea>
+			<PageWrap>
+				<DetailContainer>
+					<InfoArea>
+						{/* <TopArea>
 								<GoBack>
 									<MdKeyboardBackspace onClick={() => router.back()} /> 뒤로가기
 								</GoBack>
@@ -73,7 +68,7 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 									<ChampionSplashImg
 										onClick={() =>
 											window.open(
-												`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${detailInfo.id}_${skinNumber}.jpg`
+												`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championInfo.id}_${skinNumber}.jpg`
 											)
 										}>
 										스플래시이미지
@@ -82,10 +77,10 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 							</TopArea>
 							<ChampionName>
 								<ChampionGroupImage
-									imgSrc={`/img/positions/${detailInfo.tags[0]}.png`}
+									imgSrc={`/img/positions/${championInfo.tags[0]}.png`}
 								/>
-								<Name>{detailInfo.name}</Name>
-								<Title>{detailInfo.title}</Title>
+								<Name>{championInfo.name}</Name>
+								<Title>{championInfo.title}</Title>
 							</ChampionName>
 							<TapGroup>
 								<Tap
@@ -103,22 +98,21 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 									active={activeTap === 'skin'}>
 									스킨
 								</Tap>
-							</TapGroup>
-							{activeTap === 'summary' && <ChampionSummary detailInfo={detailInfo} />}
-							{activeTap === 'skill' && <ChampionSkill detailInfo={detailInfo} />}
-						</InfoArea>
-						{activeTap === 'skin' && (
-							<ChampionSkin detailInfo={detailInfo} screenSize={screenSize} />
-						)}
-						{activeTap !== 'skin' &&
+							</TapGroup> */}
+						{/* {activeTap === 'summary' && <ChampionSummary championDetail={championInfo} />}
+							{activeTap === 'skill' && <ChampionSkill championDetail={championInfo} />} */}
+					</InfoArea>
+					{/* {activeTap === 'skin' && (
+							<ChampionSkin championDetail={championInfo} screenSize={screenSize} />
+						)} */}
+					{/* {activeTap !== 'skin' &&
 							(screenSize === 'big' ? (
-								<ChampionBackground champion={detailInfo.id} />
+								<ChampionBackground champion={championInfo.id} />
 							) : (
-								<ChampionLoadingImg champion={detailInfo.id} />
-							))}
-					</DetailContainer>
-				</PageWrap>
-			)}
+								<ChampionLoadingImg champion={championInfo.id} />
+							))} */}
+				</DetailContainer>
+			</PageWrap>
 		</>
 	);
 }
@@ -305,16 +299,5 @@ const Tap = styled.div<{ active: boolean }>`
 		cursor: pointer;
 	}
 `;
-
-interface ChampionInfoProps {
-	championInfo: {
-		type: string;
-		format: string;
-		version: string;
-		data: {
-			[key: string]: ChampionDetailProps;
-		};
-	};
-}
 
 export default ChampionInfo;

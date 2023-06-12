@@ -35,6 +35,13 @@ export const championDetailState = atom(
 	(get) => get(championDetail),
 	(_, set, champion: ChampionDetailType) => set(championDetail, champion)
 );
+
+const screenSize = atom<string>('');
+export const screenSizeState = atom(
+	(get) => get(screenSize),
+	(_, set, availWidth: number) =>
+		set(screenSize, availWidth > 1300 ? 'big' : availWidth > 768 ? 'middle' : 'small')
+);
 // interface ChampionState {
 // 	status: string;
 // 	championList?: ChampionProps[];

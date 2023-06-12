@@ -4,7 +4,7 @@ import Head from 'next/head';
 import styled from 'styled-components';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { versionListState } from 'store/version';
-import { searchChampionState, selectChampionState } from 'store/champions';
+import { screenSizeState, searchChampionState, selectChampionState } from 'store/champions';
 import { ChampionListType } from 'utils/types';
 import ChampionSlide from 'components/units/ChampionSlide';
 import Select, { SingleValue } from 'react-select';
@@ -14,11 +14,11 @@ export const getStaticProps = async () => {
 	const response = await fetch(
 		`https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/champion.json`
 	);
-	const championData = await response.json();
+	const { data } = await response.json();
 
 	return {
 		props: {
-			championList: championData.data
+			championList: data
 		}
 	};
 };
@@ -42,18 +42,17 @@ function champions({ championList }: ChampionListType) {
 	});
 	const setSelectChampion = useSetAtom(selectChampionState);
 	const [searchChampions, setSearchChampions] = useAtom(searchChampionState);
+	const [screenSize, setScreenSize] = useAtom(screenSizeState);
 
 	useEffect(() => {
 		const searchChampionProps = { championList, role, searchValue };
 		setSearchChampions(searchChampionProps);
 	}, [searchValue, role]);
 
-	const screenSize = useMemo(() => {
-		let value = '';
+	useEffect(() => {
 		if (searchChampions.length > 0) {
-			value = screen.availWidth > 1300 ? 'big' : screen.availWidth > 768 ? 'middle' : 'small';
+			setScreenSize(screen.availWidth);
 		}
-		return value;
 	}, [searchChampions]);
 
 	const searchChampion = (e: ChangeEvent<HTMLInputElement>) => {
@@ -92,20 +91,21 @@ function champions({ championList }: ChampionListType) {
 							</FilterBox>
 						</SearchContainer>
 						<ChampionList>
-							{searchChampions?.map((champion, index) => {
-								return (
-									<Champion key={index}>
-										<Image
-											src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champion.id}.png`}
-											width={70}
-											height={70}
-											alt="champion-image"
-											onClick={() => setSelectChampion(champion)}
-										/>
-										<ChampionName>{champion.name}</ChampionName>
-									</Champion>
-								);
-							})}
+							{searchChampions.length > 0 &&
+								searchChampions?.map((champion, index) => {
+									return (
+										<Champion key={index}>
+											<Image
+												src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champion.id}.png`}
+												width={70}
+												height={70}
+												alt="champion-image"
+												onClick={() => setSelectChampion(champion)}
+											/>
+											<ChampionName>{champion.name}</ChampionName>
+										</Champion>
+									);
+								})}
 						</ChampionList>
 					</ChampionListBox>
 				</ChampionListWrap>

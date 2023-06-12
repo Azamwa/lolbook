@@ -25,7 +25,7 @@ function Navigation() {
 				<Link href="/items">
 					<Menu>아이템 도감</Menu>
 				</Link>
-				<Link href={`/champions?version=${version[0]}`}>
+				<Link href="/champions">
 					<Menu>챔피언 도감</Menu>
 				</Link>
 			</MenuList>

@@ -10,13 +10,6 @@ export const patchNoteAPI = async (n: number) => {
 	return res.data;
 };
 
-export const itemListAPI = async (version: string) => {
-	const res = await axios.get(
-		`https://ddragon.leagueoflegends.com/cdn/${version}/data/ko_KR/item.json`
-	);
-	return res.data;
-};
-
 export const championDetailAPI = async (name: string) => {
 	const res = await axios.get(
 		`https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/champion/${name}.json`
