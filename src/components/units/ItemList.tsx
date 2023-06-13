@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
@@ -38,13 +38,13 @@ export default function ItemList({ itemList, allItems }: ItemListProps) {
 		<ListContainer>
 			{itemList.map((group, groupIdx) => {
 				return (
-					group?.value?.length !== 0 && (
+					group.value.length > 0 && (
 						<ItemGroup key={group.id}>
 							<ItemGroupName onClick={() => handleSetToggle(groupIdx)}>
 								{group.name} ▾
 							</ItemGroupName>
 							<ItemListByGroup toggleOn={toggleGroup[groupIdx]}>
-								{group?.value?.map((item, index) => {
+								{group.value.map((item, index) => {
 									return (
 										<ItemContainer
 											key={index}
@@ -54,7 +54,7 @@ export default function ItemList({ itemList, allItems }: ItemListProps) {
 											}>
 											{version !== '' && (
 												<Image
-													src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item?.image?.full}`}
+													src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item.image.full}`}
 													width={40}
 													height={40}
 													alt="itemImage"

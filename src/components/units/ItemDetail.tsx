@@ -156,7 +156,7 @@ export default function ItemDetail({ allItems }: ItemDetailProps) {
 					)}
 				</ItemCombination>
 				<ItemDescription>
-					{selectItem !== undefined && (
+					{selectItem !== null && (
 						<>
 							<MainInfoWrap>
 								<Image

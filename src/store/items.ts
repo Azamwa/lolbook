@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { ItemGroupType, ItemListType, ItemType } from 'utils/types';
+import { ItemGroupType, ItemType } from 'utils/types';
 
 export const itemFilterState = atom([
 	{
@@ -139,17 +139,18 @@ export const itemGroupState = atom<ItemGroupType[]>([
 
 export const itemListState = atom(
 	(get) => get(itemGroupState),
-	(get, set, searchItems: ItemListType) => {
-		const itemGroup = get(itemGroupState);
-		itemGroup.forEach((group) => {
-			group.value.length = 0;
-			for (let id in searchItems) {
-				if (group.items.includes(Number(searchItems[id].image.full.split('.')[0]))) {
-					group.value.push(searchItems[id]);
-				}
-			}
-		});
-		set(itemGroupState, itemGroup);
+	(get, set, searchItems: ItemType[]) => {
+		set(
+			itemGroupState,
+			get(itemGroupState).map((group) => ({
+				...group,
+				value: [
+					...searchItems.filter((item) =>
+						group.items.includes(Number(item.image.full.split('.')[0]))
+					)
+				]
+			}))
+		);
 	}
 );
 

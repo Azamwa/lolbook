@@ -8,31 +8,24 @@ import { ItemListType, ItemType } from 'utils/types';
 import { BiSearchAlt2 } from 'react-icons/bi';
 import { itemFilterState, itemListState, openDetailState } from 'store/items';
 
-interface ItemDataProps {
-	itemData: {
-		type: string;
-		version: string;
-		basic: object;
-		data: {
-			[key: string]: ItemType;
-		};
-		groups: object;
-		tree: object;
-	};
-}
-
 export const getStaticProps = async () => {
 	const response = await fetch(
 		`https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/item.json`
 	);
-	const itemData = await response.json();
+	const { data } = await response.json();
+	const items = Object.values(data);
+
 	return {
-		props: { itemData }
+		props: { items, allItems: data }
 	};
 };
 
-export default function Items({ itemData }: ItemDataProps) {
-	const { data } = itemData;
+interface ItemsProps {
+	items: ItemType[];
+	allItems: ItemListType;
+}
+
+export default function Items({ items, allItems }: ItemsProps) {
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
 	const openDetail = useAtomValue(openDetailState);
@@ -52,38 +45,25 @@ export default function Items({ itemData }: ItemDataProps) {
 	};
 
 	useEffect(() => {
-		let searchItem: ItemListType = {};
-		let filteredItem: ItemListType = {};
+		let searchItems =
+			searchValue === '' ? items : items.filter((item) => item.name.includes(searchValue));
 
-		for (let id in data) {
-			if (data[id].name.includes(searchValue)) {
-				searchItem[id] = data[id];
-			}
-		}
-
-		filteredItem = searchItem;
 		if (checkedFilter.length !== 0) {
 			let filterCount = 0;
 			while (filterCount < checkedFilter.length) {
-				filteredItem = {};
 				const filter = checkedFilter[filterCount];
-
-				for (let id in searchItem) {
-					if (filter.length === 1 && searchItem[id].tags.includes(filter[0])) {
-						filteredItem[id] = searchItem[id];
-					} else if (
-						filter.length === 2 &&
-						(searchItem[id].tags.includes(filter[0]) ||
-							searchItem[id].tags.includes(filter[1]))
-					) {
-						filteredItem[id] = searchItem[id];
+				searchItems = searchItems.filter((item) => {
+					if (filter.length === 1) {
+						return item.tags.includes(filter[0]);
+					} else if (filter.length === 2) {
+						return item.tags.includes(filter[0]) || item.tags.includes(filter[1]);
 					}
-				}
-				searchItem = filteredItem;
+					return false;
+				});
 				filterCount++;
 			}
 		}
-		setItemList(filteredItem);
+		setItemList(searchItems);
 	}, [searchValue, checkedFilter]);
 
 	return (
@@ -124,9 +104,9 @@ export default function Items({ itemData }: ItemDataProps) {
 							);
 						})}
 					</FilterContainer>
-					<ItemList itemList={itemList} allItems={data} />
+					<ItemList itemList={itemList} allItems={allItems} />
 				</ItemListBox>
-				<ItemDetail allItems={data} />
+				<ItemDetail allItems={allItems} />
 			</ItemWrap>
 		</>
 	);
