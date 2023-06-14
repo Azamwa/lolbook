@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Image from 'next/image';
 import { useAtom, useAtomValue } from 'jotai';
 import { fromItemState, openDetailState, selectItemState } from 'store/items';
-import { versionListState } from 'store/version';
+import { versionListState } from 'store/common';
 import { ItemListType, ItemType } from 'utils/types';
 
 interface ItemDetailProps {

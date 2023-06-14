@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useQuery } from 'react-query';
 import { useAtom } from 'jotai';
 import { patchNoteAPI } from 'store';
-import { patchNoteListState } from 'store/version';
+import { patchNoteListState } from 'store/common';
 import dayjs from 'dayjs';
 
 export default function Home() {

@@ -1,26 +1,13 @@
-// import { createSlice } from '@reduxjs/toolkit';
+import { atom } from 'jotai';
+import { PatchNoteListType } from 'utils/types';
 
-// type CommonState = {
-// 	pending: boolean;
-// };
+export const versionListState = atom<string[]>([]);
 
-// const initialState: CommonState = {
-// 	pending: false
-// };
+export const patchNoteListState = atom<PatchNoteListType[]>([]);
 
-// const common = createSlice({
-// 	name: 'common',
-// 	initialState,
-// 	reducers: {
-// 		setPending(state) {
-// 			state.pending = true;
-// 		},
-// 		setComplete(state) {
-// 			state.pending = false;
-// 		}
-// 	}
-// });
-
-// export const { setPending, setComplete } = common.actions;
-
-// export default common;
+const screenSize = atom<string>('');
+export const screenSizeState = atom(
+	(get) => get(screenSize),
+	(_, set, availWidth: number) =>
+		set(screenSize, availWidth > 1300 ? 'big' : availWidth > 768 ? 'middle' : 'small')
+);

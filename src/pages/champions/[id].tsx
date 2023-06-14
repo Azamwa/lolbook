@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { useAtomValue } from 'jotai';
+import { screenSizeState } from 'store/common';
+import { skinNumberState } from 'store/champions';
 import { ChampionDetailType } from 'utils/types';
 import ChampionSkill from 'components/units/ChampionSkill';
 import ChampionSummary from 'components/units/ChampionSummary';
 import ChampionSkin from 'components/units/ChampionSkin';
 import { MdKeyboardBackspace } from 'react-icons/md';
-import { screenSizeState } from 'store/champions';
-import { useRouter } from 'next/router';
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const name = params?.id as string;
@@ -37,19 +38,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 interface ChampionInfoProps {
-	championInfo: {
-		[key: string]: ChampionDetailType;
-	};
+	championInfo: ChampionDetailType;
 }
 
 function ChampionInfo({ championInfo }: ChampionInfoProps) {
-	useEffect(() => {
-		console.log(championInfo);
-	}, []);
+	const router = useRouter();
 	const [activeTap, setActiveTap] = useState<string>('summary');
 	const screenSize = useAtomValue(screenSizeState);
-	const router = useRouter();
-	// const skinNumber = useAppSelector((state) => state.champions.skinNumber);
+	const skinNumber = useAtomValue(skinNumberState);
 
 	return (
 		<>
@@ -60,57 +56,55 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 			<PageWrap>
 				<DetailContainer>
 					<InfoArea>
-						{/* <TopArea>
-								<GoBack>
-									<MdKeyboardBackspace onClick={() => router.back()} /> 뒤로가기
-								</GoBack>
-								{screenSize === 'small' && (
-									<ChampionSplashImg
-										onClick={() =>
-											window.open(
-												`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championInfo.id}_${skinNumber}.jpg`
-											)
-										}>
-										스플래시이미지
-									</ChampionSplashImg>
-								)}
-							</TopArea>
-							<ChampionName>
-								<ChampionGroupImage
-									imgSrc={`/img/positions/${championInfo.tags[0]}.png`}
-								/>
-								<Name>{championInfo.name}</Name>
-								<Title>{championInfo.title}</Title>
-							</ChampionName>
-							<TapGroup>
-								<Tap
-									onClick={() => setActiveTap('summary')}
-									active={activeTap === 'summary'}>
-									개요
-								</Tap>
-								<Tap
-									onClick={() => setActiveTap('skill')}
-									active={activeTap === 'skill'}>
-									스킬
-								</Tap>
-								<Tap
-									onClick={() => setActiveTap('skin')}
-									active={activeTap === 'skin'}>
-									스킨
-								</Tap>
-							</TapGroup> */}
-						{/* {activeTap === 'summary' && <ChampionSummary championDetail={championInfo} />}
-							{activeTap === 'skill' && <ChampionSkill championDetail={championInfo} />} */}
+						<TopArea>
+							<GoBack>
+								<MdKeyboardBackspace onClick={() => router.back()} /> 뒤로가기
+							</GoBack>
+							{screenSize === 'small' && (
+								<ChampionSplashImg
+									onClick={() =>
+										window.open(
+											`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championInfo.id}_${skinNumber}.jpg`
+										)
+									}>
+									스플래시이미지
+								</ChampionSplashImg>
+							)}
+						</TopArea>
+						<ChampionName>
+							<ChampionGroupImage
+								imgSrc={`/img/positions/${championInfo.tags[0]}.png`}
+							/>
+							<Name>{championInfo.name}</Name>
+							<Title>{championInfo.title}</Title>
+						</ChampionName>
+						<TapGroup>
+							<Tap
+								onClick={() => setActiveTap('summary')}
+								active={activeTap === 'summary'}>
+								개요
+							</Tap>
+							<Tap
+								onClick={() => setActiveTap('skill')}
+								active={activeTap === 'skill'}>
+								스킬
+							</Tap>
+							<Tap onClick={() => setActiveTap('skin')} active={activeTap === 'skin'}>
+								스킨
+							</Tap>
+						</TapGroup>
+						{activeTap === 'summary' && (
+							<ChampionSummary championDetail={championInfo} />
+						)}
+						{activeTap === 'skill' && <ChampionSkill championDetail={championInfo} />}
 					</InfoArea>
-					{/* {activeTap === 'skin' && (
-							<ChampionSkin championDetail={championInfo} screenSize={screenSize} />
-						)} */}
-					{/* {activeTap !== 'skin' &&
-							(screenSize === 'big' ? (
-								<ChampionBackground champion={championInfo.id} />
-							) : (
-								<ChampionLoadingImg champion={championInfo.id} />
-							))} */}
+					{activeTap === 'skin' && <ChampionSkin championDetail={championInfo} />}
+					{activeTap !== 'skin' &&
+						(screenSize === 'big' ? (
+							<ChampionBackground champion={championInfo.id} />
+						) : (
+							<ChampionLoadingImg champion={championInfo.id} />
+						))}
 				</DetailContainer>
 			</PageWrap>
 		</>

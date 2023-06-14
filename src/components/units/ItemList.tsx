@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { versionListState } from 'store/version';
+import { versionListState } from 'store/common';
 import { ItemGroupType, ItemListType, ItemType } from 'utils/types';
 import { fromItemState, openDetailState, selectItemState } from 'store/items';
 

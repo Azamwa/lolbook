@@ -1,10 +1,10 @@
-import React, { useState, useEffect, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import styled from 'styled-components';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { versionListState } from 'store/version';
-import { screenSizeState, searchChampionState, selectChampionState } from 'store/champions';
+import { screenSizeState, versionListState } from 'store/common';
+import { searchChampionState, selectChampionState } from 'store/champions';
 import { ChampionListType } from 'utils/types';
 import ChampionSlide from 'components/units/ChampionSlide';
 import Select, { SingleValue } from 'react-select';
@@ -42,18 +42,12 @@ function champions({ championList }: ChampionListType) {
 	});
 	const setSelectChampion = useSetAtom(selectChampionState);
 	const [searchChampions, setSearchChampions] = useAtom(searchChampionState);
-	const [screenSize, setScreenSize] = useAtom(screenSizeState);
+	const screenSize = useAtomValue(screenSizeState);
 
 	useEffect(() => {
 		const searchChampionProps = { championList, role, searchValue };
 		setSearchChampions(searchChampionProps);
 	}, [searchValue, role]);
-
-	useEffect(() => {
-		if (searchChampions.length > 0) {
-			setScreenSize(screen.availWidth);
-		}
-	}, [searchChampions]);
 
 	const searchChampion = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);

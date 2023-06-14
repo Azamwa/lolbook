@@ -1,28 +1,29 @@
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { ChampionDetailProps } from 'utils/types';
-import { useAppSelector } from 'store';
+import { versionListState } from 'store/common';
+import { useAtomValue } from 'jotai';
+import { ChampionDetailType } from 'utils/types';
 
 interface SkillProps {
-	detailInfo: ChampionDetailProps;
+	championDetail: ChampionDetailType;
 }
 
-function ChampionSkill({ detailInfo }: SkillProps) {
+function ChampionSkill({ championDetail }: SkillProps) {
 	const [selectedSkill, SetSelectedSkill] = useState<string>('0');
-	const version = useAppSelector((state) => state.version);
+	const version = useAtomValue(versionListState)[0];
 
 	const currentSkill = useMemo(() => {
 		if (selectedSkill !== 'passive') {
-			return detailInfo.spells[Number(selectedSkill)];
+			return championDetail.spells[Number(selectedSkill)];
 		} else {
-			return detailInfo.passive;
+			return championDetail.passive;
 		}
-	}, [detailInfo, selectedSkill]);
+	}, [championDetail, selectedSkill]);
 
 	const passiveDescription = useMemo(() => {
-		return detailInfo.passive.description.replace(/<[^>]*>?/g, ' ');
-	}, [detailInfo]);
+		return championDetail.passive.description.replace(/<[^>]*>?/g, ' ');
+	}, [championDetail]);
 
 	const spellDescription = useMemo(() => {
 		let text = '';
@@ -45,7 +46,7 @@ function ChampionSkill({ detailInfo }: SkillProps) {
 			text = text.replace(/\{\{\s[a-zA-Z0-9*+-/=:]+\s\}\}/g, '?');
 		}
 		return text;
-	}, [detailInfo, selectedSkill]);
+	}, [championDetail, selectedSkill]);
 
 	return (
 		<SkillContainer>
@@ -53,7 +54,7 @@ function ChampionSkill({ detailInfo }: SkillProps) {
 				<>
 					<Skill selectedSkill={selectedSkill === 'passive'}>
 						<Image
-							src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/passive/${detailInfo.passive.image.full}`}
+							src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/passive/${championDetail.passive.image.full}`}
 							width={55}
 							height={55}
 							alt="skillImage"
@@ -62,11 +63,11 @@ function ChampionSkill({ detailInfo }: SkillProps) {
 						passive
 					</Skill>
 
-					{detailInfo.spells.map((spell, index) => {
+					{championDetail.spells.map((spell, index) => {
 						return (
 							<Skill selectedSkill={selectedSkill === index.toString()} key={index}>
 								<Image
-									src={`https://ddragon.leagueoflegends.com/cdn/${version.lastVersion}/img/spell/${spell.image.full}`}
+									src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.image.full}`}
 									width={55}
 									height={55}
 									alt="skillImage"
@@ -80,7 +81,7 @@ function ChampionSkill({ detailInfo }: SkillProps) {
 			</SkillList>
 			<SkillDescription>
 				<SkillName>
-					{selectedSkill === 'passive' ? detailInfo.passive.name : currentSkill.name}
+					{selectedSkill === 'passive' ? championDetail.passive.name : currentSkill.name}
 				</SkillName>
 				{selectedSkill !== 'passive' && (
 					<DefaultValue>
