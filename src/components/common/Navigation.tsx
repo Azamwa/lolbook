@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { versionAPI } from 'store';
-import { versionListState } from 'store/version';
+import { screenSizeState, versionListState } from 'store/common';
 
 function Navigation() {
 	const [version, setVersion] = useAtom(versionListState);
+	const setScreenSize = useSetAtom(screenSizeState);
 	useQuery('versionList', versionAPI, {
 		onSuccess: (data) => setVersion(data),
 		staleTime: Infinity,
 		cacheTime: Infinity
 	});
+
+	useEffect(() => {
+		if (version.length > 0) {
+			setScreenSize(screen.availWidth);
+		}
+	}, [version]);
 
 	return (
 		<NavigationContainer>
@@ -25,7 +32,7 @@ function Navigation() {
 				<Link href="/items">
 					<Menu>아이템 도감</Menu>
 				</Link>
-				<Link href={`/champions?version=${version[0]}`}>
+				<Link href="/champions">
 					<Menu>챔피언 도감</Menu>
 				</Link>
 			</MenuList>

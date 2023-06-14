@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ChampionDetailProps } from 'utils/types';
+import { ChampionDetailType } from 'utils/types';
 
 interface SummaryProps {
-	detailInfo: ChampionDetailProps;
+	championDetail: ChampionDetailType;
 }
 
 const statsList = [
@@ -19,10 +19,10 @@ const statsList = [
 	{ name: '마나회복량', value: 'mp', perlevelUp: 'mpregenperlevel' }
 ];
 
-function ChampionSummary({ detailInfo }: SummaryProps) {
+function ChampionSummary({ championDetail }: SummaryProps) {
 	return (
 		<SummaryContainer>
-			<Description>{detailInfo.lore}</Description>
+			<Description>{championDetail.lore}</Description>
 			<StatsContainer>
 				<Subject>스탯</Subject>
 				<SubjectExplain>&#40;괄호 안은 레벨업당 증가량 &#41;</SubjectExplain>
@@ -30,17 +30,18 @@ function ChampionSummary({ detailInfo }: SummaryProps) {
 					{statsList.map((stats, index) => {
 						return (
 							<Stats key={index}>
-								{detailInfo.stats[stats.value] !== 0 && (
+								{championDetail.stats[stats.value] !== 0 && (
 									<StatsValue>
-										{stats.name}: {detailInfo.stats[stats.value]}
+										{stats.name}: {championDetail.stats[stats.value]}
 									</StatsValue>
 								)}
-								{stats.perlevelUp && detailInfo.stats[stats.perlevelUp] !== 0 && (
-									<StatsPerLevelUp>
-										&#40;+{detailInfo.stats[stats.perlevelUp]}
-										{stats.value === 'attackspeed' && '%'}&#41;
-									</StatsPerLevelUp>
-								)}
+								{stats.perlevelUp &&
+									championDetail.stats[stats.perlevelUp] !== 0 && (
+										<StatsPerLevelUp>
+											&#40;+{championDetail.stats[stats.perlevelUp]}
+											{stats.value === 'attackspeed' && '%'}&#41;
+										</StatsPerLevelUp>
+									)}
 							</Stats>
 						);
 					})}

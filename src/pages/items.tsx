@@ -1,44 +1,34 @@
-import React, { ChangeEvent, useEffect, useState, useCallback } from 'react';
-import { GetServerSideProps } from 'next';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import Head from 'next/head';
 import styled from 'styled-components';
-import { useAtom } from 'jotai';
-import { versionListState } from 'store/version';
+import { useAtom, useAtomValue } from 'jotai';
 import ItemList from 'components/units/ItemList';
 import ItemDetail from 'components/units/ItemDetail';
 import { ItemListType, ItemType } from 'utils/types';
 import { BiSearchAlt2 } from 'react-icons/bi';
-import { useQueryClient } from 'react-query';
-import { itemFilterState, itemListState } from 'store/items';
-
-interface ItemDataProps {
-	itemData: {
-		type: string;
-		version: string;
-		basic: object;
-		data: {
-			[key: string]: ItemType;
-		};
-		groups: object;
-		tree: object;
-	};
-}
+import { itemFilterState, itemListState, openDetailState } from 'store/items';
 
 export const getStaticProps = async () => {
 	const response = await fetch(
 		`https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/item.json`
 	);
-	const itemData = await response.json();
+	const { data } = await response.json();
+	const items = Object.values(data);
+
 	return {
-		props: { itemData }
+		props: { items, allItems: data }
 	};
 };
 
-function Items({ itemData }: ItemDataProps) {
-	const { data } = itemData;
+interface ItemsProps {
+	items: ItemType[];
+	allItems: ItemListType;
+}
+
+export default function Items({ items, allItems }: ItemsProps) {
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
-	const [openDetail, setOpenDetail] = useState<boolean>(false);
+	const openDetail = useAtomValue(openDetailState);
 	const [itemFilter] = useAtom(itemFilterState);
 	const [itemList, setItemList] = useAtom(itemListState);
 
@@ -54,57 +44,26 @@ function Items({ itemData }: ItemDataProps) {
 		}
 	};
 
-	// const changeItemDetail = (id: string) => {
-	// 	dispatch(setItemDetail(data[id]));
-	// 	fromItemDetail(data[id]);
-	// };
-
-	// const fromItemDetail = useCallback((item: ItemType) => {
-	// 	if (item.from !== undefined) {
-	// 		let fromItemList: string[] = [];
-	// 		item.from.forEach((fromItem: string) => {
-	// 			fromItemList.push(data[fromItem]);
-	// 		});
-	// 		dispatch(setFromItem(fromItemList));
-	// 	} else {
-	// 		dispatch(setFromItem(null));
-	// 	}
-	// }, []);
-
 	useEffect(() => {
-		let searchItem: ItemListType = {};
-		let filteredItem: ItemListType = {};
+		let searchItems =
+			searchValue === '' ? items : items.filter((item) => item.name.includes(searchValue));
 
-		for (let id in data) {
-			if (data[id].name.includes(searchValue)) {
-				searchItem[id] = data[id];
-			}
-		}
-
-		filteredItem = searchItem;
 		if (checkedFilter.length !== 0) {
 			let filterCount = 0;
 			while (filterCount < checkedFilter.length) {
-				filteredItem = {};
 				const filter = checkedFilter[filterCount];
-
-				for (let id in searchItem) {
-					if (filter.length === 1 && searchItem[id].tags.includes(filter[0])) {
-						filteredItem[id] = searchItem[id];
-					} else if (
-						filter.length === 2 &&
-						(searchItem[id].tags.includes(filter[0]) ||
-							searchItem[id].tags.includes(filter[1]))
-					) {
-						filteredItem[id] = searchItem[id];
+				searchItems = searchItems.filter((item) => {
+					if (filter.length === 1) {
+						return item.tags.includes(filter[0]);
+					} else if (filter.length === 2) {
+						return item.tags.includes(filter[0]) || item.tags.includes(filter[1]);
 					}
-				}
-				searchItem = filteredItem;
+					return false;
+				});
 				filterCount++;
 			}
 		}
-		setItemList(filteredItem);
-		console.log(itemList);
+		setItemList(searchItems);
 	}, [searchValue, checkedFilter]);
 
 	return (
@@ -145,9 +104,9 @@ function Items({ itemData }: ItemDataProps) {
 							);
 						})}
 					</FilterContainer>
-					{/* <ItemList itemList={itemList} fromItemDetail={fromItemDetail} /> */}
+					<ItemList itemList={itemList} allItems={allItems} />
 				</ItemListBox>
-				{/* <ItemDetail changeItem={changeItemDetail} /> */}
+				<ItemDetail allItems={allItems} />
 			</ItemWrap>
 		</>
 	);
@@ -347,5 +306,3 @@ const FilterCheckBox = styled.input<{ filterImage: string; smallSize: boolean }>
 			contrast(95%);
 	}
 `;
-
-export default Items;

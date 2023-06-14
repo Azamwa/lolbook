@@ -1,14 +1,14 @@
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { ChampionDetailProps } from 'utils/types';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { screenSizeState } from 'store/common';
+import { skinNumberState } from 'store/champions';
+import { ChampionDetailType } from 'utils/types';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
-import { setSkinNumber } from 'store/champions';
-import { useAppDispatch } from 'store';
 
 interface ChampionSkinProps {
-	detailInfo: ChampionDetailProps;
-	screenSize: string;
+	championDetail: ChampionDetailType;
 }
 interface Skin {
 	id: string;
@@ -17,15 +17,16 @@ interface Skin {
 	chromas: boolean;
 }
 
-function ChampionSkin({ detailInfo, screenSize }: ChampionSkinProps) {
-	const dispatch = useAppDispatch();
-	const [currentSkin, setCurrentSkin] = useState<Skin>(detailInfo.skins[0]);
+function ChampionSkin({ championDetail }: ChampionSkinProps) {
+	const [currentSkin, setCurrentSkin] = useState<Skin>(championDetail.skins[0]);
 	const slider = useRef<HTMLDivElement>(null);
 	const [scrollLeft, setScrollLeft] = useState<number>(0);
+	const screenSize = useAtomValue(screenSizeState);
+	const setSkinNumber = useSetAtom(skinNumberState);
 	const scrollLeftValue = screenSize === 'big' ? 500 : screenSize === 'middle' ? 350 : 165;
 
 	const changeskinNumber = (skinNumber: number, index: number) => {
-		setCurrentSkin(detailInfo.skins[index]);
+		setCurrentSkin(championDetail.skins[index]);
 		if (slider.current !== null) {
 			setScrollLeft(index * 130);
 			slider.current.scrollTo({
@@ -33,7 +34,7 @@ function ChampionSkin({ detailInfo, screenSize }: ChampionSkinProps) {
 				behavior: 'smooth'
 			});
 		}
-		dispatch(setSkinNumber(skinNumber));
+		setSkinNumber(skinNumber);
 	};
 
 	const scrollMoveLeft = () => {
@@ -50,7 +51,7 @@ function ChampionSkin({ detailInfo, screenSize }: ChampionSkinProps) {
 
 	const scrollMoveRight = () => {
 		if (slider.current !== null) {
-			if (scrollLeft < detailInfo.skins.length * 130 - scrollLeftValue) {
+			if (scrollLeft < championDetail.skins.length * 130 - scrollLeftValue) {
 				setScrollLeft(scrollLeft + scrollLeftValue);
 			}
 			slider.current.scrollTo({
@@ -62,22 +63,22 @@ function ChampionSkin({ detailInfo, screenSize }: ChampionSkinProps) {
 
 	return (
 		<ChampionSkinContainer>
-			<SkinBackground champion={detailInfo.id} skinId={currentSkin.num} />
+			<SkinBackground champion={championDetail.id} skinId={currentSkin.num} />
 			<SkinContainer>
 				<SkinName>
-					{currentSkin.name === 'default' ? detailInfo.name : currentSkin.name}
+					{currentSkin.name === 'default' ? championDetail.name : currentSkin.name}
 				</SkinName>
 				<SkinList>
 					<MdArrowBackIos className="navBack" onClick={scrollMoveLeft} />
 					<SliderContainer ref={slider}>
-						{detailInfo.skins.map((skin, index) => {
+						{championDetail.skins.map((skin, index) => {
 							return (
 								<SkinImage
 									key={index}
 									skinNumber={skin.num === currentSkin.num}
 									onClick={() => changeskinNumber(skin.num, index)}>
 									<Image
-										src={`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${detailInfo.id}_${skin.num}.jpg`}
+										src={`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championDetail.id}_${skin.num}.jpg`}
 										width={135}
 										height={80}
 										alt="skinListImage"

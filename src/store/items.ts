@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { ItemGroupType, ItemListType, ItemType } from 'utils/types';
+import { ItemGroupType, ItemType } from 'utils/types';
 
 export const itemFilterState = atom([
 	{
@@ -139,72 +139,45 @@ export const itemGroupState = atom<ItemGroupType[]>([
 
 export const itemListState = atom(
 	(get) => get(itemGroupState),
-	(get, set, searchItems: ItemListType) => {
-		const itemGroup = get(itemGroupState);
-		itemGroup.forEach((group) => {
-			group.value.length = 0;
-			for (let id in searchItems) {
-				if (group.items.includes(Number(searchItems[id].image.full.split('.')[0]))) {
-					group.value.push(searchItems[id]);
-				}
-			}
-		});
-		set(itemGroupState, itemGroup);
+	(get, set, searchItems: ItemType[]) => {
+		set(
+			itemGroupState,
+			get(itemGroupState).map((group) => ({
+				...group,
+				value: [
+					...searchItems.filter((item) =>
+						group.items.includes(Number(item.image.full.split('.')[0]))
+					)
+				]
+			}))
+		);
 	}
 );
-// set: ({ get, set }, searchItems) => {
-// 	// const itemGroup = get(itemGroupState);
-// 	// itemGroup.forEach((group) => {
-// 	// 	group.value.length = 0;
-// 	// 	for (let item of searchItems) {
-// 	// 		if (group.items.includes(Number(item.full.split('.')[0]))) {
-// 	// 			group.value.push(item);
-// 	// 		}
-// 	// 	}
-// 	// });
-// 	set(itemGroupState);
-// }
 
-// type ItemsState = {
-// 	itemDetail?: ItemType;
-// 	fromItemList?: ItemType[] | null;
-// 	openDetail: boolean;
-// };
+const fromItem = atom<ItemType[]>([]);
+export const fromItemState = atom(
+	(get) => get(fromItem),
+	(get, set, { itemIdList, itemList }) => {
+		let fromItemList = get(fromItem);
+		if (itemIdList !== undefined) {
+			fromItemList = itemIdList.map((id: string) => {
+				return itemList[id];
+			});
+		}
+		set(fromItem, fromItemList);
+	}
+);
 
-// const initialState: ItemsState = {
-// 	itemGroup:
-// 	itemDetail: undefined,
-// 	fromItemList: null,
-// 	openDetail: false
-// };
+const selectItem = atom<ItemType | null>(null);
+export const selectItemState = atom(
+	(get) => get(selectItem),
+	(get, set, item: ItemType) => {
+		set(selectItem, item);
+	}
+);
 
-// const items = createSlice({
-// 	name: 'items',
-// 	initialState,
-// 	reducers: {
-//  // 여기서 하나하나씩 추가하는 방식
-// setItemsByGroup(state, action) {
-// state.itemGroup.forEach((group) => {
-// 	group.value.length = 0;
-// 	for (let id in action.payload) {
-// 		if (group.items.includes(Number(id))) {
-// 			group.value.push(action.payload[id]);
-// 		}
-// 	}
-// 	group.value.sort((a: ItemProps, b: ItemProps): number => {
-// 		return a.gold.total - b.gold.total;
-// 	});
-// });
-// },
-// 		setItemDetail(state, action) {
-// 			state.itemDetail = action.payload;
-// 			state.openDetail = true;
-// 		},
-// 		setFromItem(state, action) {
-// 			state.fromItemList = action.payload;
-// 		},
-// 		closeDetail(state) {
-// 			state.openDetail = false;
-// 		}
-// 	}
-// });
+const openDetail = atom<boolean>(false);
+export const openDetailState = atom(
+	(get) => get(openDetail),
+	(get, set) => set(openDetail, !get(openDetail))
+);

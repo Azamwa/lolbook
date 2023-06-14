@@ -1,28 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { ItemProps } from 'utils/types';
-import { useAppDispatch, useAppSelector } from 'store';
-import { setItemDetail } from 'store/items';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { versionListState } from 'store/common';
+import { ItemGroupType, ItemListType, ItemType } from 'utils/types';
+import { fromItemState, openDetailState, selectItemState } from 'store/items';
 
 type ItemListProps = {
-	itemList: {
-		id: string;
-		items: number[];
-		name: string;
-		value: undefined | ItemProps[];
-	}[];
-	fromItemDetail: (item: ItemProps) => void;
+	itemList: ItemGroupType[];
+	allItems: ItemListType;
 };
 
-function ItemList({ itemList, fromItemDetail }: ItemListProps) {
-	const dispatch = useAppDispatch();
+export default function ItemList({ itemList, allItems }: ItemListProps) {
+	const version = useAtomValue(versionListState)[0];
+	const setFromItem = useSetAtom(fromItemState);
+	const [selectItem, setSelectItem] = useAtom(selectItemState);
+	const setOpenDetail = useSetAtom(openDetailState);
 	const [toggleGroup, setToggleGroup] = useState<boolean[]>(
 		new Array(itemList.length).fill(true)
 	);
-	const selectItemDetail = useAppSelector((state) => state.items.itemDetail);
-	const [selectedItem, setSelectItem] = useState<ItemProps | undefined>();
-	const version = useAppSelector((state) => state.version.lastVersion);
 
 	const handleSetToggle = (index: number) => {
 		setToggleGroup(
@@ -32,35 +28,33 @@ function ItemList({ itemList, fromItemDetail }: ItemListProps) {
 		);
 	};
 
-	const handleClickItems = (item: ItemProps) => {
-		dispatch(setItemDetail(item));
+	const handleClickItems = (item: ItemType) => {
+		setOpenDetail();
 		setSelectItem(item);
-		fromItemDetail(item);
+		setFromItem({ itemIdList: item.from, itemList: allItems });
 	};
-
-	useEffect(() => {
-		setSelectItem(selectItemDetail);
-	}, [selectItemDetail]);
 
 	return (
 		<ListContainer>
 			{itemList.map((group, groupIdx) => {
 				return (
-					group?.value?.length !== 0 && (
+					group.value.length > 0 && (
 						<ItemGroup key={group.id}>
 							<ItemGroupName onClick={() => handleSetToggle(groupIdx)}>
 								{group.name} ▾
 							</ItemGroupName>
 							<ItemListByGroup toggleOn={toggleGroup[groupIdx]}>
-								{group?.value?.map((item, index) => {
+								{group.value.map((item, index) => {
 									return (
 										<ItemContainer
 											key={index}
 											title={item.name}
-											selected={item === selectedItem}>
+											selected={
+												selectItem !== null && item.name === selectItem.name
+											}>
 											{version !== '' && (
 												<Image
-													src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item?.image?.full}`}
+													src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item.image.full}`}
 													width={40}
 													height={40}
 													alt="itemImage"
@@ -144,5 +138,3 @@ const ItemPrice = styled.span`
 	font-size: 1.2rem;
 	color: #fff;
 `;
-
-export default ItemList;

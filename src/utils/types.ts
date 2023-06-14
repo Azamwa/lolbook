@@ -49,7 +49,11 @@ export interface ItemType {
 	};
 }
 
-export interface ChampionProps {
+export interface ChampionListType {
+	[key: string]: ChampionType;
+}
+
+export interface ChampionType {
 	version: string;
 	id: string;
 	key: string;
@@ -94,7 +98,7 @@ export interface ChampionProps {
 	};
 }
 
-export interface ChampionDetailProps {
+export interface ChampionDetailType {
 	id: string;
 	key: string;
 	name: string;
