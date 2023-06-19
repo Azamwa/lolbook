@@ -15,7 +15,7 @@ import { MdKeyboardBackspace } from 'react-icons/md';
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const name = params?.id as string;
 	const response = await fetch(
-		`https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/champion/${name}.json`
+		`https://ddragon.leagueoflegends.com/cdn/13.12.1/data/ko_KR/champion/${name}.json`
 	);
 	const { data } = await response.json();
 	return {
@@ -27,7 +27,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const response = await fetch(
-		'https://ddragon.leagueoflegends.com/cdn/13.11.1/data/ko_KR/champion.json'
+		'https://ddragon.leagueoflegends.com/cdn/13.12.1/data/ko_KR/champion.json'
 	);
 	const champion = await response.json();
 	let paths = [];

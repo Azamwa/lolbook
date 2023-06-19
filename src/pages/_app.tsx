@@ -3,7 +3,6 @@ import Head from 'next/head';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'jotai';
 import Layout from 'components/common/Layout';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 const queryClient = new QueryClient();
 export default function App({ Component, pageProps }: AppProps) {
@@ -26,7 +25,6 @@ export default function App({ Component, pageProps }: AppProps) {
 						</Head>
 						<Component {...pageProps} />
 					</Layout>
-					<ReactQueryDevtools />
 				</Hydrate>
 			</QueryClientProvider>
 		</Provider>
