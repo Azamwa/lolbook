@@ -35,6 +35,9 @@ function Navigation() {
 				<Link href="/champions">
 					<Menu>챔피언 도감</Menu>
 				</Link>
+				<Link href="/record">
+					<Menu>전적 검색</Menu>
+				</Link>
 			</MenuList>
 
 			<Version>Version {version[0]}</Version>

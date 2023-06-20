@@ -5,8 +5,8 @@ import { useAtom, useAtomValue } from 'jotai';
 import ItemList from 'components/units/ItemList';
 import ItemDetail from 'components/units/ItemDetail';
 import { ItemListType, ItemType } from 'utils/types';
-import { BiSearchAlt2 } from 'react-icons/bi';
 import { itemFilterState, itemListState, openDetailState } from 'store/items';
+import SearchIcon from 'components/common/SearchIcon';
 
 export const getStaticProps = async () => {
 	const response = await fetch(
@@ -81,9 +81,7 @@ export default function Items({ items, allItems }: ItemsProps) {
 							value={searchValue}
 							placeholder="아이템을 검색해 주세요."
 						/>
-						<SearchIcon>
-							<BiSearchAlt2 />
-						</SearchIcon>
+						<SearchIcon />
 					</SearchContainer>
 					<FilterContainer>
 						{itemFilter.map((filter, index) => {
@@ -115,7 +113,7 @@ export default function Items({ items, allItems }: ItemsProps) {
 const Background = styled.div`
 	width: 100vw;
 	height: 100vh;
-	background-image: url('/img/Invasion_of_starGuard.jpg');
+	background-image: url('/img/background/Invasion_of_starGuard.jpg');
 	background-size: cover;
 	background-position: center;
 	filter: blur(2px);
@@ -196,10 +194,11 @@ const SearchContainer = styled.div`
 	justify-content: center;
 	align-items: center;
 	position: relative;
+	padding: 0 20px;
 `;
 
 const SearchInput = styled.input`
-	width: 90%;
+	width: 100%;
 	height: 35px;
 	padding: 5px 40px;
 	font-size: 1.5rem;
@@ -215,18 +214,6 @@ const SearchInput = styled.input`
 	@media screen and (max-width: 767px) {
 		height: 30px;
 		padding: 3px 30px;
-	}
-`;
-
-const SearchIcon = styled.div`
-	font-size: 2rem;
-	color: rgb(93, 109, 126);
-	position: absolute;
-	top: 15px;
-	left: 6.5%;
-
-	@media screen and (max-width: 767px) {
-		font-size: 1.7rem;
 	}
 `;
 
