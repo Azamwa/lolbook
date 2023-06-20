@@ -114,7 +114,7 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 const Background = styled.div`
 	width: 100vw;
 	height: 100vh;
-	background-image: url('/img/runeterra.jpg');
+	background-image: url('/img/background/runeterra.jpg');
 	background-size: cover;
 	background-position: center center;
 	filter: blur(2px);

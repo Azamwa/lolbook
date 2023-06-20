@@ -75,7 +75,7 @@ export default function Home() {
 const Background = styled.div`
 	width: 100vw;
 	height: 100vh;
-	background-image: url('/img/kalbaram.jpg');
+	background-image: url('/img/background/kalbaram.jpg');
 	background-size: cover;
 	background-position: center center;
 	filter: blur(2px);
