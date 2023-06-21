@@ -1,13 +1,28 @@
-import SearchIcon from 'components/common/SearchIcon';
-import React from 'react';
+import React, { FormEvent, useState } from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
+import { useAtom } from 'jotai';
+import { summonerNameState } from 'store/record';
+import SearchIcon from 'components/common/SearchIcon';
 
 export default function index() {
+	const router = useRouter();
+	const [searchName, setSearchName] = useState<string>('');
+	const [summonerName, setSummonerName] = useAtom(summonerNameState);
+	const asd = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setSummonerName(searchName);
+		router.push(`/record/${summonerName}`);
+	};
+
 	return (
 		<PageWrap>
 			<Background />
-			<SearchForm>
-				<SearchInput placeholder="소환사명을 검색해주세요." />
+			<SearchForm onSubmit={(e) => asd(e)}>
+				<SearchInput
+					placeholder="소환사명을 검색해주세요."
+					onChange={(e) => setSearchName(e.target.value)}
+				/>
 				<SearchIcon />
 			</SearchForm>
 		</PageWrap>
@@ -34,7 +49,7 @@ const Background = styled.div`
 	z-index: -1;
 `;
 
-const SearchForm = styled.div`
+const SearchForm = styled.form`
 	width: 40%;
 	max-width: 1300px;
 	height: 50px;
