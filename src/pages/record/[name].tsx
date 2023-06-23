@@ -1,10 +1,21 @@
 import React from 'react';
+import { GetServerSideProps } from 'next';
 import styled from 'styled-components';
 
-export default function SummonerInfo() {
+export const getServerSideProps: GetServerSideProps<SummonerInfoProps> = async (context) => {
+	const name = context.params?.name as string;
+	return { props: { name } };
+};
+
+interface SummonerInfoProps {
+	name: string;
+}
+
+export default function SummonerInfo({ name }: SummonerInfoProps) {
 	return (
 		<PageWrap>
 			<Background />
+			<p>{name}</p>
 		</PageWrap>
 	);
 }
