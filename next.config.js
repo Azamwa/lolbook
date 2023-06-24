@@ -6,6 +6,9 @@ const path = require('path');
 module.exports = {
 	reactStrictMode: false,
 	swcMinify: true,
+	env: {
+		BASE_URL: process.env.BASE_URL
+	},
 	images: {
 		domains: ['ddragon.leagueoflegends.com', 'images.contentstack.io'],
 		formats: ['image/avif', 'image/webp'],
