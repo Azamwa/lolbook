@@ -4,35 +4,47 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { riotApiURL } from 'store/record';
 import { SummonerApiType } from 'utils/recordType';
-import { useQuery } from 'react-query';
 
 export const getServerSideProps: GetServerSideProps<SummonerInfoProps> = async (context) => {
 	const name = context.params?.name as string;
-	const response = await axios.get(
-		`${riotApiURL}/lol/summoner/v4/summoners/by-name/${name}?api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`
-	);
-	const { data } = response;
-	return { props: { summoner: data } };
+	const header = {
+		headers: {
+			Accept: 'application/json',
+			'Accept-Encoding': 'identity'
+		}
+	};
+	try {
+		const summonerURL = `${riotApiURL}/lol/summoner/v4/summoners/by-name/${name}?api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`;
+		const summoner_res = await axios.get(summonerURL, header);
+		const id = summoner_res.data.id;
+		const summonerLeagueURL = `${riotApiURL}/lol/league/v4/entries/by-summoner/${id}?api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`;
+		const league_res = await axios.get(summonerLeagueURL, header);
+
+		return {
+			props: {
+				summoner: {
+					info: { ...summoner_res.data },
+					league: { ...league_res.data }
+				}
+			}
+		};
+	} catch {
+		return {
+			props: {
+				error_message: '등록되지 않은 소환사입니다. 다시 검색해 주세요.'
+			}
+		};
+	}
 };
 
 interface SummonerInfoProps {
-	summoner: SummonerApiType;
+	error_message?: string;
+	summoner?: SummonerApiType;
 }
 
-export default function SummonerInfo({ summoner }: SummonerInfoProps) {
-	useQuery(
-		'asd',
-		async () =>
-			await axios.get(
-				'https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/찌2찌?api_key=RGAPI-c1fe632a-fbb1-44f3-abf9-a4f9f5ee71c0'
-			),
-		{
-			onSuccess: (data) => console.log(data)
-		}
-	);
+export default function SummonerInfo({ error_message, summoner }: SummonerInfoProps) {
 	useEffect(() => {
-		const aa = JSON.stringify(summoner);
-		console.log(JSON.stringify(aa));
+		console.log(summoner, error_message);
 	}, []);
 	return (
 		<PageWrap>
