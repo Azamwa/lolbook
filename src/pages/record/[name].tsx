@@ -52,24 +52,31 @@ export default function SummonerInfo({ error_message, summoner }: SummonerInfoPr
 		<>
 			<Background />
 			<PageWrap>
-				<TopSection>
-					<MainInfo>
-						<Image
-							src={`http://ddragon.leagueoflegends.com/cdn/13.12.1/img/profileicon/${summoner?.info.profileIconId}.png`}
-							width={100}
-							height={100}
-							alt="profileIcon"
-						/>
-						<TextInfo>
-							<SummonerName>{summoner?.info.name}</SummonerName>
-							<ResetRecord>
-								<ResetButton>최신정보</ResetButton>
-								<ResetTime>방금 전 갱신됨</ResetTime>
-							</ResetRecord>
-						</TextInfo>
-					</MainInfo>
-					<SearchForm />
-				</TopSection>
+				{summoner === undefined ? (
+					<NotSearched>
+						<SearchForm />
+						<ErrorMessage>{error_message}</ErrorMessage>
+					</NotSearched>
+				) : (
+					<TopSection>
+						<MainInfo>
+							<Image
+								src={`http://ddragon.leagueoflegends.com/cdn/13.12.1/img/profileicon/${summoner?.info.profileIconId}.png`}
+								width={100}
+								height={100}
+								alt="profileIcon"
+							/>
+							<TextInfo>
+								<SummonerName>{summoner?.info.name}</SummonerName>
+								<ResetRecord>
+									<ResetButton>최신정보</ResetButton>
+									<ResetTime>방금 전 갱신됨</ResetTime>
+								</ResetRecord>
+							</TextInfo>
+						</MainInfo>
+						<SearchForm />
+					</TopSection>
+				)}
 			</PageWrap>
 		</>
 	);
@@ -97,6 +104,23 @@ const PageWrap = styled.div`
 const TopSection = styled.section`
 	display: flex;
 	justify-content: space-between;
+`;
+
+const NotSearched = styled.div`
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 30px;
+`;
+
+const ErrorMessage = styled.p`
+	display: flex;
+	align-items: center;
+	font-size: 2.5rem;
+	color: red;
 `;
 
 const MainInfo = styled.div`
