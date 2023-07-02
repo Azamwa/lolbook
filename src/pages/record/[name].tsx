@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import styled from 'styled-components';
