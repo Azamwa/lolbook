@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useCallback } from 'react';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import styled from 'styled-components';
@@ -6,6 +6,7 @@ import axios from 'axios';
 import { riotApiURL } from 'store/record';
 import { SummonerApiType } from 'utils/recordType';
 import SearchForm from 'components/common/SearchForm';
+import SummonerRank from 'components/units/SummonerRank';
 
 export const getServerSideProps: GetServerSideProps<SummonerInfoProps> = async (context) => {
 	const name = context.params?.name as string;
@@ -26,7 +27,7 @@ export const getServerSideProps: GetServerSideProps<SummonerInfoProps> = async (
 			props: {
 				summoner: {
 					info: { ...summoner_res.data },
-					league: { ...league_res.data }
+					league: [...league_res.data]
 				}
 			}
 		};
@@ -48,6 +49,15 @@ export default function SummonerInfo({ error_message, summoner }: SummonerInfoPr
 	useEffect(() => {
 		console.log(summoner, error_message);
 	}, [error_message, summoner]);
+
+	const soloRank = useMemo(() => {
+		return summoner?.league.find((league) => league.queueType === 'RANKED_SOLO_5x5');
+	}, [summoner]);
+
+	const freeRank = useMemo(() => {
+		return summoner?.league.find((league) => league.queueType === 'RANKED_FLEX_SR');
+	}, [summoner]);
+
 	return (
 		<>
 			<Background />
@@ -58,24 +68,32 @@ export default function SummonerInfo({ error_message, summoner }: SummonerInfoPr
 						<ErrorMessage>{error_message}</ErrorMessage>
 					</NotSearched>
 				) : (
-					<TopSection>
-						<MainInfo>
-							<Image
-								src={`http://ddragon.leagueoflegends.com/cdn/13.13.1/img/profileicon/${summoner?.info.profileIconId}.png`}
-								width={100}
-								height={100}
-								alt="profileIcon"
-							/>
-							<TextInfo>
-								<SummonerName>{summoner?.info.name}</SummonerName>
-								<ResetRecord>
-									<ResetButton>최신정보</ResetButton>
-									<ResetTime>방금 전 갱신됨</ResetTime>
-								</ResetRecord>
-							</TextInfo>
-						</MainInfo>
-						<SearchForm />
-					</TopSection>
+					<>
+						<TopSection>
+							<MainInfo>
+								<Image
+									src={`http://ddragon.leagueoflegends.com/cdn/13.13.1/img/profileicon/${summoner?.info.profileIconId}.png`}
+									width={100}
+									height={100}
+									alt="profileIcon"
+								/>
+								<TextInfo>
+									<SummonerName>{summoner?.info.name}</SummonerName>
+									<ResetRecord>
+										<ResetButton>최신정보</ResetButton>
+										<ResetTime>방금 전 갱신됨</ResetTime>
+									</ResetRecord>
+								</TextInfo>
+							</MainInfo>
+							<SearchForm />
+						</TopSection>
+						<MainSection>
+							<SummonerHistory>
+								<SummonerRank rankInfo={soloRank} rankType="솔로랭크" />
+								<SummonerRank rankInfo={freeRank} rankType="자유랭크" />
+							</SummonerHistory>
+						</MainSection>
+					</>
 				)}
 			</PageWrap>
 		</>
@@ -104,6 +122,7 @@ const PageWrap = styled.div`
 const TopSection = styled.section`
 	display: flex;
 	justify-content: space-between;
+	margin-bottom: 10px;
 `;
 
 const NotSearched = styled.div`
@@ -141,11 +160,11 @@ const TextInfo = styled.article`
 const SummonerName = styled.h2`
 	color: #fff;
 	font-size: 3.5rem;
-	letter-spacing: 2px;
 	margin-top: 10px;
 `;
 
 const ResetRecord = styled.div`
+	width: 160px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -171,4 +190,17 @@ const ResetTime = styled.p`
 	font-size: 1.3rem;
 	color: #bbb;
 	font-style: italic;
+`;
+
+const MainSection = styled.main`
+	width: 100%;
+	display: flex;
+	gap: 50px;
+`;
+
+const SummonerHistory = styled.section`
+	width: 350px;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
 `;
