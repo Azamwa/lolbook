@@ -17,10 +17,10 @@ export const getServerSideProps: GetServerSideProps<SummonerInfoProps> = async (
 		}
 	};
 	try {
-		const summonerURL = `${riotApiURL}/lol/summoner/v4/summoners/by-name/${name}?api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`;
+		const summonerURL = `${riotApiURL}/lol/summoner/v4/summoners/by-name/${name}?${API_KEY}`;
 		const summoner_res = await axios.get(summonerURL, header);
 		const id = summoner_res.data.id;
-		const summonerLeagueURL = `${riotApiURL}/lol/league/v4/entries/by-summoner/${id}?api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`;
+		const summonerLeagueURL = `${riotApiURL}/lol/league/v4/entries/by-summoner/${id}?${API_KEY}`;
 		const league_res = await axios.get(summonerLeagueURL, header);
 
 		return {

@@ -1,6 +1,25 @@
-import SearchForm from 'components/common/SearchForm';
 import React from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+import { API_KEY, riotApiURL } from 'store/record';
+import SearchForm from 'components/common/SearchForm';
+
+export const getServerSideProps = async () => {
+	const header = {
+		headers: {
+			Accept: 'application/json',
+			'Accept-Encoding': 'identity'
+		}
+	};
+	const rankingURL = `${riotApiURL}/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?${API_KEY}`;
+	const ranking = await axios.get(rankingURL, header);
+
+	return {
+		props: {
+			ranking
+		}
+	};
+};
 
 export default function index() {
 	return (
@@ -8,8 +27,8 @@ export default function index() {
 			<Background />
 			<PageWrap>
 				<FormWrap>
-                    <SearchForm />
-                </FormWrap>
+					<SearchForm />
+				</FormWrap>
 			</PageWrap>
 		</>
 	);
