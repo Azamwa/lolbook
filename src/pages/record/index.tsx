@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { API_KEY, riotApiURL } from 'store/record';
 import SearchForm from 'components/common/SearchForm';
+import { RankingAPiType } from 'utils/recordType';
 
 export const getServerSideProps = async () => {
 	const header = {
@@ -12,16 +13,31 @@ export const getServerSideProps = async () => {
 		}
 	};
 	const rankingURL = `${riotApiURL}/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?${API_KEY}`;
-	const ranking = await axios.get(rankingURL, header);
+	const rankingAPI = await axios.get(rankingURL, header);
 
-	return {
-		props: {
-			ranking
-		}
-	};
+	try {
+		const { entries } = rankingAPI.data;
+		const ranking = entries.sort(
+			(a: RankingAPiType, b: RankingAPiType) => b.leaguePoints - a.leaguePoints
+		);
+		return {
+			props: {
+				ranking: ranking
+			}
+		};
+	} catch (e) {
+		console.log(e);
+	}
 };
 
-export default function index() {
+interface RecordProps {
+	ranking: RankingAPiType[];
+}
+
+export default function index({ ranking }: RecordProps) {
+	useEffect(() => {
+		console.log(ranking);
+	}, []);
 	return (
 		<>
 			<Background />
