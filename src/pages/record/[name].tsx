@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
-import { riotApiURL } from 'store/record';
+import { API_KEY, riotApiURL } from 'store/record';
 import { SummonerApiType } from 'utils/recordType';
 import SearchForm from 'components/common/SearchForm';
 import SummonerRank from 'components/units/SummonerRank';

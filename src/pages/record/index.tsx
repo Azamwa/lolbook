@@ -4,6 +4,7 @@ import axios from 'axios';
 import { API_KEY, riotApiURL } from 'store/record';
 import SearchForm from 'components/common/SearchForm';
 import { RankingAPiType } from 'utils/recordType';
+import Ranking from 'components/units/Ranking';
 
 export const getServerSideProps = async () => {
 	const header = {
@@ -12,17 +13,24 @@ export const getServerSideProps = async () => {
 			'Accept-Encoding': 'identity'
 		}
 	};
-	const rankingURL = `${riotApiURL}/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?${API_KEY}`;
-	const rankingAPI = await axios.get(rankingURL, header);
-
 	try {
-		const { entries } = rankingAPI.data;
+		const challenger = await axios.get(
+			`${riotApiURL}/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?${API_KEY}`,
+			header
+		);
+		const grandMaster = await axios.get(
+			`${riotApiURL}/lol/league/v4/grandmasterleagues/by-queue/RANKED_SOLO_5x5?${API_KEY}`,
+			header
+		);
+
+		const entries = [...challenger.data.entries, ...grandMaster.data.entries];
 		const ranking = entries.sort(
 			(a: RankingAPiType, b: RankingAPiType) => b.leaguePoints - a.leaguePoints
 		);
+
 		return {
 			props: {
-				ranking: ranking
+				ranking
 			}
 		};
 	} catch (e) {
@@ -42,9 +50,15 @@ export default function index({ ranking }: RecordProps) {
 		<>
 			<Background />
 			<PageWrap>
-				<FormWrap>
+				<PageContent>
 					<SearchForm />
-				</FormWrap>
+					<RankingSection>
+						<RankingTitle>
+							# 랭킹<span>그랜드마스터 이상의 소환사만 표시합니다. </span>
+						</RankingTitle>
+						<Ranking rankers={ranking} />
+					</RankingSection>
+				</PageContent>
 			</PageWrap>
 		</>
 	);
@@ -69,10 +83,27 @@ const PageWrap = styled.div`
 	padding-top: 100px;
 `;
 
-const FormWrap = styled.section`
+const PageContent = styled.div`
 	width: 100%;
 	height: 100%;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	gap: 30px;
+`;
+
+const RankingSection = styled.section``;
+
+const RankingTitle = styled.p`
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	margin-bottom: 5px;
+	font-size: 3rem;
+	color: rgb(52, 69, 85);
+
+	span {
+		font-size: 1.5rem;
+	}
 `;
