@@ -33,10 +33,7 @@ export default class document extends Document {
 		return (
 			<Html>
 				<Head>
-					<link
-						href="https://fonts.googleapis.com/css2?family=Jua&display=swap"
-						rel="stylesheet"
-					/>
+                <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700&display=swap" rel="stylesheet" />
 				</Head>
 				<body>
 					<Main />
