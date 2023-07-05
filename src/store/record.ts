@@ -8,3 +8,9 @@ export const summonerNameState = atom(
 	(get) => get(summonerName),
 	(get, set, name: string) => set(summonerName, name)
 );
+
+const currentPage = atom(1);
+export const currentPageState = atom(
+	(get) => get(currentPage),
+	(get, set, page: number) => set(currentPage, page)
+);

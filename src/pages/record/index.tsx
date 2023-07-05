@@ -5,6 +5,7 @@ import { API_KEY, riotApiURL } from 'store/record';
 import SearchForm from 'components/common/SearchForm';
 import { RankingAPiType } from 'utils/recordType';
 import Ranking from 'components/units/Ranking';
+import Pagenation from 'components/common/Pagenation';
 
 export const getServerSideProps = async () => {
 	const header = {
@@ -58,6 +59,7 @@ export default function index({ ranking }: RecordProps) {
 						</RankingTitle>
 						<Ranking rankers={ranking} />
 					</RankingSection>
+					<Pagenation />
 				</PageContent>
 			</PageWrap>
 		</>
