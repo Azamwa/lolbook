@@ -1,4 +1,4 @@
-export interface SummonerApiType {
+export interface SummonerType {
 	info: {
 		id: string;
 		accountId: string;
@@ -25,7 +25,7 @@ export interface SummonerApiType {
 	}[];
 }
 
-export interface RankingAPiType {
+export interface RankingType {
 	summonerId: string;
 	summonerName: string;
 	leaguePoints: number;

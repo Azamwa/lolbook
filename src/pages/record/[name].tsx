@@ -4,7 +4,7 @@ import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
 import { API_KEY, riotApiURL } from 'store/record';
-import { SummonerApiType } from 'utils/recordType';
+import { SummonerType } from 'utils/recordType';
 import SearchForm from 'components/common/SearchForm';
 import SummonerRank from 'components/units/SummonerRank';
 
@@ -42,7 +42,7 @@ export const getServerSideProps: GetServerSideProps<SummonerInfoProps> = async (
 
 interface SummonerInfoProps {
 	error_message?: string;
-	summoner?: SummonerApiType;
+	summoner?: SummonerType;
 }
 
 export default function SummonerInfo({ error_message, summoner }: SummonerInfoProps) {

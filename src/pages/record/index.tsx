@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { API_KEY, riotApiURL } from 'store/record';
 import SearchForm from 'components/common/SearchForm';
-import { RankingAPiType } from 'utils/recordType';
+import { RankingType } from 'utils/recordType';
 import Ranking from 'components/units/Ranking';
 import Pagenation from 'components/common/Pagenation';
 
@@ -26,7 +26,7 @@ export const getServerSideProps = async () => {
 
 		const entries = [...challenger.data.entries, ...grandMaster.data.entries];
 		const ranking = entries.sort(
-			(a: RankingAPiType, b: RankingAPiType) => b.leaguePoints - a.leaguePoints
+			(a: RankingType, b: RankingType) => b.leaguePoints - a.leaguePoints
 		);
 
 		return {
@@ -40,7 +40,7 @@ export const getServerSideProps = async () => {
 };
 
 interface RecordProps {
-	ranking: RankingAPiType[];
+	ranking: RankingType[];
 }
 
 export default function index({ ranking }: RecordProps) {
@@ -81,8 +81,6 @@ const Background = styled.div`
 const PageWrap = styled.div`
 	width: 100vw;
 	height: 100vh;
-	padding: 60px;
-	padding-top: 100px;
 `;
 
 const PageContent = styled.div`

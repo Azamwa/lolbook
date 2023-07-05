@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 export default function Pagenation() {
 	const router = useRouter();
 	const [pageGroup, setPageGroup] = useState<number>(
-		Math.floor((+(router.query?.page ?? 0) - 1) / 10)
+		Math.floor((+(router.query?.page ?? 1) - 1) / 10)
 	);
 	const [currentPage, setCurrentPage] = useAtom(currentPageState);
 
@@ -17,14 +17,20 @@ export default function Pagenation() {
 		router.push({ query: { page } });
 	};
 
-	useEffect(() => {
-		setCurrentPage(+(router.query.page ?? 1));
-	}, [router.query]);
-
 	const pageGroupPrev = () => {
 		if (pageGroup === 0) return;
 		setPageGroup(pageGroup - 1);
+		router.push({ query: { page: pageGroup * 10 } });
 	};
+
+	const pageGroupNext = () => {
+		setPageGroup(pageGroup + 1);
+		router.push({ query: { page: pageGroup * 10 + 11 } });
+	};
+
+	useEffect(() => {
+		setCurrentPage(+(router.query.page ?? 1));
+	}, [router.query]);
 
 	return (
 		<PageContainer>
@@ -39,7 +45,7 @@ export default function Pagenation() {
 					{pageGroup * 10 + index + 1}
 				</PageButton>
 			))}
-			<GroupMoveButton onClick={() => setPageGroup(pageGroup + 1)}>
+			<GroupMoveButton onClick={pageGroupNext}>
 				<MdArrowForwardIos />
 			</GroupMoveButton>
 		</PageContainer>
