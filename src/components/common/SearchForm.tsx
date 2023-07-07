@@ -13,7 +13,12 @@ export default function SearchForm() {
 	const formSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setSummonerName(searchName);
-		router.push(`/record/${summonerName}`);
+		router.push({
+			pathname: `/record/${summonerName}`,
+			query: {
+				fromRank: false
+			}
+		});
 	};
 
 	return (

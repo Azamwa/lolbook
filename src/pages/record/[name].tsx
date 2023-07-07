@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -46,6 +47,7 @@ interface SummonerInfoProps {
 }
 
 export default function SummonerInfo({ error_message, summoner }: SummonerInfoProps) {
+	const router = useRouter();
 	useEffect(() => {
 		console.log(summoner, error_message);
 	}, [error_message, summoner]);
@@ -69,6 +71,9 @@ export default function SummonerInfo({ error_message, summoner }: SummonerInfoPr
 					</NotSearched>
 				) : (
 					<>
+						{router.query.fromRank === 'true' && (
+							<RouterBack onClick={router.back}>← 랭킹보기</RouterBack>
+						)}
 						<TopSection>
 							<MainInfo>
 								<Image
@@ -119,6 +124,18 @@ const PageWrap = styled.div`
 	padding-top: 100px;
 `;
 
+const RouterBack = styled.div`
+	width: 100%;
+	margin-bottom: 15px;
+	font-size: 2rem;
+	color: rgb(52, 69, 85);
+	user-select: none;
+
+	:hover {
+		cursor: pointer;
+	}
+`;
+
 const TopSection = styled.section`
 	display: flex;
 	justify-content: space-between;
@@ -164,7 +181,7 @@ const SummonerName = styled.h2`
 `;
 
 const ResetRecord = styled.div`
-	width: 160px;
+	width: 180px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;

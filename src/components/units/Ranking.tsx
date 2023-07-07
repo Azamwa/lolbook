@@ -1,6 +1,7 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { currentPageState } from 'store/record';
+import { currentPageState, summonerNameState } from 'store/record';
 import styled from 'styled-components';
 import { winningRate } from 'utils/common';
 import { RankingType } from 'utils/recordType';
@@ -10,9 +11,11 @@ interface RankingProps {
 }
 
 export default function Ranking({ rankers }: RankingProps) {
+	const router = useRouter();
 	const page = useAtomValue(currentPageState);
 	const [pageNumber, setPageNumber] = useState<number[]>([]);
 	const [currentRanker, setCurrentRanker] = useState<RankingType[]>([]);
+	const setSummonerName = useSetAtom(summonerNameState);
 
 	useEffect(() => {
 		let pageRankers: RankingType[] = [];
@@ -25,6 +28,16 @@ export default function Ranking({ rankers }: RankingProps) {
 		setCurrentRanker(pageRankers);
 	}, [page]);
 
+	const searchSummoner = (ranker: RankingType) => {
+		setSummonerName(ranker.summonerName);
+		router.push({
+			pathname: `/record/${ranker.summonerName}`,
+			query: {
+				fromRank: true
+			}
+		});
+	};
+
 	return (
 		<RankingTable>
 			<TableHeader>
@@ -36,7 +49,7 @@ export default function Ranking({ rankers }: RankingProps) {
 			</TableHeader>
 			<TableBody>
 				{currentRanker.map((ranker, index) => (
-					<TableContent key={ranker.summonerId} lastIndex={index === 14}>
+					<TableContent key={ranker.summonerId} onClick={() => searchSummoner(ranker)}>
 						<RankingNumber>{pageNumber[index]}</RankingNumber>
 						<SummonerName>{currentRanker[index].summonerName}</SummonerName>
 						<Tier>{pageNumber[index] <= 300 ? 'Challenger' : 'GrandMaster'}</Tier>
@@ -77,7 +90,7 @@ export default function Ranking({ rankers }: RankingProps) {
 
 const RankingTable = styled.div`
 	width: 850px;
-	height: 570px;
+	height: 590px;
 	border-radius: 5px;
 	background-color: rgb(52, 69, 85);
 	color: #ccc;
@@ -168,13 +181,13 @@ const WinningRateText = styled.span`
 
 const TableBody = styled.div``;
 
-const TableContent = styled.td<{ lastIndex: boolean }>`
+const TableContent = styled.td`
 	width: 100%;
 	height: 35px;
 	padding: 10px;
 	display: flex;
 	align-items: center;
-	border-bottom: ${(props) => (props.lastIndex ? 'none' : '1px solid rgba(255, 255, 255, 0.2)')};
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 
 	:hover {
 		cursor: pointer;

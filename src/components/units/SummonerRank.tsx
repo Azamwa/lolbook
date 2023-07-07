@@ -77,7 +77,7 @@ const LankInfo = styled.div`
 
 const TierInfo = styled.div`
 	display: flex;
-	gap: 5px;
+	gap: 10px;
 `;
 
 const Tier = styled.div`
