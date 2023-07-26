@@ -40,56 +40,64 @@ export default function Ranking({ rankers }: RankingProps) {
 
 	return (
 		<RankingTable>
-			<TableHeader>
-				<RankingNumber>#</RankingNumber>
-				<SummonerName>소환사명</SummonerName>
-				<Tier>티어</Tier>
-				<LeaguePoint>LP</LeaguePoint>
-				<WinningRate>승률</WinningRate>
-			</TableHeader>
-			<TableBody>
-				{currentRanker.map((ranker, index) => (
-					<TableContent key={ranker.summonerId} onClick={() => searchSummoner(ranker)}>
-						<RankingNumber>{pageNumber[index]}</RankingNumber>
-						<SummonerName>{currentRanker[index].summonerName}</SummonerName>
-						<Tier>{pageNumber[index] <= 300 ? 'Challenger' : 'GrandMaster'}</Tier>
-						<LeaguePoint>{`${currentRanker[index].leaguePoints} LP`}</LeaguePoint>
-						<WinningRate>
-							<WinningGraph>
-								<WinRate
-									winsRate={winningRate(
-										currentRanker[index].wins,
-										currentRanker[index].losses
-									)}>
-									<Wins>{currentRanker[index].wins}W</Wins>
-								</WinRate>
-								<LoseRate
-									lossesRate={
-										100 -
-										winningRate(
+			<thead>
+				<tr>
+					<TableHeader>
+						<RankingNumber>#</RankingNumber>
+						<SummonerName>소환사명</SummonerName>
+						<Tier>티어</Tier>
+						<LeaguePoint>LP</LeaguePoint>
+						<WinningRate>승률</WinningRate>
+					</TableHeader>
+				</tr>
+			</thead>
+			<tbody>
+				<TableBody>
+					{currentRanker.map((ranker, index) => (
+						<TableContent
+							key={ranker.summonerId}
+							onClick={() => searchSummoner(ranker)}>
+							<RankingNumber>{pageNumber[index]}</RankingNumber>
+							<SummonerName>{currentRanker[index].summonerName}</SummonerName>
+							<Tier>{pageNumber[index] <= 300 ? 'Challenger' : 'GrandMaster'}</Tier>
+							<LeaguePoint>{`${currentRanker[index].leaguePoints} LP`}</LeaguePoint>
+							<WinningRate>
+								<WinningGraph>
+									<WinRate
+										winsRate={winningRate(
 											currentRanker[index].wins,
 											currentRanker[index].losses
-										)
-									}>
-									<Losses>{currentRanker[index].losses}L</Losses>
-								</LoseRate>
-							</WinningGraph>
-							<WinningRateText>
-								{`${winningRate(
-									currentRanker[index].wins,
-									currentRanker[index].losses
-								)} %`}
-							</WinningRateText>
-						</WinningRate>
-					</TableContent>
-				))}
-			</TableBody>
+										)}>
+										<Wins>{currentRanker[index].wins}W</Wins>
+									</WinRate>
+									<LoseRate
+										lossesRate={
+											100 -
+											winningRate(
+												currentRanker[index].wins,
+												currentRanker[index].losses
+											)
+										}>
+										<Losses>{currentRanker[index].losses}L</Losses>
+									</LoseRate>
+								</WinningGraph>
+								<WinningRateText>
+									{`${winningRate(
+										currentRanker[index].wins,
+										currentRanker[index].losses
+									)} %`}
+								</WinningRateText>
+							</WinningRate>
+						</TableContent>
+					))}
+				</TableBody>
+			</tbody>
 		</RankingTable>
 	);
 }
 
-const RankingTable = styled.div`
-	width: 850px;
+const RankingTable = styled.table`
+	width: 870px;
 	height: 590px;
 	border-radius: 5px;
 	background-color: rgb(52, 69, 85);
@@ -179,7 +187,7 @@ const WinningRateText = styled.span`
 	color: #fff;
 `;
 
-const TableBody = styled.div``;
+const TableBody = styled.tr``;
 
 const TableContent = styled.td`
 	width: 100%;
