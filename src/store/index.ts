@@ -12,7 +12,7 @@ export const patchNoteAPI = async (n: number) => {
 
 export const championDetailAPI = async (name: string) => {
 	const res = await axios.get(
-		`https://ddragon.leagueoflegends.com/cdn/13.13.1/data/ko_KR/champion/${name}.json`
+		`https://ddragon.leagueoflegends.com/cdn/13.14.1/data/ko_KR/champion/${name}.json`
 	);
 	return res.data;
 };

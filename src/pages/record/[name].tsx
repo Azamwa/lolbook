@@ -77,7 +77,7 @@ export default function SummonerInfo({ error_message, summoner }: SummonerInfoPr
 						<TopSection>
 							<MainInfo>
 								<Image
-									src={`http://ddragon.leagueoflegends.com/cdn/13.13.1/img/profileicon/${summoner?.info.profileIconId}.png`}
+									src={`http://ddragon.leagueoflegends.com/cdn/13.14.1/img/profileicon/${summoner?.info.profileIconId}.png`}
 									width={100}
 									height={100}
 									alt="profileIcon"
