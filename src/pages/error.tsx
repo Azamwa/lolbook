@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 export default function error() {
-	return <ErrorPage>에러페이지입니다.</ErrorPage>;
+	return <ErrorPage>에러페이지 리디렉션</ErrorPage>;
 }
 
 const ErrorPage = styled.div`
@@ -11,4 +11,8 @@ const ErrorPage = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background-color: rgb(52, 69, 85);
+	color: #fff;
+	font-size: 2rem;
+	font-weight: 700;
 `;

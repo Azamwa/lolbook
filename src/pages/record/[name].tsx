@@ -36,10 +36,6 @@ export const getServerSideProps: GetServerSideProps<SummonerInfoProps> = async (
 		return {
 			props: {
 				error_message: '등록되지 않은 소환사입니다. 다시 검색해 주세요.'
-			},
-			redirect: {
-				destination: '/error',
-				statusCode: 500
 			}
 		};
 	}
