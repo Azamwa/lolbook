@@ -37,8 +37,8 @@ export const getServerSideProps = async () => {
 	} catch (e) {
 		return {
 			redirect: {
-				destination: '/error',
-				statusCode: 500
+				permanent: false,
+				destination: '/error'
 			}
 		};
 	}
