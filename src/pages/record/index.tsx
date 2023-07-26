@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { API_KEY, riotApiURL } from 'store/record';
+import { riotApiURL } from 'store/record';
 import SearchForm from 'components/common/SearchForm';
 import { RankingType } from 'utils/recordType';
 import Ranking from 'components/units/Ranking';
@@ -16,22 +15,22 @@ export const getServerSideProps = async () => {
 	};
 	try {
 		const challenger = await axios.get(
-			`${riotApiURL}/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?${API_KEY}`,
+			`${riotApiURL}/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`,
 			header
 		);
-		// const grandMaster = await axios.get(
-		// 	`${riotApiURL}/lol/league/v4/grandmasterleagues/by-queue/RANKED_SOLO_5x5?${API_KEY}`,
-		// 	header
-		// );
+		const grandMaster = await axios.get(
+			`${riotApiURL}/lol/league/v4/grandmasterleagues/by-queue/RANKED_SOLO_5x5?api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`,
+			header
+		);
 
-		// const entries = [...challenger.data.entries, ...grandMaster.data.entries];
-		// const ranking = entries.sort(
-		// 	(a: RankingType, b: RankingType) => b.leaguePoints - a.leaguePoints
-		// );
+		const entries = [...challenger.data.entries, ...grandMaster.data.entries];
+		const ranking = entries.sort(
+			(a: RankingType, b: RankingType) => b.leaguePoints - a.leaguePoints
+		);
 
 		return {
 			props: {
-				ranking: challenger
+				ranking
 			}
 		};
 	} catch (e) {
