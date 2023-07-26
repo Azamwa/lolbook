@@ -36,6 +36,10 @@ export const getServerSideProps: GetServerSideProps<SummonerInfoProps> = async (
 		return {
 			props: {
 				error_message: '등록되지 않은 소환사입니다. 다시 검색해 주세요.'
+			},
+			redirect: {
+				destination: '/error',
+				statusCode: 500
 			}
 		};
 	}
@@ -48,10 +52,6 @@ interface SummonerInfoProps {
 
 export default function SummonerInfo({ error_message, summoner }: SummonerInfoProps) {
 	const router = useRouter();
-	useEffect(() => {
-		console.log(summoner, error_message);
-	}, [error_message, summoner]);
-
 	const soloRank = useMemo(() => {
 		return summoner?.league.find((league) => league.queueType === 'RANKED_SOLO_5x5');
 	}, [summoner]);

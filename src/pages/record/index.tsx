@@ -44,9 +44,6 @@ interface RecordProps {
 }
 
 export default function index({ ranking }: RecordProps) {
-	useEffect(() => {
-		console.log(ranking);
-	}, []);
 	return (
 		<>
 			<Background />
