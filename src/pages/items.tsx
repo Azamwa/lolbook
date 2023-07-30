@@ -1,19 +1,119 @@
-import React, { ChangeEvent, useEffect, useState, useCallback } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import Head from 'next/head';
 import styled from 'styled-components';
+import { useAtom, useAtomValue } from 'jotai';
 import ItemList from 'components/units/ItemList';
 import ItemDetail from 'components/units/ItemDetail';
-import { ItemProps } from 'utils/types';
-import { itemFilter } from 'utils/items/itemListInfo';
-import { useAppDispatch, useAppSelector } from 'store';
-import { setFromItem, setItemDetail, setItemsByGroup } from 'store/items';
-import { setComplete, setPending } from 'store/common';
-import { BiSearchAlt2 } from 'react-icons/bi';
-import Head from 'next/head';
+import { ItemListType, ItemType } from 'utils/types';
+import { itemFilterState, itemListState, openDetailState } from 'store/items';
+import SearchIcon from 'components/common/SearchIcon';
+
+export const getStaticProps = async () => {
+	const response = await fetch(
+		`https://ddragon.leagueoflegends.com/cdn/13.14.1/data/ko_KR/item.json`
+	);
+	const { data } = await response.json();
+	const items = Object.values(data);
+
+	return {
+		props: { items, allItems: data }
+	};
+};
+
+interface ItemsProps {
+	items: ItemType[];
+	allItems: ItemListType;
+}
+
+export default function Items({ items, allItems }: ItemsProps) {
+	const [searchValue, setSearchValue] = useState<string>('');
+	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
+	const openDetail = useAtomValue(openDetailState);
+	const [itemFilter] = useAtom(itemFilterState);
+	const [itemList, setItemList] = useAtom(itemListState);
+
+	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+		setSearchValue(e.target.value);
+	};
+
+	const handleChecked = (e: ChangeEvent<HTMLInputElement>, id: string[]) => {
+		if (e.target.checked) {
+			setCheckedFilter(checkedFilter.length === 0 ? [id] : [...checkedFilter, id]);
+		} else {
+			setCheckedFilter(checkedFilter.filter((filter) => id !== filter));
+		}
+	};
+
+	useEffect(() => {
+		let searchItems =
+			searchValue === '' ? items : items.filter((item) => item.name.includes(searchValue));
+
+		if (checkedFilter.length !== 0) {
+			let filterCount = 0;
+			while (filterCount < checkedFilter.length) {
+				const filter = checkedFilter[filterCount];
+				searchItems = searchItems.filter((item) => {
+					if (filter.length === 1) {
+						return item.tags.includes(filter[0]);
+					} else if (filter.length === 2) {
+						return item.tags.includes(filter[0]) || item.tags.includes(filter[1]);
+					}
+					return false;
+				});
+				filterCount++;
+			}
+		}
+		setItemList(searchItems);
+	}, [searchValue, checkedFilter]);
+
+	return (
+		<>
+			<Head>
+				<title>LOLBook | 아이템도감</title>
+			</Head>
+			<Background />
+			<ItemWrap>
+				<ItemListBox openDetail={openDetail}>
+					<Spacer />
+					<SearchContainer>
+						<SearchInput
+							onChange={handleInputChange}
+							value={searchValue}
+							placeholder="아이템을 검색해 주세요."
+						/>
+						<SearchIcon />
+					</SearchContainer>
+					<FilterContainer>
+						{itemFilter.map((filter, index) => {
+							return (
+								<ItemFilterBox key={filter.id[0]}>
+									<FilterCheckBox
+										type="checkbox"
+										id={filter.id[0]}
+										onChange={(e: ChangeEvent<HTMLInputElement>) =>
+											handleChecked(e, filter.id)
+										}
+										filterImage={filter.url}
+										smallSize={index > 4 && index < 11}
+										title={filter.title}
+									/>
+									<Label htmlFor={filter.id[0]} title={filter.title} />
+								</ItemFilterBox>
+							);
+						})}
+					</FilterContainer>
+					<ItemList itemList={itemList} allItems={allItems} />
+				</ItemListBox>
+				<ItemDetail allItems={allItems} />
+			</ItemWrap>
+		</>
+	);
+}
 
 const Background = styled.div`
 	width: 100vw;
 	height: 100vh;
-	background-image: url('/img/Invasion_of_starGuard.jpg');
+	background-image: url('/img/background/Invasion_of_starGuard.jpg');
 	background-size: cover;
 	background-position: center;
 	filter: blur(2px);
@@ -94,10 +194,11 @@ const SearchContainer = styled.div`
 	justify-content: center;
 	align-items: center;
 	position: relative;
+	padding: 0 20px;
 `;
 
 const SearchInput = styled.input`
-	width: 90%;
+	width: 100%;
 	height: 35px;
 	padding: 5px 40px;
 	font-size: 1.5rem;
@@ -113,18 +214,6 @@ const SearchInput = styled.input`
 	@media screen and (max-width: 767px) {
 		height: 30px;
 		padding: 3px 30px;
-	}
-`;
-
-const SearchIcon = styled.div`
-	font-size: 2rem;
-	color: rgb(93, 109, 126);
-	position: absolute;
-	top: 15px;
-	left: 6.5%;
-
-	@media screen and (max-width: 767px) {
-		font-size: 1.7rem;
 	}
 `;
 
@@ -204,157 +293,3 @@ const FilterCheckBox = styled.input<{ filterImage: string; smallSize: boolean }>
 			contrast(95%);
 	}
 `;
-
-interface ItemDataProps {
-	itemData: {
-		type: string;
-		version: string;
-		basic: object;
-		data: ItemProps;
-		groups: object;
-		tree: object;
-	};
-}
-
-function Items({ itemData }: ItemDataProps) {
-	const dispatch = useAppDispatch();
-	const itemList = useAppSelector((state) => state.items.itemGroup);
-	const version = useAppSelector((state) => state.version.lastVersion);
-	const openDetail = useAppSelector((state) => state.items.openDetail);
-	const { data }: any = itemData;
-	const [searchValue, setSearchValue] = useState<string>('');
-	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
-
-	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setSearchValue(e.target.value);
-	};
-
-	const handleChecked = (e: ChangeEvent<HTMLInputElement>, id: string[]) => {
-		if (e.target.checked) {
-			setCheckedFilter(checkedFilter.length === 0 ? [id] : [...checkedFilter, id]);
-		} else {
-			setCheckedFilter(checkedFilter.filter((filter) => id !== filter));
-		}
-	};
-
-	const changeItemDetail = (id: string) => {
-		dispatch(setItemDetail(data[id]));
-		fromItemDetail(data[id]);
-	};
-
-	const fromItemDetail = useCallback((item: ItemProps) => {
-		if (item.from !== undefined) {
-			let fromItemList: string[] = [];
-			item.from.forEach((fromItem: string) => {
-				fromItemList.push(data[fromItem]);
-			});
-			dispatch(setFromItem(fromItemList));
-		} else {
-			dispatch(setFromItem(null));
-		}
-	}, []);
-
-	useEffect(() => {
-		let searchItem: any = {};
-		let filteredItem: any = {};
-		dispatch(setPending());
-
-		for (let id in data) {
-			if (data[id].name.includes(searchValue)) {
-				searchItem[id] = data[id];
-			}
-		}
-
-		filteredItem = searchItem;
-		let filterCount = 0;
-
-		if (checkedFilter.length !== 0) {
-			while (filterCount < checkedFilter.length) {
-				filteredItem = {};
-				const filter = checkedFilter[filterCount];
-
-				for (let id in searchItem) {
-					if (filter.length === 1 && searchItem[id].tags.includes(filter[0])) {
-						filteredItem[id] = searchItem[id];
-					} else if (
-						filter.length === 2 &&
-						(searchItem[id].tags.includes(filter[0]) ||
-							searchItem[id].tags.includes(filter[1]))
-					) {
-						filteredItem[id] = searchItem[id];
-					}
-				}
-				searchItem = filteredItem;
-				filterCount++;
-			}
-		}
-
-		dispatch(setItemsByGroup(filteredItem));
-		dispatch(setComplete());
-	}, [dispatch, searchValue, checkedFilter]);
-
-	useEffect(() => {
-		dispatch(setPending());
-		if (version !== '') {
-			dispatch(setItemsByGroup(data));
-			dispatch(setComplete());
-		}
-	}, [dispatch, data, version]);
-
-	return (
-		<>
-			<Head>
-				<title>LOLBook | 아이템도감</title>
-			</Head>
-			<Background />
-			<ItemWrap>
-				<ItemListBox openDetail={openDetail}>
-					<Spacer />
-					<SearchContainer>
-						<SearchInput
-							onChange={handleInputChange}
-							value={searchValue}
-							placeholder="아이템을 검색해 주세요."
-						/>
-						<SearchIcon>
-							<BiSearchAlt2 />
-						</SearchIcon>
-					</SearchContainer>
-					<FilterContainer>
-						{itemFilter.map((filter, index) => {
-							return (
-								<ItemFilterBox key={filter.id[0]}>
-									<FilterCheckBox
-										type="checkbox"
-										id={filter.id[0]}
-										onChange={(e: ChangeEvent<HTMLInputElement>) =>
-											handleChecked(e, filter.id)
-										}
-										filterImage={filter.url}
-										smallSize={index > 4 && index < 11}
-										title={filter.title}
-									/>
-									<Label htmlFor={filter.id[0]} title={filter.title} />
-								</ItemFilterBox>
-							);
-						})}
-					</FilterContainer>
-					<ItemList itemList={itemList} fromItemDetail={fromItemDetail} />
-				</ItemListBox>
-				<ItemDetail changeItem={changeItemDetail} />
-			</ItemWrap>
-		</>
-	);
-}
-
-export const getStaticProps = async () => {
-	const response = await fetch(
-		`http://ddragon.leagueoflegends.com/cdn/12.22.1/data/ko_KR/item.json`
-	);
-	const itemData = await response.json();
-	return {
-		props: { itemData }
-	};
-};
-
-export default Items;

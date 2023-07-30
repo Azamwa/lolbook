@@ -9,13 +9,23 @@ const GlobalStyle = createGlobalStyle`
     html, body {
         padding: 0;
         margin: 0;
-        font-family: 'Jua', sans-serif;
+        font-family: 'Nanum Myeongjo', serif;
         font-size: 10px;
         overflow: hidden;
     }
     a {
         color: inherit;
         text-decoration: none;
+    }
+
+    button {
+        border: none;
+	    outline: none;
+	    border-radius: 5px;
+
+        :hover {
+            cursor: pointer;
+        }
     }
 
 `;

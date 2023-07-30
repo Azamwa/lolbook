@@ -1,8 +1,49 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from 'store';
-import { csrFetch } from 'store/csrFetch';
+import { useQuery } from 'react-query';
+import { useAtom, useSetAtom } from 'jotai';
+import { versionAPI } from 'store';
+import { screenSizeState, versionListState } from 'store/common';
+
+function Navigation() {
+	const [version, setVersion] = useAtom(versionListState);
+	const setScreenSize = useSetAtom(screenSizeState);
+	useQuery('versionList', versionAPI, {
+		onSuccess: (data) => setVersion(data),
+		staleTime: Infinity,
+		cacheTime: Infinity
+	});
+
+	useEffect(() => {
+		if (version.length > 0) {
+			setScreenSize(screen.availWidth);
+		}
+	}, [version]);
+
+	return (
+		<NavigationContainer>
+			<LogoHeader>
+				<Link href="/">
+					<span>LOLBOOK</span>
+				</Link>
+			</LogoHeader>
+			<MenuList>
+				<Link href="/items">
+					<Menu>아이템 도감</Menu>
+				</Link>
+				<Link href="/champions">
+					<Menu>챔피언 도감</Menu>
+				</Link>
+				<Link href="/record">
+					<Menu>전적 검색</Menu>
+				</Link>
+			</MenuList>
+
+			<Version>Version {version[0]}</Version>
+		</NavigationContainer>
+	);
+}
 
 const NavigationContainer = styled.div`
 	width: 100%;
@@ -62,34 +103,5 @@ const Version = styled.div`
 		bottom: -20px;
 	}
 `;
-
-function Navigation() {
-	const version = useAppSelector((state) => state.version.lastVersion);
-	const dispatch = useAppDispatch();
-
-	useEffect(() => {
-		dispatch(csrFetch.getVersionList());
-	}, [dispatch, version]);
-
-	return (
-		<NavigationContainer>
-			<LogoHeader>
-				<Link href="/">
-					<span>LOLBOOK</span>
-				</Link>
-			</LogoHeader>
-			<MenuList>
-				<Link href="/items">
-					<Menu>아이템 도감</Menu>
-				</Link>
-				<Link href="/champions">
-					<Menu>챔피언 도감</Menu>
-				</Link>
-			</MenuList>
-
-			<Version>Version {version}</Version>
-		</NavigationContainer>
-	);
-}
 
 export default Navigation;

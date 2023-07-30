@@ -1,5 +1,16 @@
-export interface ItemProps {
-	image?: {
+export interface ItemGroupType {
+	id: string;
+	name: string;
+	items: number[];
+	value: ItemType[];
+}
+
+export interface ItemListType {
+	[key: string]: ItemType;
+}
+
+export interface ItemType {
+	image: {
 		full: string;
 		sprite: string;
 		group: string;
@@ -29,7 +40,7 @@ export interface ItemProps {
 	requiredChampion?: string;
 	requiredAlly?: string;
 	stats?: object;
-	tags?: [string];
+	tags: [string];
 	maps?: {
 		'11': boolean;
 		'12': boolean;
@@ -38,7 +49,11 @@ export interface ItemProps {
 	};
 }
 
-export interface ChampionProps {
+export interface ChampionListType {
+	[key: string]: ChampionType;
+}
+
+export interface ChampionType {
 	version: string;
 	id: string;
 	key: string;
@@ -83,7 +98,7 @@ export interface ChampionProps {
 	};
 }
 
-export interface ChampionDetailProps {
+export interface ChampionDetailType {
 	id: string;
 	key: string;
 	name: string;
@@ -166,4 +181,13 @@ export interface ChampionDetailProps {
 		rangeBurn: string;
 		cooldownBurn: string;
 	};
+}
+
+export interface PatchNoteListType {
+	title: string;
+	imgURL: string;
+	author: string[];
+	date: string;
+	version: string;
+	totalElements: number;
 }

@@ -1,6 +1,55 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ChampionDetailProps } from 'utils/types';
+import { ChampionDetailType } from 'utils/types';
+
+interface SummaryProps {
+	championDetail: ChampionDetailType;
+}
+
+const statsList = [
+	{ name: '체력', value: 'hp', perlevelUp: 'hpperlevel' },
+	{ name: '체력 회복량', value: 'hpregen', perlevelUp: 'hpregenperlevel' },
+	{ name: '공격력', value: 'attackdamage', perlevelUp: 'attackdamageperlevel' },
+	{ name: '공격속도', value: 'attackspeed', perlevelUp: 'attackspeedperlevel' },
+	{ name: '방어력', value: 'armor', perlevelUp: 'armorperlevel' },
+	{ name: '마법저항력', value: 'spellblock', perlevelUp: 'spellblockperlevel' },
+	{ name: '공격사거리', value: 'attackrange' },
+	{ name: '이동속도', value: 'movespeed' },
+	{ name: '마나(기력)', value: 'mp', perlevelUp: 'mpperlevel' },
+	{ name: '마나회복량', value: 'mp', perlevelUp: 'mpregenperlevel' }
+];
+
+function ChampionSummary({ championDetail }: SummaryProps) {
+	return (
+		<SummaryContainer>
+			<Description>{championDetail.lore}</Description>
+			<StatsContainer>
+				<Subject>스탯</Subject>
+				<SubjectExplain>&#40;괄호 안은 레벨업당 증가량 &#41;</SubjectExplain>
+				<StatsList>
+					{statsList.map((stats, index) => {
+						return (
+							<Stats key={index}>
+								{championDetail.stats[stats.value] !== 0 && (
+									<StatsValue>
+										{stats.name}: {championDetail.stats[stats.value]}
+									</StatsValue>
+								)}
+								{stats.perlevelUp &&
+									championDetail.stats[stats.perlevelUp] !== 0 && (
+										<StatsPerLevelUp>
+											&#40;+{championDetail.stats[stats.perlevelUp]}
+											{stats.value === 'attackspeed' && '%'}&#41;
+										</StatsPerLevelUp>
+									)}
+							</Stats>
+						);
+					})}
+				</StatsList>
+			</StatsContainer>
+		</SummaryContainer>
+	);
+}
 
 const SummaryContainer = styled.div``;
 
@@ -51,7 +100,7 @@ const StatsValue = styled.span`
 		font-size: 1.5rem;
 	}
 
-    @media screen and (max-width: 767px) {
+	@media screen and (max-width: 767px) {
 		font-size: 1.3rem;
 	}
 `;
@@ -65,53 +114,5 @@ const StatsPerLevelUp = styled.span`
 		font-size: 1.3rem;
 	}
 `;
-
-interface SummaryProps {
-	detailInfo: ChampionDetailProps;
-}
-
-const statsList = [
-	{ name: '체력', value: 'hp', perlevelUp: 'hpperlevel' },
-	{ name: '체력 회복량', value: 'hpregen', perlevelUp: 'hpregenperlevel' },
-	{ name: '공격력', value: 'attackdamage', perlevelUp: 'attackdamageperlevel' },
-	{ name: '공격속도', value: 'attackspeed', perlevelUp: 'attackspeedperlevel' },
-	{ name: '방어력', value: 'armor', perlevelUp: 'armorperlevel' },
-	{ name: '마법저항력', value: 'spellblock', perlevelUp: 'spellblockperlevel' },
-	{ name: '공격사거리', value: 'attackrange' },
-	{ name: '이동속도', value: 'movespeed' },
-	{ name: '마나(기력)', value: 'mp', perlevelUp: 'mpperlevel' },
-	{ name: '마나회복량', value: 'mp', perlevelUp: 'mpregenperlevel' }
-];
-
-function ChampionSummary({ detailInfo }: SummaryProps) {
-	return (
-		<SummaryContainer>
-			<Description>{detailInfo.lore}</Description>
-			<StatsContainer>
-				<Subject>스탯</Subject>
-				<SubjectExplain>&#40;괄호 안은 레벨업당 증가량 &#41;</SubjectExplain>
-				<StatsList>
-					{statsList.map((stats, index) => {
-						return (
-							<Stats key={index}>
-								{detailInfo.stats[stats.value] !== 0 && (
-									<StatsValue>
-										{stats.name}: {detailInfo.stats[stats.value]}
-									</StatsValue>
-								)}
-								{stats.perlevelUp && detailInfo.stats[stats.perlevelUp] !== 0 && (
-									<StatsPerLevelUp>
-										&#40;+{detailInfo.stats[stats.perlevelUp]}
-										{stats.value === 'attackspeed' && '%'}&#41;
-									</StatsPerLevelUp>
-								)}
-							</Stats>
-						);
-					})}
-				</StatsList>
-			</StatsContainer>
-		</SummaryContainer>
-	);
-}
 
 export default ChampionSummary;
