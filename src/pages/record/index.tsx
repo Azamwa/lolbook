@@ -5,6 +5,7 @@ import SearchForm from 'components/common/SearchForm';
 import { RankingType } from 'utils/recordType';
 import Ranking from 'components/units/Ranking';
 import Pagenation from 'components/common/Pagenation';
+import { useEffect } from 'react';
 
 export const getServerSideProps = async () => {
 	const header = {
@@ -35,9 +36,12 @@ export const getServerSideProps = async () => {
 		};
 	} catch (e) {
 		return {
-			redirect: {
-				permanent: false,
-				destination: '/error'
+			// redirect: {
+			// 	permanent: false,
+			// 	destination: '/error'
+			// }
+			props: {
+				e
 			}
 		};
 	}
@@ -45,9 +49,13 @@ export const getServerSideProps = async () => {
 
 interface RecordProps {
 	ranking: RankingType[];
+	e?: any;
 }
 
-export default function index({ ranking }: RecordProps) {
+export default function index({ ranking, e }: RecordProps) {
+	useEffect(() => {
+		console.log(e);
+	}, []);
 	return (
 		<>
 			<Background />
@@ -58,7 +66,7 @@ export default function index({ ranking }: RecordProps) {
 						<RankingTitle>
 							# 랭킹<span>그랜드마스터 이상의 소환사만 표시합니다. </span>
 						</RankingTitle>
-						<Ranking rankers={ranking} />
+						{/* <Ranking rankers={ranking} /> */}
 					</RankingSection>
 					<Pagenation />
 				</PageContent>
