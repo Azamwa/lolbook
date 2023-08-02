@@ -45,6 +45,7 @@ export const getServerSideProps = async () => {
 
 interface RecordProps {
 	ranking: RankingType[];
+	e?: any;
 }
 
 export default function index({ ranking }: RecordProps) {
