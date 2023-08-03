@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import axios from 'axios';
-import { riotApiURL } from 'store/record';
+import { riotAPI } from 'store/record';
 import SearchForm from 'components/common/SearchForm';
 import { RankingType } from 'utils/recordType';
 import Ranking from 'components/units/Ranking';
@@ -15,11 +15,11 @@ export const getServerSideProps = async () => {
 	};
 	try {
 		const challenger = await axios.get(
-			`${riotApiURL}/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`,
+			`${riotAPI}/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`,
 			header
 		);
 		const grandMaster = await axios.get(
-			`${riotApiURL}/lol/league/v4/grandmasterleagues/by-queue/RANKED_SOLO_5x5?api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`,
+			`${riotAPI}/lol/league/v4/grandmasterleagues/by-queue/RANKED_SOLO_5x5?api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`,
 			header
 		);
 

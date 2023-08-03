@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
-import { API_KEY, riotApiURL } from 'store/record';
+import { API_KEY, riotAPI, riotAsiaAPI } from 'store/record';
 import { SummonerType } from 'utils/recordType';
 import SearchForm from 'components/common/SearchForm';
 import SummonerRank from 'components/units/SummonerRank';
@@ -17,19 +17,30 @@ export const getServerSideProps: GetServerSideProps<SummonerInfoProps> = async (
 			'Accept-Encoding': 'identity'
 		}
 	};
+
 	try {
-		const summonerURL = `${riotApiURL}/lol/summoner/v4/summoners/by-name/${name}?${API_KEY}`;
+		const summonerURL = `${riotAPI}/lol/summoner/v4/summoners/by-name/${name}?${API_KEY}`;
 		const summoner_res = await axios.get(summonerURL, header);
 		const id = summoner_res.data.id;
-		const summonerLeagueURL = `${riotApiURL}/lol/league/v4/entries/by-summoner/${id}?${API_KEY}`;
+		const puuid = summoner_res.data.puuid;
+		const summonerLeagueURL = `${riotAPI}/lol/league/v4/entries/by-summoner/${id}?${API_KEY}`;
 		const league_res = await axios.get(summonerLeagueURL, header);
+
+		const matchListURL = `${riotAsiaAPI}/lol/match/v5/matches/by-puuid/${puuid}/ids?${API_KEY}`;
+		const matchCode = await axios.get(matchListURL, header);
+
+		const promises = matchCode.data.map((code: string) =>
+			axios.get(`${riotAsiaAPI}/lol/match/v5/matches/${code}?${API_KEY}`, header)
+		);
+		// let result = (await Promise.all(promises)).map((match: any) => match.data);
 
 		return {
 			props: {
 				summoner: {
 					info: { ...summoner_res.data },
 					league: [...league_res.data]
-				}
+				},
+				matchList: promises
 			}
 		};
 	} catch {
@@ -44,9 +55,10 @@ export const getServerSideProps: GetServerSideProps<SummonerInfoProps> = async (
 interface SummonerInfoProps {
 	error_message?: string;
 	summoner?: SummonerType;
+	matchList?: any;
 }
 
-export default function SummonerInfo({ error_message, summoner }: SummonerInfoProps) {
+export default function SummonerInfo({ error_message, summoner, matchList }: SummonerInfoProps) {
 	const router = useRouter();
 	const soloRank = useMemo(() => {
 		return summoner?.league.find((league) => league.queueType === 'RANKED_SOLO_5x5');
@@ -56,6 +68,9 @@ export default function SummonerInfo({ error_message, summoner }: SummonerInfoPr
 		return summoner?.league.find((league) => league.queueType === 'RANKED_FLEX_SR');
 	}, [summoner]);
 
+	useEffect(() => {
+		console.log(summoner, matchList);
+	}, [summoner]);
 	return (
 		<>
 			<Background />
