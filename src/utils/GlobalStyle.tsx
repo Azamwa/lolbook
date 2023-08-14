@@ -9,7 +9,7 @@ const GlobalStyle = createGlobalStyle`
     html, body {
         padding: 0;
         margin: 0;
-        font-family: 'Nanum Myeongjo', serif;
+        font-family: 'Noto Serif KR', serif;
         font-size: 10px;
         overflow: hidden;
     }

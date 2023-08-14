@@ -179,7 +179,6 @@ const MoreButton = styled.button`
 	align-items: center;
 	font-size: 2rem;
 	border: none;
-	font-family: 'jua', san-serif;
 	color: #fff;
 	background-color: #349d85;
 	border-radius: 15px;
