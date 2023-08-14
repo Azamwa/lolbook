@@ -9,7 +9,7 @@ const GlobalStyle = createGlobalStyle`
     html, body {
         padding: 0;
         margin: 0;
-        font-family: 'Noto Serif KR', serif;
+        font-family: 'Noto Sans KR', sans-serif;
         font-size: 10px;
         overflow: hidden;
     }
