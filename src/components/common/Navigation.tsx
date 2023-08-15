@@ -67,6 +67,8 @@ const NavigationContainer = styled.div`
 const LogoHeader = styled.div`
 	font-size: 4rem;
 	margin-left: 30px;
+	font-weight: 700;
+	opacity: 0.8;
 
 	@media screen and (max-width: 767px) {
 		font-size: 2.5rem;
@@ -84,7 +86,12 @@ const MenuList = styled.div`
 `;
 
 const Menu = styled.div`
-	font-size: 2rem;
+	font-size: 2.2rem;
+	font-weight: 500;
+
+	@media screen and (max-width: 1000px) {
+		font-size: 2rem;
+	}
 
 	@media screen and (max-width: 767px) {
 		font-size: 1.5rem;

@@ -444,6 +444,7 @@ const DescriptionWrap = styled.div`
 const Descriptions = styled.p`
 	font-size: 1.6rem;
 	font-weight: lighter;
+	line-height: 20px;
 	color: rgba(255, 255, 255, 0.7);
 	margin-bottom: 3px;
 `;
