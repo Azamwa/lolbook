@@ -187,9 +187,11 @@ const Value = styled.p`
 const Description = styled.p`
 	margin: 15px 0;
 	font-size: 1.7rem;
+	line-height: 20px;
 
 	@media screen and (max-width: 1300px) {
 		font-size: 1.3rem;
+		line-height: 16px;
 	}
 `;
 

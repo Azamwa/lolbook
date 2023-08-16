@@ -55,6 +55,7 @@ const SummaryContainer = styled.div``;
 
 const Description = styled.p`
 	font-size: 1.7rem;
+	line-height: 20px;
 
 	@media screen and (max-width: 1300px) {
 		font-size: 1.5rem;
@@ -85,10 +86,10 @@ const StatsList = styled.div`
 	margin-top: 10px;
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
+	gap: 10px;
 `;
 
 const Stats = styled.div`
-	display: flex;
 	gap: 2px;
 	margin-bottom: 5px;
 `;
