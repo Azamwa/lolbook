@@ -57,8 +57,8 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 				<DetailContainer>
 					<InfoArea>
 						<TopArea>
-							<GoBack>
-								<MdKeyboardBackspace onClick={() => router.back()} /> 뒤로가기
+							<GoBack onClick={() => router.back()}>
+								<MdKeyboardBackspace /> 뒤로가기
 							</GoBack>
 							{screenSize === 'small' && (
 								<ChampionSplashImg
@@ -75,8 +75,10 @@ function ChampionInfo({ championInfo }: ChampionInfoProps) {
 							<ChampionGroupImage
 								imgSrc={`/img/positions/${championInfo.tags[0]}.png`}
 							/>
-							<Name>{championInfo.name}</Name>
-							<Title>{championInfo.title}</Title>
+							<div>
+								<Name>{championInfo.name}</Name>
+								<Title>{championInfo.title}</Title>
+							</div>
 						</ChampionName>
 						<TapGroup>
 							<Tap
@@ -135,18 +137,21 @@ const PageWrap = styled.div`
 const DetailContainer = styled.div`
 	width: 80%;
 	height: 90%;
-	padding: 30px 50px;
 	position: relative;
 	background-color: #000;
 	color: #fff;
 
-	@media screen and (max-width: 1300px) {
-		padding: 30px 40px;
+	& ::-webkit-scrollbar {
+		color: black;
+		width: 4px;
 	}
 
-	@media screen and (max-width: 767px) {
-		width: 90%;
-		padding: 0;
+	& ::-webkit-scrollbar-thumb {
+		background-color: #333;
+	}
+
+	& ::-webkit-scrollbar-track {
+		background-color: #111;
 	}
 `;
 
@@ -160,7 +165,6 @@ const ChampionBackground = styled.div<{ champion: string }>`
 	background-size: cover;
 	background-position: right center;
 	position: absolute;
-	border-left: 1px solid #000;
 	top: 0;
 	right: 0;
 	z-index: 1;
@@ -199,10 +203,9 @@ const GoBack = styled.p`
 
 	svg {
 		font-size: 3rem;
-
-		:hover {
-			cursor: pointer;
-		}
+	}
+	:hover {
+		cursor: pointer;
 	}
 `;
 
@@ -219,8 +222,11 @@ const ChampionSplashImg = styled.div`
 
 const InfoArea = styled.div`
 	width: 30%;
+	height: 100%;
+	padding: 30px 50px;
 	position: absolute;
 	z-index: 12;
+	overflow-y: auto;
 
 	@media screen and (max-width: 767px) {
 		width: 100%;
@@ -230,7 +236,7 @@ const InfoArea = styled.div`
 
 const ChampionName = styled.div`
 	display: flex;
-	align-items: flex-end;
+	align-items: center;
 	gap: 20px;
 	margin-bottom: 20px;
 
@@ -245,8 +251,8 @@ const ChampionName = styled.div`
 `;
 
 const ChampionGroupImage = styled.div<{ imgSrc: string }>`
-	width: 40px;
-	height: 40px;
+	width: 50px;
+	height: 50px;
 	background: url(${(props) => props.imgSrc}) no-repeat;
 	background-size: cover;
 	background-position: center;
@@ -257,37 +263,53 @@ const ChampionGroupImage = styled.div<{ imgSrc: string }>`
 	}
 `;
 
-const Name = styled.span`
+const Name = styled.h2`
 	font-size: 3rem;
+	margin-bottom: 5px;
 	@media screen and (max-width: 1300px) {
 		font-size: 2.5rem;
 	}
 `;
-const Title = styled.span`
-	font-size: 2.5rem;
+const Title = styled.h4`
+	font-size: 2.2rem;
 	opacity: 0.8;
 	@media screen and (max-width: 1300px) {
-		font-size: 2rem;
+		font-size: 1.9rem;
 	}
 
 	@media screen and (max-width: 767px) {
-		font-size: 1.8rem;
+		font-size: 1.7rem;
 	}
 `;
 
 const TapGroup = styled.div`
-	width: 250px;
+	width: 100%;
+	margin-bottom: 30px;
+	padding: 0 30px;
 	border-top: 2px solid #fff;
 	border-bottom: 2px solid #fff;
 	display: flex;
-	justify-content: center;
-	margin-bottom: 30px;
+	justify-content: space-between;
+
+	@media screen and (max-width: 1300px) {
+		padding: 0 15px;
+	}
 `;
 
 const Tap = styled.div<{ active: boolean }>`
-	padding: 10px 20px;
 	font-size: 2.5rem;
+	display: flex;
+	padding: 10px 0;
+	justify-content: center;
 	color: ${(props) => (props.active ? '#fff' : '#666')};
+
+	@media screen and (max-width: 1300px) {
+		font-size: 2.1rem;
+	}
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.7rem;
+	}
 
 	:hover {
 		cursor: pointer;

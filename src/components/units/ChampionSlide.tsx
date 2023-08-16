@@ -389,6 +389,7 @@ const MoveDetailPage = styled.button`
 	align-items: center;
 	font-family: inherit;
 	font-size: 1.6rem;
+	font-weight: 700;
 	background-color: #fff;
 	border: none;
 
@@ -495,6 +496,7 @@ const Tip = styled.li`
 	list-style: circle;
 	margin-bottom: 5px;
 	font-size: 1.6rem;
+	line-height: 18px;
 
 	@media screen and (max-width: 767px) {
 		font-size: 1.3rem;
