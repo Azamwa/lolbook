@@ -23,7 +23,9 @@ export default function Home() {
 			<Head>
 				<title>LOLBook | 리그오브레전드</title>
 			</Head>
-			<Background />
+			<Background>
+				<Image src="/img/background/kalbaram.jpg" alt="background" fill />
+			</Background>
 			<PageWrap>
 				<PatchNoteConatiner>
 					<Title>패치노트</Title>
@@ -75,11 +77,6 @@ export default function Home() {
 const Background = styled.div`
 	width: 100vw;
 	height: 100vh;
-	background-image: url('/img/background/kalbaram.jpg');
-	background-size: cover;
-	background-position: center center;
-	filter: blur(2px);
-	transform: scale(1.02);
 	position: absolute;
 	z-index: -1;
 `;

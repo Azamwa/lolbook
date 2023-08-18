@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import styled from 'styled-components';
 import { useAtom, useAtomValue } from 'jotai';
 import ItemList from 'components/units/ItemList';
@@ -71,7 +72,9 @@ export default function Items({ items, allItems }: ItemsProps) {
 			<Head>
 				<title>LOLBook | 아이템도감</title>
 			</Head>
-			<Background />
+			<Background>
+				<Image src="/img/background/Invasion_of_starGuard.jpg" alt="background" fill />
+			</Background>
 			<ItemWrap>
 				<ItemListBox openDetail={openDetail}>
 					<Spacer />
@@ -113,13 +116,7 @@ export default function Items({ items, allItems }: ItemsProps) {
 const Background = styled.div`
 	width: 100vw;
 	height: 100vh;
-	background-image: url('/img/background/Invasion_of_starGuard.jpg');
-	background-size: cover;
-	background-position: center;
-	filter: blur(2px);
-	opacity: 0.9;
 	position: absolute;
-	transform: scale(1.02);
 	z-index: -1;
 `;
 

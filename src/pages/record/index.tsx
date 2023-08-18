@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
 import { riotAPI } from 'store/record';
@@ -51,7 +52,9 @@ interface RecordProps {
 export default function index({ ranking }: RecordProps) {
 	return (
 		<>
-			<Background />
+			<Background>
+				<Image src="/img/background/in73r6sbixz31.webp" alt="background" fill />
+			</Background>
 			<PageWrap>
 				<PageContent>
 					<SearchForm />
@@ -71,11 +74,6 @@ export default function index({ ranking }: RecordProps) {
 const Background = styled.div`
 	width: 100vw;
 	height: 100vh;
-	background-image: url('/img/background/in73r6sbixz31.webp');
-	background-size: cover;
-	background-position: center center;
-	filter: blur(1.5px);
-	transform: scale(1.02);
 	position: absolute;
 	z-index: -1;
 `;

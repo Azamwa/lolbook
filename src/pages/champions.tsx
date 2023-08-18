@@ -58,7 +58,9 @@ function champions({ championList }: ChampionListType) {
 			<Head>
 				<title>LOLBook | 챔피언도감</title>
 			</Head>
-			<Background />
+			<Background>
+				<Image src="/img/background/runeterra.jpg" alt="background" fill />
+			</Background>
 			<ChampionPageWrap>
 				<ChampionListWrap>
 					<Title>챔피언 도감</Title>
@@ -112,11 +114,6 @@ function champions({ championList }: ChampionListType) {
 const Background = styled.div`
 	width: 100vw;
 	height: 100vh;
-	background-image: url('/img/background/runeterra.jpg');
-	background-size: cover;
-	background-position: center center;
-	filter: blur(2px);
-	transform: scale(1.02);
 	position: absolute;
 	z-index: -1;
 `;
