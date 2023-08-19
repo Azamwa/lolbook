@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
@@ -19,11 +19,6 @@ export default function ItemList({ itemList, allItems }: ItemListProps) {
 	const [toggleGroup, setToggleGroup] = useState<boolean[]>(
 		new Array(itemList.length).fill(true)
 	);
-
-	useEffect(() => {
-		console.log(version);
-	}, [version]);
-
 	const handleSetToggle = (index: number) => {
 		setToggleGroup(
 			toggleGroup.map((toggleOn, toggleIndex) => {
