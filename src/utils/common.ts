@@ -12,3 +12,38 @@ export const romeToNumber = (rome: string) => {
 	};
 	return number[rome];
 };
+
+export const selectStyle = {
+	control: (base: any) => ({
+		...base,
+		height: '15px',
+		minWidth: 130,
+		background: '#212F3D',
+		border: 'none',
+		margin: 0,
+		borderRadius: 0,
+		fontSize: '1.5rem',
+		fontFamily: 'system-ui',
+		fontWeight: 700
+	}),
+
+	menu: (base: any) => ({
+		...base,
+		background: '#212F3D',
+		color: '#ABB2B9',
+		borderRadius: 0,
+		fontSize: '1.5rem',
+		fontFamily: 'system-ui',
+		fontWeight: 700
+	}),
+
+	menuList: (base: any) => ({
+		...base,
+		borderRadius: 0
+	}),
+
+	singleValue: (base: any) => ({
+		...base,
+		color: '#ABB2B9'
+	})
+};

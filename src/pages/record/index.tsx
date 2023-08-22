@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useAtom } from 'jotai';
+import Select, { SingleValue } from 'react-select';
 import { rankListState, riotAPI } from 'store/record';
 import SearchForm from 'components/common/SearchForm';
+import { selectStyle } from 'utils/common';
 import { RankingType } from 'utils/recordType';
 import Ranking from 'components/units/Ranking';
 import Pagenation from 'components/common/Pagenation';
@@ -43,10 +45,21 @@ interface RecordProps {
 	e?: any;
 }
 
+const tierGroup = [
+	{ label: '챌린저', value: 'CHALLENGER' },
+	{ label: '그랜드마스터', value: 'GRANDMASTER' },
+	{ label: '마스터', value: 'MASTER' }
+];
+
 export default function index({ ranking }: RecordProps) {
 	const [rankList, setRankList] = useAtom(rankListState);
+	const [tier, setTier] = useState<SingleValue<{ value: string; label: string }>>({
+		label: '챌린저',
+		value: 'CHALLENGER'
+	});
 
 	useEffect(() => {
+		console.log(ranking.length);
 		setRankList(ranking);
 	}, [ranking]);
 	return (
@@ -58,9 +71,17 @@ export default function index({ ranking }: RecordProps) {
 				<PageContent>
 					<SearchForm />
 					<RankingSection>
-						<RankingTitle>
-							# 랭킹<span>그랜드마스터 이상의 소환사만 표시합니다. </span>
-						</RankingTitle>
+						<RankingSelectForm>
+							<Select
+								id="long-value-select"
+								instanceId="long-value-select"
+								defaultValue={{ label: '챌린저', value: 'CHALLENGER' }}
+								onChange={(e) => setTier(e)}
+								isSearchable={false}
+								options={tierGroup}
+								styles={selectStyle}
+							/>
+						</RankingSelectForm>
 						<Ranking rankers={rankList} />
 					</RankingSection>
 					{/* <Pagenation /> */}
@@ -92,17 +113,13 @@ const PageContent = styled.div`
 	gap: 30px;
 `;
 
-const RankingSection = styled.section``;
-
-const RankingTitle = styled.p`
+const RankingSection = styled.section`
 	display: flex;
-	justify-content: space-between;
+	flex-direction: column;
 	align-items: flex-end;
-	margin-bottom: 5px;
-	font-size: 3rem;
-	color: rgb(52, 69, 85);
+`;
 
-	span {
-		font-size: 1.5rem;
-	}
+const RankingSelectForm = styled.div`
+	width: 150px;
+	margin-bottom: 7px;
 `;
