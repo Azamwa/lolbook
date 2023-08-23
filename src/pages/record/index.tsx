@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useAtom } from 'jotai';
+import { useQuery } from 'react-query';
 import Select, { SingleValue } from 'react-select';
+import { rankingAPI } from 'store';
 import { rankListState, riotAPI } from 'store/record';
 import SearchForm from 'components/common/SearchForm';
 import { selectStyle } from 'utils/common';
@@ -12,38 +15,38 @@ import { RankingType } from 'utils/recordType';
 import Ranking from 'components/units/Ranking';
 import Pagenation from 'components/common/Pagenation';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const page = context.query.page ?? 1;
-	const header = {
-		headers: {
-			Accept: 'application/json',
-			'Accept-Encoding': 'identity'
-		}
-	};
-	try {
-		const ranking = await axios.get(
-			`${riotAPI}/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=${page}&api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`,
-			header
-		);
-		return {
-			props: {
-				ranking: ranking.data
-			}
-		};
-	} catch (e) {
-		return {
-			redirect: {
-				permanent: false,
-				destination: '/error'
-			}
-		};
-	}
-};
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+// 	const page = context.query.page ?? 1;
+// 	const header = {
+// 		headers: {
+// 			Accept: 'application/json',
+// 			'Accept-Encoding': 'identity'
+// 		}
+// 	};
+// 	try {
+// 		const ranking = await axios.get(
+// 			`${riotAPI}/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=${page}&api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`,
+// 			header
+// 		);
+// 		return {
+// 			props: {
+// 				ranking: ranking.data
+// 			}
+// 		};
+// 	} catch (e) {
+// 		return {
+// 			redirect: {
+// 				permanent: false,
+// 				destination: '/error'
+// 			}
+// 		};
+// 	}
+// };
 
-interface RecordProps {
-	ranking: RankingType[];
-	e?: any;
-}
+// interface RecordProps {
+// 	ranking: RankingType[];
+// 	e?: any;
+// }
 
 const tierGroup = [
 	{ label: '챌린저', value: 'CHALLENGER' },
@@ -51,7 +54,8 @@ const tierGroup = [
 	{ label: '마스터', value: 'MASTER' }
 ];
 
-export default function index({ ranking }: RecordProps) {
+export default function index() {
+	const router = useRouter();
 	const [rankList, setRankList] = useAtom(rankListState);
 	const [tier, setTier] = useState<SingleValue<{ value: string; label: string }>>({
 		label: '챌린저',
@@ -59,9 +63,21 @@ export default function index({ ranking }: RecordProps) {
 	});
 
 	useEffect(() => {
-		console.log(ranking.length);
-		setRankList(ranking);
-	}, [ranking]);
+		setRankList([]);
+		router.push({ query: { page: 1 } });
+	}, [tier]);
+
+	useEffect(() => {
+		const page = router.query.page !== undefined ? router.query.page[0] : '1';
+		if (tier !== null) {
+			useQuery(['getRankingList', [tier.value, page]], () => rankingAPI(tier.value, page), {
+				onSuccess: (data) => setRankList([...rankList, ...data]),
+				staleTime: Infinity,
+				cacheTime: Infinity
+			});
+		}
+	}, [router.query.page]);
+
 	return (
 		<>
 			<Background>
