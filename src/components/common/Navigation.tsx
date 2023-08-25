@@ -1,19 +1,15 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { useQuery } from 'react-query';
-import { useAtom, useSetAtom } from 'jotai';
-import { versionAPI } from 'store';
 import { screenSizeState, versionListState } from 'store/common';
 
 function Navigation() {
-	const [version, setVersion] = useAtom(versionListState);
-	const setScreenSize = useSetAtom(screenSizeState);
-	useQuery('versionList', versionAPI, {
-		onSuccess: (data) => setVersion(data),
-		staleTime: Infinity,
-		cacheTime: Infinity
-	});
+	const { version, setVersion } = versionListState();
+	const { setScreenSize } = screenSizeState();
+
+	useEffect(() => {
+		setVersion();
+	}, []);
 
 	useEffect(() => {
 		if (version.length > 0) {

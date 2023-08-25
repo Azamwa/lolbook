@@ -1,22 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import styled from 'styled-components';
-import { useQuery } from 'react-query';
-import { useAtom } from 'jotai';
-import { patchNoteAPI } from 'store';
-import { patchNoteListState } from 'store/common';
 import dayjs from 'dayjs';
+import { patchNoteListState } from 'store/common';
 
 export default function Home() {
 	const [requestCount, setRequestCount] = useState<number>(0);
-	const [patchNoteList, setPatchNoteList] = useAtom(patchNoteListState);
+	const { patchNoteList, setPatchNoteList } = patchNoteListState();
 
-	useQuery(['getPatchNoteList', requestCount], () => patchNoteAPI(requestCount), {
-		onSuccess: (data) => setPatchNoteList([...patchNoteList, ...data.list]),
-		staleTime: Infinity,
-		cacheTime: Infinity
-	});
+	useEffect(() => {
+		setPatchNoteList(requestCount);
+	}, [requestCount]);
 
 	return (
 		<>
