@@ -2,11 +2,10 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { useAtom, useAtomValue } from 'jotai';
 import ItemList from 'components/units/ItemList';
 import ItemDetail from 'components/units/ItemDetail';
 import { ItemListType, ItemType } from 'utils/types';
-import { itemFilterState, itemListState, openDetailState } from 'store/items';
+import { itemFilter, itemListState, openDetailState } from 'store/items';
 import SearchIcon from 'components/common/SearchIcon';
 
 export const getStaticProps = async () => {
@@ -29,9 +28,8 @@ interface ItemsProps {
 export default function Items({ items, allItems }: ItemsProps) {
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [checkedFilter, setCheckedFilter] = useState<string[][]>([]);
-	const openDetail = useAtomValue(openDetailState);
-	const [itemFilter] = useAtom(itemFilterState);
-	const [itemList, setItemList] = useAtom(itemListState);
+	const { openDetail } = openDetailState();
+	const { itemGroup, setItemGroup } = itemListState();
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
@@ -64,7 +62,7 @@ export default function Items({ items, allItems }: ItemsProps) {
 				filterCount++;
 			}
 		}
-		setItemList(searchItems);
+		setItemGroup(searchItems);
 	}, [searchValue, checkedFilter]);
 
 	return (
@@ -105,7 +103,7 @@ export default function Items({ items, allItems }: ItemsProps) {
 							);
 						})}
 					</FilterContainer>
-					<ItemList itemList={itemList} allItems={allItems} />
+					<ItemList itemList={itemGroup} allItems={allItems} />
 				</ItemListBox>
 				<ItemDetail allItems={allItems} />
 			</ItemWrap>

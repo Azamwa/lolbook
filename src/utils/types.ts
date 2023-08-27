@@ -183,7 +183,7 @@ export interface ChampionDetailType {
 	};
 }
 
-export interface PatchNoteListType {
+export interface PatchNoteType {
 	title: string;
 	imgURL: string;
 	author: string[];

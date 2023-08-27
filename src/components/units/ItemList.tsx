@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { versionListState } from 'store/common';
 import { ItemGroupType, ItemListType, ItemType } from 'utils/types';
 import { fromItemState, openDetailState, selectItemState } from 'store/items';
@@ -12,10 +11,11 @@ type ItemListProps = {
 };
 
 export default function ItemList({ itemList, allItems }: ItemListProps) {
-	const version = useAtomValue(versionListState)[0];
-	const setFromItem = useSetAtom(fromItemState);
-	const [selectItem, setSelectItem] = useAtom(selectItemState);
-	const setOpenDetail = useSetAtom(openDetailState);
+	const { version } = versionListState();
+	const currentVersion = version[0];
+	const { setFromItem } = fromItemState();
+	const { selectItem, setSelectItem } = selectItemState();
+	const { setOpenDetail } = openDetailState();
 	const [toggleGroup, setToggleGroup] = useState<boolean[]>(
 		new Array(itemList.length).fill(true)
 	);
@@ -30,7 +30,7 @@ export default function ItemList({ itemList, allItems }: ItemListProps) {
 	const handleClickItems = (item: ItemType) => {
 		setOpenDetail();
 		setSelectItem(item);
-		setFromItem({ itemIdList: item.from, itemList: allItems });
+		setFromItem(item.from, allItems);
 	};
 
 	return (
@@ -51,9 +51,9 @@ export default function ItemList({ itemList, allItems }: ItemListProps) {
 											selected={
 												selectItem !== null && item.name === selectItem.name
 											}>
-											{version && (
+											{currentVersion && (
 												<Image
-													src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item.image.full}`}
+													src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/item/${item.image.full}`}
 													width={40}
 													height={40}
 													alt="itemImage"

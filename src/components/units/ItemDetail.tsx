@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
-import { useAtom, useAtomValue } from 'jotai';
 import { fromItemState, openDetailState, selectItemState } from 'store/items';
 import { versionListState } from 'store/common';
 import { ItemListType, ItemType } from 'utils/types';
@@ -10,10 +9,11 @@ interface ItemDetailProps {
 	allItems: ItemListType;
 }
 export default function ItemDetail({ allItems }: ItemDetailProps) {
-	const version = useAtomValue(versionListState)[0];
-	const [selectItem, setSelectItem] = useAtom(selectItemState);
-	const [fromItemList, setFromItemList] = useAtom(fromItemState);
-	const [openDetail, setOpenDetail] = useAtom(openDetailState);
+	const { version } = versionListState();
+	const currentVersion = version[0];
+	const { selectItem, setSelectItem } = selectItemState();
+	const { fromItem, setFromItem } = fromItemState();
+	const { openDetail, setOpenDetail } = openDetailState();
 
 	const flavorText = useMemo(() => {
 		let text: RegExpMatchArray | null | string = '';
@@ -67,7 +67,7 @@ export default function ItemDetail({ allItems }: ItemDetailProps) {
 	const changeSelectItem = (item: ItemType) => {
 		setOpenDetail();
 		setSelectItem(item);
-		setFromItemList({ itemIdList: item.from, itemList: allItems });
+		setFromItem(item.from, allItems);
 	};
 
 	return (
@@ -80,7 +80,7 @@ export default function ItemDetail({ allItems }: ItemDetailProps) {
 							{selectItem.into?.map((id, index) => {
 								return (
 									<Image
-										src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`}
+										src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/item/${id}.png`}
 										width={35}
 										height={35}
 										alt="intoItem"
@@ -98,7 +98,7 @@ export default function ItemDetail({ allItems }: ItemDetailProps) {
 						<Combination>
 							<CombinedItem>
 								<Image
-									src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${selectItem?.image?.full}`}
+									src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/item/${selectItem?.image?.full}`}
 									width={35}
 									height={35}
 									alt="combinedItem"
@@ -110,12 +110,12 @@ export default function ItemDetail({ allItems }: ItemDetailProps) {
 										<ChildrenImageWrap
 											key={index}
 											fromItem={
-												fromItemList !== null &&
-												fromItemList !== undefined &&
-												fromItemList[index]?.from !== undefined
+												fromItem !== null &&
+												fromItem !== undefined &&
+												fromItem[index]?.from !== undefined
 											}>
 											<Image
-												src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`}
+												src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/item/${id}.png`}
 												width={35}
 												height={35}
 												alt="combination"
@@ -125,9 +125,9 @@ export default function ItemDetail({ allItems }: ItemDetailProps) {
 									);
 								})}
 							</FirstCombination>
-							{fromItemList.length > 0 && (
+							{fromItem.length > 0 && (
 								<SecondCombination numberOfItems={selectItem?.from.length}>
-									{fromItemList?.map((fromItem, fromItemIdx) => {
+									{fromItem?.map((fromItem, fromItemIdx) => {
 										return (
 											<GrandsonItemWrap
 												key={fromItemIdx}
@@ -136,7 +136,7 @@ export default function ItemDetail({ allItems }: ItemDetailProps) {
 													return (
 														<GrandSonImgWrap key={grandsonIdx}>
 															<Image
-																src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`}
+																src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/item/${id}.png`}
 																width={35}
 																height={35}
 																alt="combination"
@@ -160,7 +160,7 @@ export default function ItemDetail({ allItems }: ItemDetailProps) {
 						<>
 							<MainInfoWrap>
 								<Image
-									src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${selectItem?.image?.full}`}
+									src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/item/${selectItem?.image?.full}`}
 									width={40}
 									height={40}
 									alt="itemImage"

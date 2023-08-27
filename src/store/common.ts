@@ -2,22 +2,22 @@ import { create } from 'zustand';
 import { PatchNoteType } from 'utils/types';
 import { patchNoteAPI, versionAPI } from 'store';
 
-interface versionListType {
+interface versionListState {
 	version: string[];
 	setVersion: () => void;
 }
 
-interface PatchNoteListType {
+interface PatchNoteListState {
 	patchNoteList: PatchNoteType[];
 	setPatchNoteList: (count: number) => void;
 }
 
-interface ScreenSizeType {
+interface ScreenSizeState {
 	screenSize: string;
 	setScreenSize: (availWidth: number) => void;
 }
 
-export const versionListState = create<versionListType>((set) => ({
+export const versionListState = create<versionListState>((set) => ({
 	version: [],
 	setVersion: async () => {
 		const versionList = await versionAPI();
@@ -25,7 +25,7 @@ export const versionListState = create<versionListType>((set) => ({
 	}
 }));
 
-export const patchNoteListState = create<PatchNoteListType>((set) => ({
+export const patchNoteListState = create<PatchNoteListState>((set) => ({
 	patchNoteList: [],
 	setPatchNoteList: async (count) => {
 		const { list } = await patchNoteAPI(count);
@@ -33,7 +33,7 @@ export const patchNoteListState = create<PatchNoteListType>((set) => ({
 	}
 }));
 
-export const screenSizeState = create<ScreenSizeType>((set) => ({
+export const screenSizeState = create<ScreenSizeState>((set) => ({
 	screenSize: 'big',
 	setScreenSize: (availWidth) => {
 		set(() => ({
