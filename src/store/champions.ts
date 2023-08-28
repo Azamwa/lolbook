@@ -1,45 +1,65 @@
-import { atom } from 'jotai';
 import { ChampionDetailType, ChampionType } from 'utils/types';
+import { create } from 'zustand';
 
-const searchChampionList = atom<ChampionType[]>([]);
-export const searchChampionState = atom(
-	(get) => get(searchChampionList),
-	(_, set, { championList, role, searchValue }) => {
-		let searchChampion: ChampionType[] = Object.values(championList);
+interface SearchChampionState {
+	searchChampions: ChampionType[];
+	setSearchChampions: (
+		championList: ChampionType,
+		role: string | null,
+		searchValue: string
+	) => void;
+}
+
+interface SelectChampionState {
+	selectChampion: ChampionType;
+	setSelectChampion: (champion: ChampionType) => void;
+}
+
+interface ChampionDetailState {
+	championDetail: ChampionDetailType;
+	setChampionDetail: (champion: ChampionDetailType) => void;
+}
+
+interface SkinNumberState {
+	skinNumber: number;
+	setSkinNumber: (number: number) => void;
+}
+
+export const searchChampionState = create<SearchChampionState>((set) => ({
+	searchChampions: [],
+	setSearchChampions: (championList, role, searchValue) => {
+		let searchChampion = Object.values(championList);
 		let filteredChampion: ChampionType[] = [];
 		if (searchValue !== '') {
-			searchChampion = searchChampion.filter((champion) =>
-				champion.name.includes(searchValue)
-			);
+			searchChampion = searchChampion.filter((champion) => champion.name.includes(role));
 		}
-		if (role !== null && role.value !== 'all') {
-			filteredChampion = searchChampion.filter((champion) =>
-				champion.tags.includes(role.value)
-			);
+		if (role !== null && role !== 'all') {
+			filteredChampion = searchChampion.filter((champion) => champion.tags.includes(role));
 		} else {
 			filteredChampion = searchChampion;
 		}
 		filteredChampion.sort((a, b) => (a.name < b.name ? -1 : 1));
-		set(searchChampionList, filteredChampion);
+		set(() => ({ searchChampions: filteredChampion }));
 	}
-);
+}));
 
-const selectChampion = atom<ChampionType>({} as ChampionType);
-export const selectChampionState = atom(
-	(get) => get(selectChampion),
-	(_, set, champion: ChampionType) => set(selectChampion, champion)
-);
-
-const championDetail = atom<ChampionDetailType>({} as ChampionDetailType);
-export const championDetailState = atom(
-	(get) => get(championDetail),
-	(_, set, champion: ChampionDetailType) => set(championDetail, champion)
-);
-
-const skinNumber = atom<number>(0);
-export const skinNumberState = atom(
-	(get) => get(skinNumber),
-	(_, set, number: number) => {
-		set(skinNumber, number);
+export const selectChampionState = create<SelectChampionState>((set) => ({
+	selectChampion: {} as ChampionType,
+	setSelectChampion: (champion) => {
+		set(() => ({ selectChampion: champion }));
 	}
-);
+}));
+
+export const championDetailState = create<ChampionDetailState>((set) => ({
+	championDetail: {} as ChampionDetailType,
+	setChampionDetail: (champion) => {
+		set(() => ({ championDetail: champion }));
+	}
+}));
+
+export const skinNumberState = create<SkinNumberState>((set) => ({
+	skinNumber: 0,
+	setSkinNumber: (number) => {
+		set(() => ({ skinNumber: number }));
+	}
+}));
