@@ -10,7 +10,7 @@ import SearchIcon from 'components/common/SearchIcon';
 
 export const getStaticProps = async () => {
 	const response = await fetch(
-		`https://ddragon.leagueoflegends.com/cdn/13.18.1/data/ko_KR/item.json`
+		`https://ddragon.leagueoflegends.com/cdn/13.20.1/data/ko_KR/item.json`
 	);
 	const { data } = await response.json();
 	const items = Object.values(data);

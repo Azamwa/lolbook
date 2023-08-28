@@ -13,7 +13,7 @@ import { BiSearchAlt2 } from 'react-icons/bi';
 
 export const getStaticProps = async () => {
 	const response = await fetch(
-		`https://ddragon.leagueoflegends.com/cdn/13.18.1/data/ko_KR/champion.json`
+		`https://ddragon.leagueoflegends.com/cdn/13.20.1/data/ko_KR/champion.json`
 	);
 	const { data } = await response.json();
 
