@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect, MouseEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styled, { keyframes } from 'styled-components';
-import { useAtom, useAtomValue } from 'jotai';
 import { useQuery } from 'react-query';
 import { championDetailAPI } from 'store';
 import { championDetailState, searchChampionState, selectChampionState } from 'store/champions';
@@ -13,9 +12,9 @@ interface ChampionListProps {
 }
 
 function ChampionSlide({ screenSize }: ChampionListProps) {
-	const championList = useAtomValue(searchChampionState);
-	const [selectChampion, setSelectChampion] = useAtom(selectChampionState);
-	const [championDetail, setChampionDetail] = useAtom(championDetailState);
+	const { searchChampions } = searchChampionState();
+	const { selectChampion, setSelectChampion } = selectChampionState();
+	const { championDetail, setChampionDetail } = championDetailState();
 	const slider = useRef<HTMLDivElement>(null);
 	const [mouseIsDown, setMouseDown] = useState<boolean>(false);
 	const [startX, setStartX] = useState<number>(0);
@@ -42,8 +41,8 @@ function ChampionSlide({ screenSize }: ChampionListProps) {
 	}, [selectChampion]);
 
 	useEffect(() => {
-		if (selectChampion.id !== undefined && championList.length > 0) {
-			championList.forEach((champion, index) => {
+		if (selectChampion.id !== undefined && searchChampions.length > 0) {
+			searchChampions.forEach((champion, index) => {
 				if (champion.id === selectChampion.id && slider.current !== null) {
 					slider.current.scrollTo({
 						left: scrollLeftValue * index,
@@ -52,7 +51,7 @@ function ChampionSlide({ screenSize }: ChampionListProps) {
 				}
 			});
 		}
-	}, [selectChampion, championList, slider]);
+	}, [selectChampion, searchChampions, slider]);
 
 	const scrollMoveLeft = () => {
 		if (slider.current !== null) {
@@ -119,8 +118,8 @@ function ChampionSlide({ screenSize }: ChampionListProps) {
 				onMouseMove={(e) => mouseMove(e)}>
 				<MdArrowBackIos className="navBack" onClick={scrollMoveLeft} />
 				<MdArrowForwardIos className="navForward" onClick={scrollMoveRight} />
-				{championList !== undefined &&
-					championList.map((champion, index) => {
+				{searchChampions !== undefined &&
+					searchChampions.map((champion, index) => {
 						return (
 							<CardContainer key={champion.id}>
 								<Card onClick={() => setSelectChampion(champion)}>

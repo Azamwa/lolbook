@@ -2,7 +2,6 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import styled from 'styled-components';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { screenSizeState, versionListState } from 'store/common';
 import { searchChampionState, selectChampionState } from 'store/champions';
 import { selectStyle } from 'utils/common';
@@ -35,19 +34,19 @@ export const roleGroup = [
 ];
 
 function champions({ championList }: ChampionListType) {
-	const version = useAtomValue(versionListState)[0];
+	const { version } = versionListState();
+	const currentVersion = version[0];
 	const [searchValue, setSearchValue] = useState<string>('');
 	const [role, setRole] = useState<SingleValue<{ value: string; label: string }>>({
 		value: 'all',
 		label: '모든 챔피언'
 	});
-	const setSelectChampion = useSetAtom(selectChampionState);
-	const [searchChampions, setSearchChampions] = useAtom(searchChampionState);
-	const screenSize = useAtomValue(screenSizeState);
+	const { setSelectChampion } = selectChampionState();
+	const { searchChampions, setSearchChampions } = searchChampionState();
+	const { screenSize } = screenSizeState();
 
 	useEffect(() => {
-		const searchChampionProps = { championList, role, searchValue };
-		setSearchChampions(searchChampionProps);
+		setSearchChampions(championList, role?.value, searchValue);
 	}, [searchValue, role]);
 
 	const searchChampion = (e: ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +92,7 @@ function champions({ championList }: ChampionListType) {
 									return (
 										<Champion key={index}>
 											<Image
-												src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champion.id}.png`}
+												src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/champion/${champion.id}.png`}
 												width={70}
 												height={70}
 												alt="champion-image"

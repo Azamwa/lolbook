@@ -5,7 +5,7 @@ interface SearchChampionState {
 	searchChampions: ChampionType[];
 	setSearchChampions: (
 		championList: ChampionType,
-		role: string | null,
+		role: string | undefined,
 		searchValue: string
 	) => void;
 }
@@ -33,7 +33,7 @@ export const searchChampionState = create<SearchChampionState>((set) => ({
 		if (searchValue !== '') {
 			searchChampion = searchChampion.filter((champion) => champion.name.includes(role));
 		}
-		if (role !== null && role !== 'all') {
+		if (role !== undefined && role !== 'all') {
 			filteredChampion = searchChampion.filter((champion) => champion.tags.includes(role));
 		} else {
 			filteredChampion = searchChampion;
