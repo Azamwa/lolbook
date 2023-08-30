@@ -3,7 +3,6 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { useAtomValue } from 'jotai';
 import { screenSizeState } from 'store/common';
 import { skinNumberState } from 'store/champions';
 import { ChampionDetailType } from 'utils/types';
@@ -44,8 +43,8 @@ interface ChampionInfoProps {
 function ChampionInfo({ championInfo }: ChampionInfoProps) {
 	const router = useRouter();
 	const [activeTap, setActiveTap] = useState<string>('summary');
-	const screenSize = useAtomValue(screenSizeState);
-	const skinNumber = useAtomValue(skinNumberState);
+	const { screenSize } = screenSizeState();
+	const { skinNumber } = skinNumberState();
 
 	return (
 		<>

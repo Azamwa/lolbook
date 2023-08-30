@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { useAtomValue, useSetAtom } from 'jotai';
 import { screenSizeState } from 'store/common';
 import { skinNumberState } from 'store/champions';
 import { ChampionDetailType } from 'utils/types';
@@ -18,11 +17,11 @@ interface Skin {
 }
 
 function ChampionSkin({ championDetail }: ChampionSkinProps) {
-	const [currentSkin, setCurrentSkin] = useState<Skin>(championDetail.skins[0]);
 	const slider = useRef<HTMLDivElement>(null);
+	const [currentSkin, setCurrentSkin] = useState<Skin>(championDetail.skins[0]);
 	const [scrollLeft, setScrollLeft] = useState<number>(0);
-	const screenSize = useAtomValue(screenSizeState);
-	const setSkinNumber = useSetAtom(skinNumberState);
+	const { screenSize } = screenSizeState();
+	const { setSkinNumber } = skinNumberState();
 	const scrollLeftValue = screenSize === 'big' ? 500 : screenSize === 'middle' ? 350 : 165;
 
 	const changeskinNumber = (skinNumber: number, index: number) => {

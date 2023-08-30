@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { versionListState } from 'store/common';
-import { useAtomValue } from 'jotai';
 import { ChampionDetailType } from 'utils/types';
 
 interface SkillProps {
@@ -11,7 +10,8 @@ interface SkillProps {
 
 function ChampionSkill({ championDetail }: SkillProps) {
 	const [selectedSkill, SetSelectedSkill] = useState<string>('0');
-	const version = useAtomValue(versionListState)[0];
+	const { version } = versionListState();
+	const currentVersion = version[0];
 
 	const currentSkill = useMemo(() => {
 		if (selectedSkill !== 'passive') {
@@ -54,7 +54,7 @@ function ChampionSkill({ championDetail }: SkillProps) {
 				<>
 					<Skill selectedSkill={selectedSkill === 'passive'}>
 						<Image
-							src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/passive/${championDetail.passive.image.full}`}
+							src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/passive/${championDetail.passive.image.full}`}
 							width={55}
 							height={55}
 							alt="skillImage"
@@ -67,7 +67,7 @@ function ChampionSkill({ championDetail }: SkillProps) {
 						return (
 							<Skill selectedSkill={selectedSkill === index.toString()} key={index}>
 								<Image
-									src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.image.full}`}
+									src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/spell/${spell.image.full}`}
 									width={55}
 									height={55}
 									alt="skillImage"
