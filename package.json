@@ -24,7 +24,6 @@
 		"react-dom": "18.2.0",
 		"react-icons": "^4.7.1",
 		"react-loader-spinner": "^5.3.4",
-		"react-query": "^3.39.3",
 		"react-select": "^5.7.0",
 		"sass": "^1.56.1",
 		"styled-components": "^5.3.6",
