@@ -2,8 +2,6 @@ import React, { useRef, useState, useEffect, MouseEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styled, { keyframes } from 'styled-components';
-import { useQuery } from 'react-query';
-import { championDetailAPI } from 'store';
 import { championDetailState, searchChampionState, selectChampionState } from 'store/champions';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 
@@ -23,20 +21,9 @@ function ChampionSlide({ screenSize }: ChampionListProps) {
 	const scrollLeftValue = screenSize === 'big' ? 165 : screenSize === 'middle' ? 140 : 120;
 	const scrollButtonValue = screenSize === 'big' ? 1000 : 750;
 
-	const { refetch } = useQuery(
-		['championDetail', selectChampion],
-		() => championDetailAPI(selectChampion.id),
-		{
-			onSuccess: ({ data }) => setChampionDetail(data[selectChampion.id]),
-			enabled: false,
-			staleTime: Infinity,
-			cacheTime: Infinity
-		}
-	);
-
 	useEffect(() => {
 		if (selectChampion.id !== undefined) {
-			refetch();
+			setChampionDetail(selectChampion.id);
 		}
 	}, [selectChampion]);
 

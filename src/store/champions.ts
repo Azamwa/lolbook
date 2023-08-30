@@ -1,3 +1,4 @@
+import { championDetailAPI } from 'store';
 import { ChampionDetailType, ChampionType } from 'utils/types';
 import { create } from 'zustand';
 
@@ -17,7 +18,7 @@ interface SelectChampionState {
 
 interface ChampionDetailState {
 	championDetail: ChampionDetailType;
-	setChampionDetail: (champion: ChampionDetailType) => void;
+	setChampionDetail: (name: string) => void;
 }
 
 interface SkinNumberState {
@@ -52,8 +53,9 @@ export const selectChampionState = create<SelectChampionState>((set) => ({
 
 export const championDetailState = create<ChampionDetailState>((set) => ({
 	championDetail: {} as ChampionDetailType,
-	setChampionDetail: (champion) => {
-		set(() => ({ championDetail: champion }));
+	setChampionDetail: async (name) => {
+		const { data } = await championDetailAPI(name);
+		set(() => ({ championDetail: data[name] }));
 	}
 }));
 
