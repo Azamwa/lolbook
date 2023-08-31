@@ -2141,11 +2141,6 @@ iterator.prototype@^1.1.2:
     reflect.getprototypeof "^1.0.4"
     set-function-name "^2.0.1"
 
-jotai@^2.1.1:
-  version "2.2.1"
-  resolved "https://registry.npmjs.org/jotai/-/jotai-2.2.1.tgz"
-  integrity sha512-Gz4tpbRQy9OiFgBwF9F7TieDn0UTE3C0IFSDuxHjOIvgn2tACH30UKz6p/wIlfoZROXSTCIxEvYEa7Y25WM+8g==
-
 js-sdsl@^4.1.4:
   version "4.2.0"
   resolved "https://registry.npmjs.org/js-sdsl/-/js-sdsl-4.2.0.tgz"
