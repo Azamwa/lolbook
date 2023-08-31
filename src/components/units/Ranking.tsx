@@ -1,4 +1,3 @@
-import { useAtomValue, useSetAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { currentPageState, summonerNameState } from 'store/record';
@@ -12,23 +11,23 @@ interface RankingProps {
 
 export default function Ranking({ rankers }: RankingProps) {
 	const router = useRouter();
-	const page = useAtomValue(currentPageState);
 	const [pageNumber, setPageNumber] = useState<number[]>([]);
 	const [currentRanker, setCurrentRanker] = useState<RankingType[]>([]);
-	const setSummonerName = useSetAtom(summonerNameState);
+	const { currentPage } = currentPageState();
+	const { setSummonerName } = summonerNameState();
 
 	useEffect(() => {
 		let pageRankers: RankingType[] = [];
 		let numbers: number[] = [];
 		if (rankers.length > 0) {
-			for (let i = (page - 1) * 15; i < page * 15; i++) {
+			for (let i = (currentPage - 1) * 15; i < currentPage * 15; i++) {
 				pageRankers = [...pageRankers, rankers[i]];
 				numbers = [...numbers, i + 1];
 			}
 		}
 		setPageNumber(numbers);
 		setCurrentRanker(pageRankers);
-	}, [rankers, page]);
+	}, [rankers, currentPage]);
 
 	const searchSummoner = (ranker: RankingType) => {
 		setSummonerName(ranker.summonerName);

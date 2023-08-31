@@ -2,13 +2,12 @@ import React, { FormEvent, useState } from 'react';
 import styled from 'styled-components';
 import SearchIcon from 'components/common/SearchIcon';
 import { useRouter } from 'next/router';
-import { useAtom } from 'jotai';
 import { summonerNameState } from 'store/record';
 
 export default function SearchForm() {
 	const router = useRouter();
 	const [searchName, setSearchName] = useState<string>('');
-	const [summonerName, setSummonerName] = useAtom(summonerNameState);
+	const { summonerName, setSummonerName } = summonerNameState();
 
 	const formSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();

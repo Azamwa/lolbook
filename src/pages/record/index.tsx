@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
-import { useAtom } from 'jotai';
 import Select, { SingleValue } from 'react-select';
 import { rankingAPI } from 'store';
 import { rankListState, riotAPI } from 'store/record';
@@ -57,7 +56,7 @@ const tierGroup = [
 export default function index({ ranking }: RecordProps) {
 	const router = useRouter();
 	const currentTier = router.query.tier ?? 'CHALLENGER';
-	const [rankList, setRankList] = useAtom(rankListState);
+	const {rankList, setRankList }= rankListState();
 	const [tier, setTier] = useState<SingleValue<{ value: string; label: string }>>({
 		label:
 			currentTier === 'CHALLENGER'
