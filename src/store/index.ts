@@ -7,7 +7,9 @@ export const versionAPI = async () => {
 };
 
 export const patchNoteAPI = async (n: number) => {
-	const res = await axios.get(`https://api.lolbook-server.store/patchNoteList/${n}`);
+	const res = await axios.get(
+		`https://ehf9c6n132.execute-api.ap-northeast-2.amazonaws.com/patchNoteList/${n}`
+	);
 	return res.data;
 };
 
