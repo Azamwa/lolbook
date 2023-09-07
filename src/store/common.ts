@@ -28,7 +28,7 @@ export const versionListState = create<versionListState>((set) => ({
 export const patchNoteListState = create<PatchNoteListState>((set) => ({
 	patchNoteList: [],
 	setPatchNoteList: async (count) => {
-		const { list } = await patchNoteAPI(count);
+		const list = await patchNoteAPI(count);
 		set((state) => ({ patchNoteList: state.patchNoteList.concat(list) }));
 	}
 }));
