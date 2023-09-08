@@ -4,11 +4,7 @@ import { create } from 'zustand';
 
 interface SearchChampionState {
 	searchChampions: ChampionType[];
-	setSearchChampions: (
-		championList: ChampionType,
-		role: string | undefined,
-		searchValue: string
-	) => void;
+	setSearchChampions: (championList: ChampionType[], role: string, searchValue: string) => void;
 }
 
 interface SelectChampionState {
@@ -29,15 +25,26 @@ interface SkinNumberState {
 export const searchChampionState = create<SearchChampionState>((set) => ({
 	searchChampions: [],
 	setSearchChampions: (championList, role, searchValue) => {
-		let searchChampion = Object.values(championList);
-		let filteredChampion: ChampionType[] = [];
+		let filteredChampion = championList;
 		if (searchValue !== '') {
-			searchChampion = searchChampion.filter((champion) => champion.name.includes(role));
+			filteredChampion = filteredChampion.filter((champion) =>
+				champion.name.includes(searchValue)
+			);
+
+			if (role !== 'all') {
+				filteredChampion = filteredChampion.filter((champion) =>
+					champion.tags.includes(role)
+				);
+			}
 		}
-		if (role !== undefined && role !== 'all') {
-			filteredChampion = searchChampion.filter((champion) => champion.tags.includes(role));
-		} else {
-			filteredChampion = searchChampion;
+		if (role !== 'all') {
+			filteredChampion = filteredChampion.filter((champion) => champion.tags.includes(role));
+            
+			if (searchValue !== '') {
+				filteredChampion = filteredChampion.filter((champion) =>
+					champion.name.includes(searchValue)
+				);
+			}
 		}
 		filteredChampion.sort((a, b) => (a.name < b.name ? -1 : 1));
 		set(() => ({ searchChampions: filteredChampion }));

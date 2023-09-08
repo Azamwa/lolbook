@@ -46,7 +46,9 @@ function champions({ championList }: ChampionListType) {
 	const { screenSize } = screenSizeState();
 
 	useEffect(() => {
-		setSearchChampions(championList, role?.value, searchValue);
+		if (role !== null) {
+			setSearchChampions(Object.values(championList), role.value, searchValue);
+		}
 	}, [searchValue, role]);
 
 	const searchChampion = (e: ChangeEvent<HTMLInputElement>) => {
