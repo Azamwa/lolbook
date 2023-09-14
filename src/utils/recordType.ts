@@ -26,17 +26,12 @@ export interface SummonerType {
 }
 
 export interface RankingType {
-	leagueId: string;
-	summonerId: string;
-	summonerName: string;
-	queueType: string;
-	tier: string;
-	rank: string;
-	leaguePoints: number;
-	wins: number;
-	losses: number;
-	hotStreak: boolean;
-	veteran: boolean;
-	freshBlood: boolean;
-	inactive: boolean;
+    summonerId: string;
+    tier: string;
+    summonerName: string;
+    leagueId: string;
+    wins: number;
+    losses: number;
+    idx: number;
+    leaguePoints: number;
 }

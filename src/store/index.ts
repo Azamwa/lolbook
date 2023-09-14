@@ -20,15 +20,9 @@ export const championDetailAPI = async (name: string) => {
 	return res.data;
 };
 
-export const rankingAPI = async (tier: string, page: string) => {
+export const rankingAPI = async (page: string) => {
 	const res = await axios.get(
-		`${riotAPI}/lol/league-exp/v4/entries/RANKED_SOLO_5x5/${tier}/I?page=${page}&api_key=${process.env.NEXT_PUBLIC_RIOT_API_KEY}`,
-		{
-			headers: {
-				Accept: 'application/json',
-				'Accept-Encoding': 'identity'
-			}
-		}
+        `https://8bihktj9y3.execute-api.ap-northeast-2.amazonaws.com/rankList/${page}`
 	);
 	return res.data;
 };

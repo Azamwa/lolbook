@@ -15,11 +15,6 @@ interface CurrentPageState {
 	setCurrentPage: (page: number) => void;
 }
 
-interface RankListState {
-	rankList: RankingType[];
-	setRankList: (addList: RankingType[]) => void;
-}
-
 export const summonerNameState = create<SummonerNameState>((set) => ({
 	summonerName: '',
 	setSummonerName: (name) => {
@@ -31,12 +26,5 @@ export const currentPageState = create<CurrentPageState>((set) => ({
 	currentPage: 1,
 	setCurrentPage: (page) => {
 		set(() => ({ currentPage: page }));
-	}
-}));
-
-export const rankListState = create<RankListState>((set) => ({
-	rankList: [],
-	setRankList: (addList) => {
-		set((state) => ({ rankList: state.rankList.concat(addList) }));
 	}
 }));
