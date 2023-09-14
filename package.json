@@ -34,8 +34,8 @@
 		"@typescript-eslint/eslint-plugin": "^5.45.1",
 		"@typescript-eslint/parser": "^5.45.1",
 		"babel-plugin-styled-components": "^2.0.7",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-prettier": "^4.2.1",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-prettier": "^5.0.1",
 		"eslint-plugin-react": "^7.31.11"
 	}
 }
