@@ -1,35 +1,17 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { currentPageState, summonerNameState } from 'store/record';
+import { summonerNameState } from 'store/record';
 import styled from 'styled-components';
 import { winningRate } from 'utils/common';
 import { RankingType } from 'utils/recordType';
 
 interface RankingProps {
-	rankers: RankingType[];
+	rankList: RankingType[];
 }
 
-export default function Ranking({ rankers }: RankingProps) {
-	const router = useRouter();
-	const [pageNumber, setPageNumber] = useState<number[]>([]);
-	const [currentRanker, setCurrentRanker] = useState<RankingType[]>([]);
-	const { currentPage } = currentPageState();
+export default function Ranking({ rankList }: RankingProps) {
+    const router = useRouter();
 	const { setSummonerName } = summonerNameState();
-
-	useEffect(() => {
-		let pageRankers: RankingType[] = [];
-		let numbers: number[] = [];
-		if (rankers.length > 0) {
-			for (let i = (currentPage - 1) * 15; i < currentPage * 15; i++) {
-				pageRankers = [...pageRankers, rankers[i]];
-				numbers = [...numbers, i + 1];
-			}
-		}
-		setPageNumber(numbers);
-		setCurrentRanker(pageRankers);
-	}, [rankers, currentPage]);
-
-	const searchSummoner = (ranker: RankingType) => {
+    const searchSummoner = (ranker: RankingType) => {
 		setSummonerName(ranker.summonerName);
 		router.push({
 			pathname: `/record/${ranker.summonerName}`,
@@ -54,46 +36,33 @@ export default function Ranking({ rankers }: RankingProps) {
 			</thead>
 			<tbody>
 				<TableBody>
-					{currentRanker.length > 0 &&
-						currentRanker.map((ranker, index) => (
-							<TableContent
-								key={ranker.summonerId}
-								onClick={() => searchSummoner(ranker)}>
-								<RankingNumber>{pageNumber[index]}</RankingNumber>
-								<SummonerName>{currentRanker[index].summonerName}</SummonerName>
-								<Tier>
-									{pageNumber[index] <= 300 ? 'Challenger' : 'GrandMaster'}
-								</Tier>
-								<LeaguePoint>{`${currentRanker[index].leaguePoints} LP`}</LeaguePoint>
-								<WinningRate>
-									<WinningGraph>
-										<WinRate
-											winsRate={winningRate(
-												currentRanker[index].wins,
-												currentRanker[index].losses
-											)}>
-											<Wins>{currentRanker[index].wins}W</Wins>
-										</WinRate>
-										<LoseRate
-											lossesRate={
-												100 -
-												winningRate(
-													currentRanker[index].wins,
-													currentRanker[index].losses
-												)
-											}>
-											<Losses>{currentRanker[index].losses}L</Losses>
-										</LoseRate>
-									</WinningGraph>
-									<WinningRateText>
-										{`${winningRate(
-											currentRanker[index].wins,
-											currentRanker[index].losses
-										)} %`}
-									</WinningRateText>
-								</WinningRate>
-							</TableContent>
-						))}
+                    {rankList.map((ranker) => (
+                        <TableContent
+                            key={ranker.summonerId}
+                            onClick={() => searchSummoner(ranker)}>
+                            <RankingNumber>{ranker.idx}</RankingNumber>
+                            <SummonerName>{ranker.summonerName}</SummonerName>
+                            <Tier>
+                                {ranker.tier}
+                            </Tier>
+                            <LeaguePoint>{`${ranker.leaguePoints} LP`}</LeaguePoint>
+                            <WinningRate>
+                                <WinningGraph>
+                                    <WinRate
+                                        winsRate={winningRate(ranker.wins, ranker.losses)}>
+                                        <Wins>{ranker.wins}W</Wins>
+                                    </WinRate>
+                                    <LoseRate
+                                        lossesRate={100 - winningRate(ranker.wins, ranker.losses)}>
+                                        <Losses>{ranker.losses}L</Losses>
+                                    </LoseRate>
+                                </WinningGraph>
+                                <WinningRateText>
+                                    {`${winningRate(ranker.wins, ranker.losses)} %`}
+                                </WinningRateText>
+                            </WinningRate>
+                        </TableContent>
+                    ))}
 				</TableBody>
 			</tbody>
 		</RankingTable>
@@ -102,7 +71,7 @@ export default function Ranking({ rankers }: RankingProps) {
 
 const RankingTable = styled.table`
 	width: 870px;
-	height: 590px;
+	height: 600px;
 	border-radius: 5px;
 	background-color: rgb(52, 69, 85);
 	color: #ccc;
@@ -111,7 +80,7 @@ const RankingTable = styled.table`
 
 const TableHeader = styled.th`
 	width: 100%;
-	height: 45px;
+	height: 30px;
 	padding: 10px;
 	display: flex;
 	align-items: center;
@@ -120,6 +89,9 @@ const TableHeader = styled.th`
 
 const RankingNumber = styled.div`
 	width: 50px;
+    padding-left: 10px;
+    display: flex;
+    justify-content: flex-start;
 `;
 
 const SummonerName = styled.div`
@@ -128,23 +100,28 @@ const SummonerName = styled.div`
 
 const Tier = styled.div`
 	width: 120px;
+    display: flex;
+    justify-content: center;
 `;
 
 const LeaguePoint = styled.div`
 	width: 100px;
+    display: flex;
+    justify-content: center;
 `;
 
 const WinningRate = styled.div`
 	width: 200px;
 	display: flex;
 	align-items: center;
+    justify-content: center;
 	gap: 10px;
 	position: relative;
 `;
 
 const WinningGraph = styled.div`
 	width: 150px;
-	height: 25px;
+	height: 20px;
 	border-radius: 5px;
 `;
 
@@ -157,7 +134,7 @@ const WinRate = styled.div<{ winsRate: number }>`
 	background-color: #4983ff;
 	position: absolute;
 	left: 0;
-	line-height: 25px;
+	line-height: 20px;
 `;
 
 const LoseRate = styled.div<{ lossesRate: number }>`
@@ -169,7 +146,7 @@ const LoseRate = styled.div<{ lossesRate: number }>`
 	background-color: #ff4848;
 	position: absolute;
 	left: ${(props) => 150 - props.lossesRate * 1.5 + 'px'};
-	line-height: 25px;
+	line-height: 20px;
 `;
 
 const Wins = styled.span`
@@ -195,7 +172,7 @@ const TableBody = styled.tr``;
 
 const TableContent = styled.td`
 	width: 100%;
-	height: 35px;
+	height: 30px;
 	padding: 10px;
 	display: flex;
 	align-items: center;

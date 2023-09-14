@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
-import { currentPageState } from 'store/record';
-import { useRouter } from 'next/router';
 
 export default function Pagenation() {
 	const router = useRouter();
 	const [pageGroup, setPageGroup] = useState<number>(
 		Math.floor((+(router.query?.page ?? 1) - 1) / 10)
 	);
-	const { currentPage, setCurrentPage } = currentPageState();
+	const [currentPage, setCurrentPage] = useState<number>(1);
 
 	const movePage = (page: number) => {
 		if (page === currentPage) return;

@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -15,7 +14,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
         const data = await rankingAPI(page as string);
         return {
-            props: { rankingType: data }
+            props: { rankList: data }
         };
     } catch (e) {
         return {
@@ -28,11 +27,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 interface RecordProps {
-	ranking: RankingType[];
+	rankList: RankingType[];
 }
 
 
-export default function index({ ranking }: RecordProps) {
+export default function index({ rankList }: RecordProps) {
 	const router = useRouter();
 
 	return (
@@ -44,15 +43,9 @@ export default function index({ ranking }: RecordProps) {
 				<PageContent>
 					<SearchForm />
 					<RankingSection>
-						{/* <Ranking rankers={rankList} /> */}
+						<Ranking rankList={rankList} />
 					</RankingSection>
-					{/* <Pagenation /> */}
-					<button onClick={() => router.push({ query: { page: 1 } })}>1</button>
-					<button onClick={() => router.push({ query: { page: 2 } })}>2</button>
-					<button onClick={() => router.push({ query: { page: 3 } })}>3</button>
-					<button onClick={() => router.push({ query: { page: 4 } })}>4</button>
-					<button onClick={() => router.push({ query: { page: 5 } })}>5</button>
-					<button onClick={() => router.push({ query: { page: 6 } })}>6</button>
+					<Pagenation />
 				</PageContent>
 			</PageWrap>
 		</>
@@ -85,9 +78,4 @@ const RankingSection = styled.section`
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
-`;
-
-const RankingSelectForm = styled.div`
-	width: 150px;
-	margin-bottom: 7px;
 `;
