@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { rankingAPI } from 'store';
 import SearchForm from 'components/common/SearchForm';
@@ -32,8 +31,6 @@ interface RecordProps {
 
 
 export default function index({ rankList }: RecordProps) {
-	const router = useRouter();
-
 	return (
 		<>
 			<Background>
@@ -71,7 +68,7 @@ const PageContent = styled.div`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	gap: 30px;
+	gap: 15px;
 `;
 
 const RankingSection = styled.section`

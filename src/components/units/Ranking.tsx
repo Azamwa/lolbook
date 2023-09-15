@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import { summonerNameState } from 'store/record';
 import styled from 'styled-components';
 import { winningRate } from 'utils/common';
 import { RankingType } from 'utils/recordType';
@@ -10,15 +9,8 @@ interface RankingProps {
 
 export default function Ranking({ rankList }: RankingProps) {
     const router = useRouter();
-	const { setSummonerName } = summonerNameState();
     const searchSummoner = (ranker: RankingType) => {
-		setSummonerName(ranker.summonerName);
-		router.push({
-			pathname: `/record/${ranker.summonerName}`,
-			query: {
-				fromRank: true
-			}
-		});
+		router.push({ pathname: `/record/${ranker.summonerName}` });
 	};
 
 	return (
@@ -71,11 +63,10 @@ export default function Ranking({ rankList }: RankingProps) {
 
 const RankingTable = styled.table`
 	width: 870px;
-	height: 600px;
 	border-radius: 5px;
 	background-color: rgb(52, 69, 85);
 	color: #ccc;
-	font-size: 1.5rem;
+	font-size: 1.3rem;
 `;
 
 const TableHeader = styled.th`
