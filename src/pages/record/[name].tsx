@@ -1,66 +1,63 @@
 import React, { useEffect, useMemo } from 'react';
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
-import { API_KEY, riotAPI, riotAsiaAPI } from 'store/record';
+import { riotAPI, riotAsiaAPI } from 'store/record';
 import { SummonerType } from 'utils/recordType';
 import SearchForm from 'components/common/SearchForm';
 import SummonerRank from 'components/units/SummonerRank';
 
-// export const getServerSideProps: GetServerSideProps<SummonerInfoProps> = async (context) => {
-// 	const name = context.params?.name as string;
-// 	const header = {
-// 		headers: {
-// 			Accept: 'application/json',
-// 			'Accept-Encoding': 'identity'
-// 		}
-// 	};
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+    const name = params?.name as string;
+    const header = {
+		headers: {
+			Accept: 'application/json',
+			'Accept-Encoding': 'identity',
+            'X-Riot-Token': process.env.NEXT_PUBLIC_RIOT_API_KEY
+		}
+	};
+    try {
+		const summonerURL = `${riotAPI}/lol/summoner/v4/summoners/by-name/${name}`;
+		const summoner_res = await axios.get(summonerURL, header);
+		const id = summoner_res.data.id;
+		const puuid = summoner_res.data.puuid;
+		const summonerLeagueURL = `${riotAPI}/lol/league/v4/entries/by-summoner/${id}`;
+		const league_res = await axios.get(summonerLeagueURL, header);
 
-// 	try {
-// 		const summonerURL = `${riotAPI}/lol/summoner/v4/summoners/by-name/${name}?${API_KEY}`;
-// 		const summoner_res = await axios.get(summonerURL, header);
-// 		const id = summoner_res.data.id;
-// 		const puuid = summoner_res.data.puuid;
-// 		const summonerLeagueURL = `${riotAPI}/lol/league/v4/entries/by-summoner/${id}?${API_KEY}`;
-// 		const league_res = await axios.get(summonerLeagueURL, header);
+		const matchListURL = `${riotAsiaAPI}/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=10`;
+		const matchCode = await axios.get(matchListURL, header);
 
-// 		const matchListURL = `${riotAsiaAPI}/lol/match/v5/matches/by-puuid/${puuid}/ids?${API_KEY}`;
-// 		const matchCode = await axios.get(matchListURL, header);
+		const promises = matchCode.data.map((code: string) =>
+			axios.get(`${riotAsiaAPI}/lol/match/v5/matches/${code}`, header)
+		);
+		let matchList = await Promise.all(promises)
+        matchList = matchList.map((match) => match.data);
 
-// 		const promises = matchCode.data.map((code: string) =>
-// 			axios.get(`${riotAsiaAPI}/lol/match/v5/matches/${code}?${API_KEY}`, header)
-// 		);
-// 		// let result = (await Promise.all(promises)).map((match: any) => match.data);
-
-// 		return {
-// 			props: {
-// 				summoner: {
-// 					info: { ...summoner_res.data },
-// 					league: [...league_res.data]
-// 				},
-// 				matchList: promises
-// 			}
-// 		};
-// 	} catch {
-// 		return {
-// 			props: {
-// 				error_message: '등록되지 않은 소환사입니다. 다시 검색해 주세요.'
-// 			}
-// 		};
-// 	}
-// };
-
-interface SummonerInfoProps {
-	error_message?: string;
-	summoner?: SummonerType;
-	matchList?: any;
+		return {
+			props: {
+				summoner: {
+					info: { ...summoner_res.data },
+					league: [...league_res.data]
+				},
+				matchList
+			}
+		};
+	} catch (e) {
+		return {
+			props: {
+				error_message: '등록되지 않은 소환사입니다. 다시 검색해 주세요.',
+			}
+		};
+	}
 }
 
-// export default function SummonerInfo({ error_message, summoner, matchList }: SummonerInfoProps) {
-export default function SummonerInfo() {
-	const router = useRouter();
+interface SummonerInfoProps {
+    summoner: any;
+    error_message?: string;
+}
+
+export default function SummonerInfo({ summoner, error_message }: SummonerInfoProps) {
 	// const soloRank = useMemo(() => {
 	// 	return summoner?.league.find((league) => league.queueType === 'RANKED_SOLO_5x5');
 	// }, [summoner]);
@@ -70,8 +67,8 @@ export default function SummonerInfo() {
 	// }, [summoner]);
 
 	// useEffect(() => {
-	// 	console.log(summoner, matchList);
-	// }, [summoner]);
+	// 	console.log(soloRank, freeRank);
+	// }, [freeRank]);
 	return (
 		<>
 			<Background />
