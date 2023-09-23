@@ -4,7 +4,7 @@ import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
 import { riotAPI, riotAsiaAPI } from 'store/record';
-import { SummonerType } from 'utils/recordType';
+import { SummonerType, matchListType } from 'utils/recordType';
 import SearchForm from 'components/common/SearchForm';
 import SummonerRank from 'components/units/SummonerRank';
 
@@ -25,14 +25,8 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 		const summonerLeagueURL = `${riotAPI}/lol/league/v4/entries/by-summoner/${id}`;
 		const league_res = await axios.get(summonerLeagueURL, header);
 
-		const matchListURL = `${riotAsiaAPI}/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=10`;
-		const matchCode = await axios.get(matchListURL, header);
-
-		const promises = matchCode.data.map((code: string) =>
-			axios.get(`${riotAsiaAPI}/lol/match/v5/matches/${code}`, header)
-		);
-		let matchList = await Promise.all(promises)
-        matchList = matchList.map((match) => match.data);
+		const matchListURL = `https://4tsd4q6r68.execute-api.ap-northeast-2.amazonaws.com/v1/getMatchList?puuid=${puuid}`
+		const matchList = await axios.get(matchListURL, header);
 
 		return {
 			props: {
@@ -40,7 +34,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 					info: { ...summoner_res.data },
 					league: [...league_res.data]
 				},
-				matchList
+				matchList: matchList.data.body
 			}
 		};
 	} catch (e) {
@@ -53,7 +47,8 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 interface SummonerInfoProps {
-    summoner: any;
+    summoner: SummonerType;
+    matchList: matchListType[];
     error_message?: string;
 }
 

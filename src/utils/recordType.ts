@@ -25,6 +25,58 @@ export interface SummonerType {
 	}[];
 }
 
+export interface matchListType {
+    gameId: number;
+    gameStartTimeStamp: number;
+    game_length_second: number;
+    matchId: string;
+    summonerData: {
+        assist: number;
+        death: number;
+        kill: number;
+        championId: number;
+        items: number[];
+        position: string;
+        rune: {
+            primary_page_id: number;
+            primary_rune_id: number;
+            secondary_page_id: number;
+        };
+        spells: number[];
+        win: true;
+    };
+    participants: {
+        assist: number;
+        death: number;
+        kill: number;
+        goldEarned: number;
+        championId: number;
+        items: number[];
+        position: string;
+        rune: {
+            primary_page_id: number;
+            primary_rune_id: number;
+            secondary_page_id: number;
+        };
+        spells: number[];
+        summonerName: string;
+        tierInfo: string[];
+    }[];
+    ourTeam: teamInfo;
+    enemyTeam: teamInfo;
+}
+
+interface teamInfo {
+    assist: number;
+    death: number;
+    kill: number;
+    baron_kill: number;
+    dragon_kill: number;
+    tower_kill: number;
+    gold_earned: number;
+    ban_champion: [number, null];
+}
+
 export interface RankingType {
     summonerId: string;
     tier: string;
