@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo } from 'react';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
-import { riotAPI, riotAsiaAPI } from 'store/record';
+import { riotAPI } from 'store/record';
 import { SummonerType, matchListType } from 'utils/recordType';
 import SearchForm from 'components/common/SearchForm';
 import SummonerRank from 'components/units/SummonerRank';
+import { timeStampToDate } from 'utils/common';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const name = params?.name as string;
@@ -52,32 +54,31 @@ interface SummonerInfoProps {
     error_message?: string;
 }
 
-export default function SummonerInfo({ summoner, error_message }: SummonerInfoProps) {
-	// const soloRank = useMemo(() => {
-	// 	return summoner?.league.find((league) => league.queueType === 'RANKED_SOLO_5x5');
-	// }, [summoner]);
+export default function SummonerInfo({ summoner, matchList, error_message }: SummonerInfoProps) {
+    const router = useRouter();
+	const soloRank = useMemo(() => {
+		return summoner?.league.find((league) => league.queueType === 'RANKED_SOLO_5x5');
+	}, [summoner]);
 
-	// const freeRank = useMemo(() => {
-	// 	return summoner?.league.find((league) => league.queueType === 'RANKED_FLEX_SR');
-	// }, [summoner]);
+	const freeRank = useMemo(() => {
+		return summoner?.league.find((league) => league.queueType === 'RANKED_FLEX_SR');
+	}, [summoner]);
 
-	// useEffect(() => {
-	// 	console.log(soloRank, freeRank);
-	// }, [freeRank]);
+	useEffect(() => {
+		console.log(soloRank, freeRank);
+	}, [freeRank]);
 	return (
 		<>
 			<Background />
 			<PageWrap>
-				{/* {summoner === undefined ? (
+				{summoner === undefined ? (
 					<NotSearched>
 						<SearchForm />
 						<ErrorMessage>{error_message}</ErrorMessage>
 					</NotSearched>
 				) : (
 					<>
-						{router.query.fromRank === 'true' && (
-							<RouterBack onClick={router.back}>← 랭킹보기</RouterBack>
-						)}
+                        <RouterBack onClick={() => router.back()}>← 뒤로가기</RouterBack>
 						<TopSection>
 							<MainInfo>
 								<Image
@@ -88,10 +89,10 @@ export default function SummonerInfo({ summoner, error_message }: SummonerInfoPr
 								/>
 								<TextInfo>
 									<SummonerName>{summoner?.info.name}</SummonerName>
-									<ResetRecord>
-										<ResetButton>최신정보</ResetButton>
-										<ResetTime>방금 전 갱신됨</ResetTime>
-									</ResetRecord>
+									<LastAccess>
+                                        가장최근게임: {timeStampToDate(matchList[0].gameStartTimeStamp)}
+									</LastAccess>
+                                    <SummonerLevel>{summoner?.info.summonerLevel}</SummonerLevel>
 								</TextInfo>
 							</MainInfo>
 							<SearchForm />
@@ -103,7 +104,7 @@ export default function SummonerInfo({ summoner, error_message }: SummonerInfoPr
 							</SummonerHistory>
 						</MainSection>
 					</>
-				)} */}
+				)}
 			</PageWrap>
 		</>
 	);
@@ -131,7 +132,8 @@ const PageWrap = styled.div`
 const RouterBack = styled.div`
 	width: 100%;
 	margin-bottom: 15px;
-	font-size: 2rem;
+	font-size: 1.5rem;
+    font-weight: 700;
 	color: rgb(52, 69, 85);
 	user-select: none;
 
@@ -175,43 +177,58 @@ const MainInfo = styled.div`
 const TextInfo = styled.article`
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+    justify-content: center;
+	gap: 15px;
+    position: relative;
 `;
 
 const SummonerName = styled.h2`
 	color: #fff;
-	font-size: 3.5rem;
-	margin-top: 10px;
+	font-size: 3rem;
 `;
 
-const ResetRecord = styled.div`
-	width: 180px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 15px;
+const LastAccess = styled.p`
+    font-size: 1.3rem;
+    font-style: italic;
+    color: #aaa;
 `;
 
-const ResetButton = styled.button`
-	height: 40px;
-	border: none;
-	border-radius: 20px;
-	outline: none;
-	background-color: #3b5998;
-	color: #fff;
-	font-size: 1.5rem;
-
-	:hover {
-		cursor: pointer;
-		background-color: #4f6eb4;
-	}
+const SummonerLevel = styled.h5`
+    width: 50px;
+    height: 25px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    background-color: rgb(33, 47, 61);
+    position: absolute;
+    left: -50px;
+    top: -5px;
 `;
 
-const ResetTime = styled.p`
-	font-size: 1.3rem;
-	color: #bbb;
-	font-style: italic;
-`;
+// const ResetButton = styled.button`
+// 	height: 35px;
+// 	border: none;
+// 	border-radius: 20px;
+// 	outline: none;
+// 	background-color: #3b5998;
+// 	color: #fff;
+// 	font-size: 1.5rem;
+
+// 	:hover {
+// 		cursor: pointer;
+// 		background-color: #4f6eb4;
+// 	}
+// `;
+
+// const ResetTime = styled.p`
+// 	font-size: 1.3rem;
+// 	color: #bbb;
+// 	font-style: italic;
+// `;
 
 const MainSection = styled.main`
 	width: 100%;
