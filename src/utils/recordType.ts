@@ -36,6 +36,7 @@ export interface matchListType {
         kill: number;
         championId: number;
         items: number[];
+        minionKill: number;
         position: string;
         rune: {
             primary_page_id: number;
@@ -52,6 +53,7 @@ export interface matchListType {
         goldEarned: number;
         championId: number;
         items: number[];
+        minionKill: number;
         position: string;
         rune: {
             primary_page_id: number;

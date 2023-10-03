@@ -6,9 +6,10 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { riotAPI } from 'store/record';
 import { SummonerType, matchListType } from 'utils/recordType';
+import { timeStampToDate } from 'utils/common';
 import SearchForm from 'components/common/SearchForm';
 import SummonerRank from 'components/units/SummonerRank';
-import { timeStampToDate } from 'utils/common';
+import RecentChampions from 'components/units/RecentChampions';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const name = params?.name as string;
@@ -78,7 +79,10 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
 					</NotSearched>
 				) : (
 					<>
-                        <RouterBack onClick={() => router.back()}>← 뒤로가기</RouterBack>
+                        <UtilForm>
+                            <RouterBack onClick={() => router.back()}>← 뒤로가기</RouterBack>
+                            <SearchForm />
+                        </UtilForm>
 						<TopSection>
 							<MainInfo>
 								<Image
@@ -95,13 +99,15 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
                                     <SummonerLevel>{summoner?.info.summonerLevel}</SummonerLevel>
 								</TextInfo>
 							</MainInfo>
-							<SearchForm />
 						</TopSection>
 						<MainSection>
-							<SummonerHistory>
-								<SummonerRank rankInfo={soloRank} rankType="솔로랭크" />
-								<SummonerRank rankInfo={freeRank} rankType="자유랭크" />
-							</SummonerHistory>
+                            <InfoSide>
+                                <SummonerHistory>
+                                    <SummonerRank rankInfo={soloRank} rankType="솔로랭크" />
+                                    <SummonerRank rankInfo={freeRank} rankType="자유랭크" />
+                                </SummonerHistory>
+                                <RecentChampions matchList={matchList} />
+                            </InfoSide>
 						</MainSection>
 					</>
 				)}
@@ -129,9 +135,16 @@ const PageWrap = styled.div`
 	padding-top: 100px;
 `;
 
+const UtilForm = styled.section`
+    width: 100%;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+`;
+
 const RouterBack = styled.div`
 	width: 100%;
-	margin-bottom: 15px;
 	font-size: 1.5rem;
     font-weight: 700;
 	color: rgb(52, 69, 85);
@@ -209,35 +222,21 @@ const SummonerLevel = styled.h5`
     top: -5px;
 `;
 
-// const ResetButton = styled.button`
-// 	height: 35px;
-// 	border: none;
-// 	border-radius: 20px;
-// 	outline: none;
-// 	background-color: #3b5998;
-// 	color: #fff;
-// 	font-size: 1.5rem;
-
-// 	:hover {
-// 		cursor: pointer;
-// 		background-color: #4f6eb4;
-// 	}
-// `;
-
-// const ResetTime = styled.p`
-// 	font-size: 1.3rem;
-// 	color: #bbb;
-// 	font-style: italic;
-// `;
-
 const MainSection = styled.main`
 	width: 100%;
 	display: flex;
 	gap: 50px;
 `;
 
-const SummonerHistory = styled.section`
-	width: 350px;
+const InfoSide = styled.section`
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+`;
+
+const SummonerHistory = styled.div`
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
