@@ -67,7 +67,7 @@ export default function RecentChampions({ matchList }: RecentChampionsType) {
                 }
             }
         })
-        
+
         result.push(chunk);
 
         return result;
@@ -81,6 +81,26 @@ export default function RecentChampions({ matchList }: RecentChampionsType) {
     return (
         <Container>
             <Title>최근 10게임동안 플레이 한 챔피언</Title>
+            {recentChampions.map((champion) => 
+                <PlayedChampionInfo key={champion.championId}>
+                    {/* <ChampionImage></ChampionImage> */}
+                    <ChampionName>{champion.championId}</ChampionName>
+                    <PlayCount>{`${champion.playedChampionCount}게임`}</PlayCount>
+                    <KillInfo>
+                        <Kda>
+                            {
+                                `${(champion.kill / champion.playedChampionCount).toFixed(1)} 
+                                / ${(champion.death/ champion.playedChampionCount).toFixed(1)} 
+                                / ${(champion.assist/ champion.playedChampionCount).toFixed(1)}` 
+                            }
+                        </Kda>
+                        <KdaRating>{ `평점 ${((champion.kill + champion.death) / champion.assist).toFixed(2)}`}</KdaRating>
+                    </KillInfo>
+                    <KillInvolvement>
+                        <span>킬관여율</span> {champion.killInvolvementRate / champion.playedChampionCount}%
+                    </KillInvolvement>
+                </PlayedChampionInfo>
+            )}
         </Container>
     )
 }
@@ -100,4 +120,44 @@ const Title = styled.p`
     font-size: 1.3rem;
     padding: 0 5px 10px 5px;
     border-bottom: 1px solid #aaa;
+`;
+
+const PlayedChampionInfo = styled.div`
+    width: 100%;
+    height: 50px;
+    padding: 0 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+const ChampionName = styled.span`
+    font-size: 1.3rem;
+`;
+
+const PlayCount = styled.p`
+    font-size: 1.3rem;
+`;
+
+const KillInfo = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    font-size: 1.2rem;
+`;
+
+const Kda = styled.p``;
+
+const KdaRating = styled.p``;
+
+const KillInvolvement = styled.p`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    font-size: 1.2rem;
 `;
