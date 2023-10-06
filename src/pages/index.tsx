@@ -2,15 +2,36 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import styled from 'styled-components';
+import axios from 'axios';
 import dayjs from 'dayjs';
 import { patchNoteListState } from 'store/common';
+import { allChampionState } from 'store/champions';
+import { ChampionListType } from 'utils/types';
 
-export default function Home() {
+export const getStaticProps = async () => {
+    const url = 'https://ddragon.leagueoflegends.com/cdn/13.21.1/data/ko_KR/champion.json';
+    const res = await axios.get(url);
+    const champions = res.data.data;
+
+    return {
+        props: {
+            champions
+        }
+    };
+}
+
+interface ChampionListProps  {
+    champions: ChampionListType;
+}
+
+export default function Home({ champions }: ChampionListProps) {
 	const [requestCount, setRequestCount] = useState<number>(0);
 	const { patchNoteList, setPatchNoteList } = patchNoteListState();
+    const { championList, setAllChampions } = allChampionState();
 
 	useEffect(() => {
 		setPatchNoteList(requestCount);
+        setAllChampions(champions);
 	}, [requestCount]);
 
 	return (

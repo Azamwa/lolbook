@@ -1,6 +1,16 @@
+import axios from 'axios';
 import { championDetailAPI } from 'store';
-import { ChampionDetailType, ChampionType } from 'utils/types';
+import { ChampionDetailType, ChampionListType, ChampionType } from 'utils/types';
 import { create } from 'zustand';
+
+interface AllChampionState {
+    championList: {
+        id: number;
+        name: string;
+        engName: string;
+    }[];
+    setAllChampions: (champions?: ChampionListType) => void;
+}
 
 interface SearchChampionState {
 	searchChampions: ChampionType[];
@@ -21,6 +31,28 @@ interface SkinNumberState {
 	skinNumber: number;
 	setSkinNumber: (number: number) => void;
 }
+
+export const allChampionState = create<AllChampionState>((set) => ({
+    championList: [],
+    setAllChampions: async (champions) => {
+        let result: { id: number; name: string; engName: string; }[] = [];
+        let list = champions;
+        if(champions === undefined) {
+            const url = 'https://ddragon.leagueoflegends.com/cdn/13.21.1/data/ko_KR/champion.json';
+            const res = await axios.get(url);
+            list = res.data.data;
+        }
+
+        for(const champion in list) {
+            result.push({
+                id: Number(list[champion].key),
+                name: list[champion].name,
+                engName: champion
+            });
+        }
+        set(() => ({ championList: result }));
+    }
+}))
 
 export const searchChampionState = create<SearchChampionState>((set) => ({
 	searchChampions: [],
