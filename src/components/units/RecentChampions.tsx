@@ -112,7 +112,7 @@ export default function RecentChampions({ matchList }: RecentChampionsType) {
                         <KdaRating>{ `평점 ${((champion.kill + champion.death) / champion.assist).toFixed(2)}`}</KdaRating>
                     </KillInfo>
                     <KillInvolvement>
-                        <span>킬관여율</span> {(champion.killInvolvementRate / champion.playedChampionCount).toFixed(2)}%
+                        <span>킬관여율</span> {Math.round(champion.killInvolvementRate / champion.playedChampionCount)}%
                     </KillInvolvement>
                 </PlayedChampionInfo>
             )}

@@ -64,10 +64,7 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
 	const freeRank = useMemo(() => {
 		return summoner?.league.find((league) => league.queueType === 'RANKED_FLEX_SR');
 	}, [summoner]);
-
-	useEffect(() => {
-		console.log(soloRank, freeRank);
-	}, [freeRank]);
+    
 	return (
 		<>
 			<Background />
@@ -83,32 +80,30 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
                             <RouterBack onClick={() => router.back()}>← 뒤로가기</RouterBack>
                             <SearchForm />
                         </UtilForm>
-						<TopSection>
-							<MainInfo>
+						<SideInfo>
+							<NameCard>
 								<Image
-									src={`http://ddragon.leagueoflegends.com/cdn/13.20.1/img/profileicon/${summoner?.info.profileIconId}.png`}
-									width={100}
-									height={100}
+									src={`http://ddragon.leagueoflegends.com/cdn/13.20.1/img/profileicon/${summoner.info.profileIconId}.png`}
+									width={80}
+									height={80}
 									alt="profileIcon"
 								/>
 								<TextInfo>
-									<SummonerName>{summoner?.info.name}</SummonerName>
-									<LastAccess>
+									<SummonerName nameLength={summoner.info.name.length}>{summoner.info.name}</SummonerName>
+									{matchList.length > 0 && <LastAccess>
                                         가장최근게임: {timeStampToDate(matchList[0].gameStartTimeStamp)}
-									</LastAccess>
-                                    <SummonerLevel>{summoner?.info.summonerLevel}</SummonerLevel>
+									</LastAccess>}
+                                    <SummonerLevel>{summoner.info.summonerLevel}</SummonerLevel>
 								</TextInfo>
-							</MainInfo>
-						</TopSection>
-						<MainSection>
+							</NameCard>
                             <InfoSide>
                                 <SummonerHistory>
                                     <SummonerRank rankInfo={soloRank} rankType="솔로랭크" />
                                     <SummonerRank rankInfo={freeRank} rankType="자유랭크" />
                                 </SummonerHistory>
-                                <RecentChampions matchList={matchList}/>
+                                {matchList.length > 0 && <RecentChampions matchList={matchList}/>}
                             </InfoSide>
-						</MainSection>
+						</SideInfo>
 					</>
 				)}
 			</PageWrap>
@@ -156,10 +151,11 @@ const RouterBack = styled.div`
 	}
 `;
 
-const TopSection = styled.section`
+const SideInfo = styled.section`
+    width: 400px;
 	display: flex;
-	justify-content: space-between;
-	margin-bottom: 10px;
+    flex-direction: column;
+	gap: 15px;
 `;
 
 const NotSearched = styled.div`
@@ -179,13 +175,12 @@ const ErrorMessage = styled.p`
 	color: red;
 `;
 
-const MainInfo = styled.div`
-	min-width: 500px;
+const NameCard = styled.div`
+	display: flex;
 	padding: 10px;
+    gap: 20px;
 	background-color: rgb(52, 69, 85);
 	border-radius: 5px;
-	display: flex;
-	gap: 20px;
 `;
 
 const TextInfo = styled.article`
@@ -196,9 +191,12 @@ const TextInfo = styled.article`
     position: relative;
 `;
 
-const SummonerName = styled.h2`
+const SummonerName = styled.h2<{ nameLength: number }>`
 	color: #fff;
-	font-size: 3rem;
+	font-size: ${(props) => props.nameLength < 11 ?
+      '2.5rem' : props.nameLength < 14 ?
+      '2.1rem': '1.8rem'
+    };
 `;
 
 const LastAccess = styled.p`
@@ -221,16 +219,9 @@ const SummonerLevel = styled.h5`
     position: absolute;
     left: -50px;
     top: -5px;
-`;
-
-const MainSection = styled.main`
-	width: 100%;
-	display: flex;
-	gap: 50px;
-`;
+`;  
 
 const InfoSide = styled.section`
-    width: 350px;
     display: flex;
     flex-direction: column;
     gap: 10px;
