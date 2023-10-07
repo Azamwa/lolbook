@@ -80,30 +80,38 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
                             <RouterBack onClick={() => router.back()}>← 뒤로가기</RouterBack>
                             <SearchForm />
                         </UtilForm>
-						<SideInfo>
-							<NameCard>
-								<Image
-									src={`http://ddragon.leagueoflegends.com/cdn/13.20.1/img/profileicon/${summoner.info.profileIconId}.png`}
-									width={80}
-									height={80}
-									alt="profileIcon"
-								/>
-								<TextInfo>
-									<SummonerName nameLength={summoner.info.name.length}>{summoner.info.name}</SummonerName>
-									{matchList.length > 0 && <LastAccess>
-                                        가장최근게임: {timeStampToDate(matchList[0].gameStartTimeStamp)}
-									</LastAccess>}
-                                    <SummonerLevel>{summoner.info.summonerLevel}</SummonerLevel>
-								</TextInfo>
-							</NameCard>
-                            <InfoSide>
-                                <SummonerHistory>
-                                    <SummonerRank rankInfo={soloRank} rankType="솔로랭크" />
-                                    <SummonerRank rankInfo={freeRank} rankType="자유랭크" />
-                                </SummonerHistory>
-                                {matchList.length > 0 && <RecentChampions matchList={matchList}/>}
-                            </InfoSide>
-						</SideInfo>
+                        <MainContent>
+                            <SideInfo>
+                                <NameCard>
+                                    <Image
+                                        src={`http://ddragon.leagueoflegends.com/cdn/13.20.1/img/profileicon/${summoner.info.profileIconId}.png`}
+                                        width={80}
+                                        height={80}
+                                        alt="profileIcon"
+                                    />
+                                    <TextInfo>
+                                        <SummonerName nameLength={summoner.info.name.length}>{summoner.info.name}</SummonerName>
+                                        {matchList.length > 0 && <LastAccess>
+                                            가장최근게임: {timeStampToDate(matchList[0].gameStartTimeStamp)}
+                                        </LastAccess>}
+                                        <SummonerLevel>{summoner.info.summonerLevel}</SummonerLevel>
+                                    </TextInfo>
+                                </NameCard>
+                                <InfoSide>
+                                    <SummonerHistory>
+                                        <SummonerRank rankInfo={soloRank} rankType="솔로랭크" />
+                                        <SummonerRank rankInfo={freeRank} rankType="자유랭크" />
+                                    </SummonerHistory>
+                                    {matchList.length > 0 && <RecentChampions matchList={matchList}/>}
+                                </InfoSide>
+                            </SideInfo>
+                            <RecentRecord>
+                                <TabMenu>
+                                    <Tab>최근전적</Tab>
+                                    <Tab>통계</Tab>
+                                </TabMenu>
+                            </RecentRecord>
+                        </MainContent>
 					</>
 				)}
 			</PageWrap>
@@ -126,8 +134,8 @@ const Background = styled.div`
 const PageWrap = styled.div`
 	width: 100vw;
 	height: 100vh;
-	padding: 60px;
-	padding-top: 100px;
+	padding: 100px;
+	padding-bottom: 70px;
     overflow: auto;
 `;
 
@@ -140,7 +148,6 @@ const UtilForm = styled.section`
 `;
 
 const RouterBack = styled.div`
-	width: 100%;
 	font-size: 1.5rem;
     font-weight: 700;
 	color: rgb(52, 69, 85);
@@ -151,11 +158,42 @@ const RouterBack = styled.div`
 	}
 `;
 
+const MainContent = styled.section`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+`;
+
 const SideInfo = styled.section`
     width: 400px;
 	display: flex;
     flex-direction: column;
 	gap: 15px;
+`;
+
+const RecentRecord = styled.div`
+    width: calc(100% - 405px);
+    height: 800px;
+    border-radius: 5px;
+    background-color: rgb(52, 69, 85);
+`;
+
+const TabMenu = styled.div`
+    width: 100%;
+    padding: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    display: flex;
+    gap: 20px;
+    font-size: 2rem;
+    color: #aaa;
+`;
+
+const Tab = styled.span`
+    &:hover {
+        cursor: pointer;
+        color: #ddd;
+    }
 `;
 
 const NotSearched = styled.div`

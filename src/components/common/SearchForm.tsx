@@ -1,7 +1,7 @@
 import React, { useState, KeyboardEvent } from 'react';
 import styled from 'styled-components';
-import SearchIcon from 'components/common/SearchIcon';
 import { useRouter } from 'next/router';
+import { BiSearchAlt2 } from 'react-icons/bi';
 
 export default function SearchForm() {
 	const router = useRouter();
@@ -20,7 +20,9 @@ export default function SearchForm() {
 				onChange={(e) => setSearchName(e.target.value)}
                 onKeyUp={(e) => movePage(e)}
 			/>
-			<SearchIcon />
+            <IconWrap>
+                <BiSearchAlt2 />
+            </IconWrap>
 		</InputContainer>
 	);
 }
@@ -29,7 +31,6 @@ const InputContainer = styled.div`
 	width: 40%;
 	max-width: 1300px;
 	height: 50px;
-	padding: 0 20px;
 	display: flex;
 	align-items: center;
 	position: relative;
@@ -50,3 +51,17 @@ const SearchInput = styled.input`
 		color: rgb(93, 109, 126);
 	}
 `;
+
+
+const IconWrap = styled.div`
+	font-size: 2rem;
+	color: rgb(93, 109, 126);
+	position: absolute;
+	top: 16px;
+	left: 13px;
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.7rem;
+	}
+`;
+

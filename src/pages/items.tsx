@@ -6,7 +6,7 @@ import ItemList from 'components/units/ItemList';
 import ItemDetail from 'components/units/ItemDetail';
 import { ItemListType, ItemType } from 'utils/types';
 import { itemFilter, itemListState, openDetailState } from 'store/items';
-import SearchIcon from 'components/common/SearchIcon';
+import { BiSearchAlt2 } from 'react-icons/bi';
 
 export const getStaticProps = async () => {
 	const response = await fetch(
@@ -82,7 +82,9 @@ export default function Items({ items, allItems }: ItemsProps) {
 							value={searchValue}
 							placeholder="아이템을 검색해 주세요."
 						/>
-						<SearchIcon />
+                        <IconWrap>
+                            <BiSearchAlt2 />
+                        </IconWrap>
 					</SearchContainer>
 					<FilterContainer>
 						{itemFilter.map((filter, index) => {
@@ -211,6 +213,20 @@ const SearchInput = styled.input`
 		padding: 3px 30px;
 	}
 `;
+
+
+const IconWrap = styled.div`
+	font-size: 2rem;
+	color: rgb(93, 109, 126);
+	position: absolute;
+	top: 15px;
+	left: 30px;
+
+	@media screen and (max-width: 767px) {
+		font-size: 1.7rem;
+	}
+`;
+
 
 const FilterContainer = styled.div``;
 
