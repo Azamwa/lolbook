@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
@@ -8,8 +8,10 @@ import { riotAPI } from 'store/record';
 import { SummonerType, matchListType } from 'utils/recordType';
 import { timeStampToDate } from 'utils/common';
 import SearchForm from 'components/common/SearchForm';
-import SummonerRank from 'components/units/SummonerRank';
-import RecentChampions from 'components/units/RecentChampions';
+import SummonerRank from 'components/units/record/SummonerRank';
+import RecentChampions from 'components/units/record/RecentChampions';
+import History from 'components/units/record/History';
+import Statistics from 'components/units/record/Statistics';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const name = params?.name as string;
@@ -57,6 +59,7 @@ interface SummonerInfoProps {
 
 export default function SummonerInfo({ summoner, matchList, error_message }: SummonerInfoProps) {
     const router = useRouter();
+    const [currentTab, setCurrentTab] = useState<string>('recent');
 	const soloRank = useMemo(() => {
 		return summoner?.league.find((league) => league.queueType === 'RANKED_SOLO_5x5');
 	}, [summoner]);
@@ -64,7 +67,7 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
 	const freeRank = useMemo(() => {
 		return summoner?.league.find((league) => league.queueType === 'RANKED_FLEX_SR');
 	}, [summoner]);
-    
+
 	return (
 		<>
 			<Background />
@@ -107,9 +110,10 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
                             </SideInfo>
                             <RecentRecord>
                                 <TabMenu>
-                                    <Tab>최근전적</Tab>
-                                    <Tab>통계</Tab>
+                                    <Tab currentTab={currentTab === 'recent'} onClick={() => setCurrentTab('recent')} >최근전적</Tab>
+                                    <Tab currentTab={currentTab === 'statistics'} onClick={() => setCurrentTab('statistics')} >통계</Tab>
                                 </TabMenu>
+                                {currentTab === 'recent' ? <History summoner={summoner} matchList={matchList} /> : <Statistics />}
                             </RecentRecord>
                         </MainContent>
 					</>
@@ -189,7 +193,9 @@ const TabMenu = styled.div`
     color: #aaa;
 `;
 
-const Tab = styled.span`
+const Tab = styled.span<{ currentTab: boolean; }>`
+    color: ${(props) => props.currentTab ? '#fff': '#aaa'};
+
     &:hover {
         cursor: pointer;
         color: #ddd;

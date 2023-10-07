@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { rankingAPI } from 'store';
 import SearchForm from 'components/common/SearchForm';
 import { RankingType } from 'utils/recordType';
-import Ranking from 'components/units/Ranking';
+import Ranking from 'components/units/record/Ranking';
 import Pagenation from 'components/common/Pagenation';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

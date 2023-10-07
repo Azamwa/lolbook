@@ -6,7 +6,7 @@ import { screenSizeState, versionListState } from 'store/common';
 import { searchChampionState, selectChampionState } from 'store/champions';
 import { selectStyle } from 'utils/common';
 import { ChampionListType } from 'utils/types';
-import ChampionSlide from 'components/units/ChampionSlide';
+import ChampionSlide from 'components/units/champion/ChampionSlide';
 import Select, { SingleValue } from 'react-select';
 import { BiSearchAlt2 } from 'react-icons/bi';
 

@@ -6,9 +6,9 @@ import styled from 'styled-components';
 import { screenSizeState } from 'store/common';
 import { skinNumberState } from 'store/champions';
 import { ChampionDetailType } from 'utils/types';
-import ChampionSkill from 'components/units/ChampionSkill';
-import ChampionSummary from 'components/units/ChampionSummary';
-import ChampionSkin from 'components/units/ChampionSkin';
+import ChampionSkill from 'components/units/champion/ChampionSkill';
+import ChampionSummary from 'components/units/champion/ChampionSummary';
+import ChampionSkin from 'components/units/champion/ChampionSkin';
 import { MdKeyboardBackspace } from 'react-icons/md';
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
