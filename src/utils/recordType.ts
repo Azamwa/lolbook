@@ -28,6 +28,7 @@ export interface SummonerType {
 export interface matchListType {
     gameId: number;
     gameStartTimeStamp: number;
+    gameEndTimeStamp: number;
     game_length_second: number;
     matchId: string;
     gameType: string;
@@ -73,6 +74,7 @@ export interface matchListType {
     }[];
     ourTeam: teamInfo;
     enemyTeam: teamInfo;
+    win: boolean;
 }
 
 interface teamInfo {
