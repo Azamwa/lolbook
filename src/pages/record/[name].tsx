@@ -176,9 +176,8 @@ const SideInfo = styled.section`
 	gap: 15px;
 `;
 
-const RecentRecord = styled.div`
+const RecentRecord = styled.main`
     width: calc(100% - 405px);
-    height: 800px;
     border-radius: 5px;
     background-color: rgb(52, 69, 85);
 `;
