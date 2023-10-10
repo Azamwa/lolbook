@@ -205,14 +205,14 @@ export interface RuneType {
     key: string;
     icon: string;
     name: string;
-    slot: {
-        runes: {
-            id: number;
-            key: string;
-            icon: string;
-            name: string;
-            sortDesc: string;
-            longDesc: string;
-        }[]
-    }[]
+    slots: SlotType[];
+}
+
+export interface SlotType {
+    id: number;
+    key: string;
+    icon: string;
+    name: string;
+    sortDesc: string;
+    longDesc: string;
 }

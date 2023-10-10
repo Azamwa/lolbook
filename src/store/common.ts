@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { PatchNoteType, RuneType, SpellType } from 'utils/types';
+import { PatchNoteType, RuneType, SlotType, SpellType } from 'utils/types';
 import { patchNoteAPI, versionAPI } from 'store';
 
 interface versionListState {
@@ -74,6 +74,14 @@ export const runeListState = create<RuneListState>((set) => ({
     runeList: [],
     setRuneList: async () => {
         const res = await axios.get('https://ddragon.leagueoflegends.com/cdn/13.20.1/data/ko_KR/runesReforged.json');
-        set(() => ({ runeList: res.data }));
+        let result = res.data.map((perks: any) => {
+            let chunk: any = [];
+            for(const page of perks.slots) {
+                chunk.push(...page.runes);
+            }
+            return { ...perks, slots: chunk };
+        });
+
+        set(() => ({ runeList: result }));
     }
 }));
