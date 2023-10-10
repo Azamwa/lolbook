@@ -191,3 +191,28 @@ export interface PatchNoteType {
 	version: string;
 	totalElements: number;
 }
+
+export interface SpellType {
+    id: string;
+    name: string;
+    key: string;
+    description: string;
+    cooldown: number;
+}
+
+export interface RuneType {
+    id: number;
+    key: string;
+    icon: string;
+    name: string;
+    slot: {
+        runes: {
+            id: number;
+            key: string;
+            icon: string;
+            name: string;
+            sortDesc: string;
+            longDesc: string;
+        }[]
+    }[]
+}

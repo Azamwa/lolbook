@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { PatchNoteType } from 'utils/types';
+import axios from 'axios';
+import { PatchNoteType, RuneType, SpellType } from 'utils/types';
 import { patchNoteAPI, versionAPI } from 'store';
 
 interface versionListState {
@@ -15,6 +16,16 @@ interface PatchNoteListState {
 interface ScreenSizeState {
 	screenSize: string;
 	setScreenSize: (availWidth: number) => void;
+}
+
+interface SpellListState {
+    spellList: SpellType[];
+    setSpellList: () => void;
+}
+
+interface RuneListState {
+    runeList: RuneType[];
+    setRuneList: () => void;
 }
 
 export const versionListState = create<versionListState>((set) => ({
@@ -40,4 +51,29 @@ export const screenSizeState = create<ScreenSizeState>((set) => ({
 			screenSize: availWidth > 1300 ? 'big' : availWidth > 768 ? 'middle' : 'small'
 		}));
 	}
+}));
+
+export const spellListState = create<SpellListState>((set) => ({
+    spellList: [],
+    setSpellList: async () => {
+        const res = await axios.get('https://ddragon.leagueoflegends.com/cdn/13.20.1/data/ko_KR/summoner.json');
+        const result = Object.values(res.data.data).map((spell: any) => {
+            return {
+                id: spell.id,
+                name: spell.name,
+                key: spell.key,
+                description: spell.description,
+                cooldown: spell.cooldown[0]
+            }
+        })
+        set(() => ({ spellList: result }));
+    }
+}));
+
+export const runeListState = create<RuneListState>((set) => ({
+    runeList: [],
+    setRuneList: async () => {
+        const res = await axios.get('https://ddragon.leagueoflegends.com/cdn/13.20.1/data/ko_KR/runesReforged.json');
+        set(() => ({ runeList: res.data }));
+    }
 }));
