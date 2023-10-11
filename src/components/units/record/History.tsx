@@ -22,10 +22,6 @@ export default function History({ summoner, matchList }: HistoryProps) {
         setRuneList();
     }, []);
 
-    useEffect(() => {
-console.log(runeList)
-    }, [runeList])
-
     const gameEndTime = (timeStamp: number) => {
         const endTime = dayjs().diff(dayjs(timeStamp), 's');
         if(endTime < 60) return Math.floor(endTime) + '초 전';
