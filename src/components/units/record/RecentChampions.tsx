@@ -83,11 +83,6 @@ export default function RecentChampions({ matchList }: RecentChampionsType) {
         return result;
     }, [matchList]);
 
-    useEffect(() => {
-        console.log(recentChampions)
-    }, [recentChampions])
-
-
     return (
         <Container>
             <Title>최근 10게임동안 플레이 한 챔피언</Title>

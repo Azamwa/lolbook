@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
+import Image from 'next/image';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 import { SummonerType, matchListType } from 'utils/recordType';
-import { time } from 'console';
+import { runeListState, spellListState, versionListState } from 'store/common';
 
 interface HistoryProps {
     summoner: SummonerType;
@@ -10,6 +11,21 @@ interface HistoryProps {
 }
 
 export default function History({ summoner, matchList }: HistoryProps) {
+    const { version } = versionListState();
+    const currentVersion = version[0];
+
+    const { spellList, setSpellList } = spellListState();
+    const { runeList, setRuneList } = runeListState();
+
+    useEffect(() => {
+        setSpellList();
+        setRuneList();
+    }, []);
+
+    useEffect(() => {
+console.log(runeList)
+    }, [runeList])
+
     const gameEndTime = (timeStamp: number) => {
         const endTime = dayjs().diff(dayjs(timeStamp), 's');
         if(endTime < 60) return Math.floor(endTime) + '초 전';
@@ -30,16 +46,69 @@ export default function History({ summoner, matchList }: HistoryProps) {
             : `${min}:${sec}`;
     }
 
+    const mySpell = (id: number) => {
+        const spell = spellList.find((spell) => spell.key === String(id));
+        return spell === undefined ? 'SummonerCherryHold' : spell.id;
+    }
+
+    const primaryRune = (pageId: number, runeId: number) => {
+        const runePage = runeList.find((rune) => rune.id === pageId);
+        const rune = runePage?.slots.find((rune) => rune.id === runeId);
+        return rune?.icon;
+    }
+
+    const secondaryRune = (pageId: number) => {
+        const runePage = runeList.find((rune) => rune.id === pageId);
+        return runePage?.icon;
+    }
+    
+
     return (
         <HistoryContainer>
             {matchList.map((match) => 
                 <Match isWin={match.win} key={match.matchId}>
                     <GameInfo>
-                        <GameResult>{match.win ? '승리' : '패배'}</GameResult>
+                        <GameResult isWin={match.win}>{match.win ? '승리' : '패배'}</GameResult>
                         <GameType>{match.gameType}</GameType>
                         <GameTime>{gameEndTime(match.gameEndTimeStamp)}</GameTime>
                         <GameTime>{gameMatchTime(match.game_length_second)}</GameTime>
                     </GameInfo>
+                    <MyChampion>
+                        <Image
+                            src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/champion/${match.summonerData.championEngName}.png`}
+                            width={60}
+                            height={60}
+                            alt='championImage'
+                        />
+                        <Spells>
+                            <Image
+                                src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/spell/${mySpell(match.summonerData.spells[0])}.png`}
+                                width={28}
+                                height={28}
+                                alt='spell1'
+                            />
+                            <Image
+                                src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/spell/${mySpell(match.summonerData.spells[1])}.png`}
+                                width={28}
+                                height={28}
+                                alt='spell2'
+                            />
+                        </Spells>
+                        <Runes>
+                            <Image
+                                src={`https://ddragon.leagueoflegends.com/cdn/img/${primaryRune(match.summonerData.rune.primary_page_id, match.summonerData.rune.primary_rune_id)}`}
+                                width={28}
+                                height={28}
+                                alt='rune1'
+                            />
+                            <Image
+                                src={`https://ddragon.leagueoflegends.com/cdn/img/${secondaryRune(match.summonerData.rune.secondary_page_id)}`}
+                                width={28}
+                                height={28}
+                                alt='rune2'
+                            />
+                        </Runes>
+                    </MyChampion>
                 </Match>
             )}
         </HistoryContainer>
@@ -56,15 +125,17 @@ const HistoryContainer = styled.ul`
 
 const Match = styled.li<{ isWin: boolean;}>`
     width: 100%;
-    height: 100px;
+    height: 110px;
     padding: 10px;
     border-radius: 5px;
-    background-color: ${(props) => props.isWin ? 'skyblue' : 'pink'};
+    background-color: ${(props) => props.isWin ? '#162c5c' : '#80122d'};
     display: flex;
+    gap: 30px;
+    color: #bbb;
 `;
 
 const GameInfo = styled.div`
-    width: 100px;
+    width: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -72,20 +143,40 @@ const GameInfo = styled.div`
     gap: 5px;
 `;
 
-const GameResult = styled.p`
+const GameResult = styled.p<{ isWin: boolean;}>`
     font-size: 1.5rem;
     font-weight: 700;
-    color: #4265b1;
+    color: ${(props) => props.isWin ? '#86a3e4' : '#e698ad'};
 `;
 
 const GameType = styled.p`
+    width: 80px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    text-align: center;
     font-size: 1.3rem;
-    color: rgba(0, 0, 0, 0.65);
-    font-weight: 600;
+    color: rgba(255, 255, 255, 0.65);
 `;
 
 const GameTime = styled.p`
     font-size: 1.3rem;
-    font-weight: 700;
-    color: rgba(0, 0, 0, 0.7);
+    color: rgba(255, 255, 255, 0.7);
+`;
+
+const MyChampion = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 4px;
+`;
+
+const Spells = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+`;
+
+const Runes = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 `;
