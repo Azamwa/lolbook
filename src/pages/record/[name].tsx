@@ -5,7 +5,7 @@ import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
 import { riotAPI } from 'store/record';
-import { SummonerType, matchListType } from 'utils/recordType';
+import { SummonerType, MatchType } from 'utils/recordType';
 import { timeStampToDate } from 'utils/common';
 import SearchForm from 'components/common/SearchForm';
 import SummonerRank from 'components/units/record/SummonerRank';
@@ -53,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
 interface SummonerInfoProps {
     summoner: SummonerType;
-    matchList: matchListType[];
+    matchList: MatchType[];
     error_message?: string;
 }
 

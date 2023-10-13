@@ -25,32 +25,14 @@ export interface SummonerType {
 	}[];
 }
 
-export interface matchListType {
+export interface MatchType {
     gameId: number;
     gameStartTimeStamp: number;
     gameEndTimeStamp: number;
     game_length_second: number;
     matchId: string;
     gameType: string;
-    summonerData: {
-        assist: number;
-        death: number;
-        kill: number;
-        championId: number;
-        championLevel: number;
-        championName: string;
-        championEngName: string;
-        items: number[];
-        minionKill: number;
-        position: string;
-        rune: {
-            primary_page_id: number;
-            primary_rune_id: number;
-            secondary_page_id: number;
-        };
-        spells: number[];
-        win: true;
-    };
+    summonerData: SummonerInfo;
     participants: {
         assist: number;
         death: number;
@@ -72,12 +54,32 @@ export interface matchListType {
         summonerName: string;
         tierInfo: string[];
     }[];
-    ourTeam: teamInfo;
-    enemyTeam: teamInfo;
+    ourTeam: TeamInfo;
+    enemyTeam: TeamInfo;
     win: boolean;
 }
 
-interface teamInfo {
+export interface SummonerInfo {
+    assist: number;
+    death: number;
+    kill: number;
+    championId: number;
+    championLevel: number;
+    championName: string;
+    championEngName: string;
+    items: number[];
+    minionKill: number;
+    position: string;
+    rune: {
+        primary_page_id: number;
+        primary_rune_id: number;
+        secondary_page_id: number;
+    };
+    spells: number[];
+    win: true;
+}
+
+interface TeamInfo {
     assist: number;
     death: number;
     kill: number;

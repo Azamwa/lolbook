@@ -1,11 +1,11 @@
 import Image from 'next/image';
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components';
 import { versionListState } from 'store/common';
-import { matchListType } from 'utils/recordType';
+import { MatchType } from 'utils/recordType';
 
 interface RecentChampionsType {
-    matchList: matchListType[];
+    matchList: MatchType[];
 }
 
 export default function RecentChampions({ matchList }: RecentChampionsType) {
