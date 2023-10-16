@@ -19,5 +19,14 @@ module.exports = {
 	},
 	complier: {
 		styledComponents: true
+	},
+	async redirects() {
+		return [
+			{
+				source: '/record',
+				destination: '/record/ranking',
+				permanent: true
+			}
+		];
 	}
 };
