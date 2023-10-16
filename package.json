@@ -36,6 +36,7 @@
 		"babel-plugin-styled-components": "^2.0.7",
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-prettier": "^5.0.1",
-		"eslint-plugin-react": "^7.31.11"
+		"eslint-plugin-react": "^7.31.11",
+		"prettier": "^3.0.3"
 	}
 }
