@@ -29,8 +29,10 @@ export default function History({ summoner, matchList }: HistoryProps) {
 					<MyChampionMatch
 						summonerInfo={match.summonerData}
 						currentVersion={currentVersion}
-                        spellList={spellList}
-                        runeList={runeList}
+						spellList={spellList}
+						runeList={runeList}
+						totalTeamKill={match.ourTeam.kill}
+						win={match.win}
 					/>
 				</Match>
 			))}

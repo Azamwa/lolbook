@@ -8,13 +8,17 @@ interface MyChampionProps {
 	currentVersion: string;
 	spellList: SpellType[];
 	runeList: RuneType[];
+	totalTeamKill: number;
+	win: boolean;
 }
 
 export default function MyChampionMatch({
 	summonerInfo,
 	currentVersion,
 	spellList,
-	runeList
+	runeList,
+	totalTeamKill,
+	win
 }: MyChampionProps) {
 	const mySpell = (id: number) => {
 		const spell = spellList.find((spell) => spell.key === String(id));
@@ -82,13 +86,44 @@ export default function MyChampionMatch({
 					</RuneBackground>
 				</Runes>
 			</BasicInfo>
-			{/* <KillDeathInfo>
-                <KDA></KDA>
-                <KDARate></KDARate>
-                <KillInvolvement></KillInvolvement>
-            </KillDeathInfo>
-            <ItemImage></ItemImage>
-            <OthersInfo></OthersInfo> */}
+			<KillDeathInfo>
+				<KDA>
+					{summonerInfo.kill} / <span>{summonerInfo.death}</span> / {summonerInfo.assist}
+				</KDA>
+				<KDARate>
+					평점{' '}
+					{((summonerInfo.kill + summonerInfo.assist) / summonerInfo.death).toFixed(2)}
+				</KDARate>
+				<KillInvolvement>
+					킬관여율{' '}
+					{Math.round(((summonerInfo.kill + summonerInfo.assist) * 100) / totalTeamKill)}%
+				</KillInvolvement>
+			</KillDeathInfo>
+			<UseItems>
+				<BasicItems>
+					{summonerInfo.items.map((item, index) => {
+						if (index !== 6) {
+							return item === 0 ? (
+								<BlockImage key={index} win={win} />
+							) : (
+								<Image
+									src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/item/${item}.png`}
+									width={25}
+									height={25}
+									alt="itemIUsed"
+									key={index}
+								/>
+							);
+						}
+					})}
+				</BasicItems>
+				<Image
+					src={`https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/item/${summonerInfo.items[6]}.png`}
+					width={25}
+					height={25}
+					alt="accessaryItem"
+				/>
+			</UseItems>
 		</MyChampion>
 	);
 }
@@ -96,10 +131,11 @@ export default function MyChampionMatch({
 const MyChampion = styled.div`
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 30px;
 `;
 
 const BasicInfo = styled.div`
+	width: 125px;
 	display: flex;
 	gap: 4px;
 `;
@@ -130,8 +166,11 @@ const KillDeathInfo = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	align-items: center;
+	gap: 3px;
 	font-weight: 700;
 	color: #ddd;
+	font-size: 1.3rem;
 `;
 
 const KDA = styled.p`
@@ -142,5 +181,24 @@ const KDA = styled.p`
 const KDARate = styled.p``;
 const KillInvolvement = styled.p``;
 
-const ItemImage = styled.div``;
-const OthersInfo = styled.div``;
+const UseItems = styled.div`
+	width: 110px;
+	height: 55px;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+`;
+
+const BasicItems = styled.div`
+	width: 80px;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 2px;
+`;
+
+const BlockImage = styled.div<{ win: boolean }>`
+	width: 25px;
+	height: 25px;
+	background-color: ${(props) => (props.win ? '#2a50a0' : '#aa2446')};
+`;
