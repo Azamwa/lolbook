@@ -4,13 +4,13 @@ import { SummonerType, MatchType } from 'utils/recordType';
 import { runeListState, spellListState, versionListState } from 'store/common';
 import MyChampionMatch from './MyChampionMatch';
 import MatchInfo from './MatchInfo';
+import Participants from './Participants';
 
 interface HistoryProps {
-	summoner: SummonerType;
 	matchList: MatchType[];
 }
 
-export default function History({ summoner, matchList }: HistoryProps) {
+export default function History({ matchList }: HistoryProps) {
 	const { version } = versionListState();
 	const currentVersion = version[0];
 	const { spellList, setSpellList } = spellListState();
@@ -34,6 +34,7 @@ export default function History({ summoner, matchList }: HistoryProps) {
 						totalTeamKill={match.ourTeam.kill}
 						win={match.win}
 					/>
+					<Participants participants={match.participants} win={match.win} />
 				</Match>
 			))}
 		</HistoryContainer>

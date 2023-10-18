@@ -126,7 +126,7 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
 									</Tab>
 								</TabMenu>
 								{currentTab === 'recent' ? (
-									<History summoner={summoner} matchList={matchList} />
+									<History matchList={matchList} />
 								) : (
 									<Statistics />
 								)}
@@ -154,13 +154,17 @@ const Background = styled.div`
 const PageWrap = styled.div`
 	width: 100vw;
 	height: 100vh;
-	padding: 100px;
+	padding-top: 100px;
 	padding-bottom: 70px;
 	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 `;
 
 const UtilForm = styled.section`
-	width: 100%;
+	width: 1245px;
+	min-width: 1245px;
 	margin-bottom: 15px;
 	display: flex;
 	justify-content: space-between;
@@ -181,19 +185,20 @@ const RouterBack = styled.div`
 const MainContent = styled.section`
 	width: 100%;
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	gap: 15px;
 `;
 
 const SideInfo = styled.section`
-	width: 400px;
+	width: 380px;
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
 `;
 
 const RecentRecord = styled.main`
-	width: calc(100% - 405px);
+	width: 850px;
+	min-width: 850px;
 	border-radius: 5px;
 	background-color: rgb(52, 69, 85);
 `;
@@ -235,6 +240,8 @@ const ErrorMessage = styled.p`
 `;
 
 const NameCard = styled.div`
+	width: 100%;
+	min-width: 380px;
 	display: flex;
 	padding: 10px;
 	gap: 20px;
@@ -280,6 +287,7 @@ const SummonerLevel = styled.h5`
 
 const SummonerHistory = styled.div`
 	width: 100%;
+	min-width: 380px;
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
