@@ -1,13 +1,12 @@
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import styled from 'styled-components';
+import dayjs from 'dayjs';
 import { rankingAPI } from 'store';
 import SearchForm from 'components/common/SearchForm';
 import { RankingType } from 'utils/recordType';
 import Ranking from 'components/units/record/Ranking';
 import Pagenation from 'components/common/Pagenation';
-import dayjs from 'dayjs';
-import { useEffect } from 'react';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	let page = context.query.page ?? '1';
@@ -32,9 +31,6 @@ interface RecordProps {
 }
 
 export default function index({ rankList }: RecordProps) {
-	useEffect(() => {
-		console.log(rankList[0]);
-	}, [rankList]);
 	return (
 		<>
 			<Background>
@@ -45,7 +41,6 @@ export default function index({ rankList }: RecordProps) {
 					<SearchForm />
 					<RankingSection>
 						<LastUpdate>
-							마지막 업데이트 시각:{' '}
 							{dayjs(rankList[0].currentTime).format('YYYY-MM-DD HH:mm:ss')}
 						</LastUpdate>
 						<Ranking rankList={rankList} />

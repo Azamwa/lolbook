@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import { SummonerType, MatchType } from 'utils/recordType';
+import { MatchType } from 'utils/recordType';
 import { runeListState, spellListState, versionListState } from 'store/common';
 import MyChampionMatch from './MyChampionMatch';
 import MatchInfo from './MatchInfo';
@@ -21,6 +21,8 @@ export default function History({ matchList }: HistoryProps) {
 		setRuneList();
 	}, []);
 
+	const moreRequest = () => {};
+
 	return (
 		<HistoryContainer>
 			{matchList.map((match) => (
@@ -37,6 +39,9 @@ export default function History({ matchList }: HistoryProps) {
 					<Participants participants={match.participants} win={match.win} />
 				</Match>
 			))}
+			{matchList.length === 10 && (
+				<MoreRequest onClick={() => moreRequest()}>더 불러오기</MoreRequest>
+			)}
 		</HistoryContainer>
 	);
 }
@@ -46,6 +51,7 @@ const HistoryContainer = styled.ul`
 	padding: 15px;
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 	gap: 10px;
 `;
 
@@ -58,4 +64,14 @@ const Match = styled.li<{ isWin: boolean }>`
 	display: flex;
 	gap: 30px;
 	color: #bbb;
+`;
+
+const MoreRequest = styled.button`
+	width: 300px;
+	height: 50px;
+	margin: 20px 0;
+	background-color: #349d85;
+	color: #fff;
+	font-weight: 700;
+	font-size: 2rem;
 `;
