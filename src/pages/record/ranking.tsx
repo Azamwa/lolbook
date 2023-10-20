@@ -6,31 +6,35 @@ import SearchForm from 'components/common/SearchForm';
 import { RankingType } from 'utils/recordType';
 import Ranking from 'components/units/record/Ranking';
 import Pagenation from 'components/common/Pagenation';
+import dayjs from 'dayjs';
+import { useEffect } from 'react';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	let page = context.query.page ?? '1';
-    
-    try {
-        const data = await rankingAPI(page as string);
-        return {
-            props: { rankList: data }
-        };
-    } catch (e) {
-        return {
+
+	try {
+		const data = await rankingAPI(page as string);
+		return {
+			props: { rankList: data }
+		};
+	} catch (e) {
+		return {
 			redirect: {
 				permanent: false,
 				destination: '/error'
 			}
 		};
-    }
+	}
 };
 
 interface RecordProps {
 	rankList: RankingType[];
 }
 
-
 export default function index({ rankList }: RecordProps) {
+	useEffect(() => {
+		console.log(rankList[0]);
+	}, [rankList]);
 	return (
 		<>
 			<Background>
@@ -40,6 +44,10 @@ export default function index({ rankList }: RecordProps) {
 				<PageContent>
 					<SearchForm />
 					<RankingSection>
+						<LastUpdate>
+							마지막 업데이트 시각:{' '}
+							{dayjs(rankList[0].currentTime).format('YYYY-MM-DD HH:mm:ss')}
+						</LastUpdate>
 						<Ranking rankList={rankList} />
 					</RankingSection>
 					<Pagenation />
@@ -75,4 +83,13 @@ const RankingSection = styled.section`
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
+`;
+
+const LastUpdate = styled.p`
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 5px;
+	font-size: 1.35rem;
+	font-style: italic;
+	font-weight: 600;
 `;

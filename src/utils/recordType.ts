@@ -103,4 +103,5 @@ export interface RankingType {
 	losses: number;
 	idx: number;
 	leaguePoints: number;
+	currentTime: string;
 }
