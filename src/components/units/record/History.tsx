@@ -5,40 +5,46 @@ import { runeListState, spellListState, versionListState } from 'store/common';
 import MyChampionMatch from './MyChampionMatch';
 import MatchInfo from './MatchInfo';
 import Participants from './Participants';
+import { recordCountState } from 'store/record';
 
 interface HistoryProps {
 	matchList: MatchType[];
+	puuid: string;
 }
 
-export default function History({ matchList }: HistoryProps) {
+export default function History({ matchList, puuid }: HistoryProps) {
 	const { version } = versionListState();
 	const currentVersion = version[0];
 	const { spellList, setSpellList } = spellListState();
 	const { runeList, setRuneList } = runeListState();
+	const { recordCount, setRecordCount } = recordCountState();
 
 	useEffect(() => {
 		setSpellList();
 		setRuneList();
 	}, []);
 
-	const moreRequest = () => {};
+	const moreRequest = () => {
+		setRecordCount();
+	};
 
 	return (
 		<HistoryContainer>
-			{matchList.map((match) => (
-				<Match isWin={match.win} key={match.matchId}>
-					<MatchInfo match={match} />
-					<MyChampionMatch
-						summonerInfo={match.summonerData}
-						currentVersion={currentVersion}
-						spellList={spellList}
-						runeList={runeList}
-						totalTeamKill={match.ourTeam.kill}
-						win={match.win}
-					/>
-					<Participants participants={match.participants} win={match.win} />
-				</Match>
-			))}
+			{matchList.length > 0 &&
+				matchList.map((match) => (
+					<Match isWin={match.win} key={match.matchId}>
+						<MatchInfo match={match} />
+						<MyChampionMatch
+							summonerInfo={match.summonerData}
+							currentVersion={currentVersion}
+							spellList={spellList}
+							runeList={runeList}
+							totalTeamKill={match.ourTeam.kill}
+							win={match.win}
+						/>
+						<Participants participants={match.participants} win={match.win} />
+					</Match>
+				))}
 			{matchList.length === 10 && (
 				<MoreRequest onClick={() => moreRequest()}>더 불러오기</MoreRequest>
 			)}

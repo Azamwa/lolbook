@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
-import { riotAPI } from 'store/record';
+import { matchListAPI } from 'store';
+import { recordHistoryState, riotAPI } from 'store/record';
 import { SummonerType, MatchType } from 'utils/recordType';
 import { timeStampToDate } from 'utils/common';
 import SearchForm from 'components/common/SearchForm';
@@ -30,8 +31,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 		const summonerLeagueURL = `${riotAPI}/lol/league/v4/entries/by-summoner/${id}`;
 		const league_res = await axios.get(summonerLeagueURL, header);
 
-		const matchListURL = `https://4tsd4q6r68.execute-api.ap-northeast-2.amazonaws.com/v1/getMatchList?puuid=${puuid}`;
-		const matchList = await axios.get(matchListURL, header);
+		const matchList = await matchListAPI(0, puuid);
 
 		return {
 			props: {
@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 					info: { ...summoner_res.data },
 					league: [...league_res.data]
 				},
-				matchList: matchList.data.body
+				matchList
 			}
 		};
 	} catch (e) {
@@ -60,6 +60,7 @@ interface SummonerInfoProps {
 export default function SummonerInfo({ summoner, matchList, error_message }: SummonerInfoProps) {
 	const router = useRouter();
 	const [currentTab, setCurrentTab] = useState<string>('recent');
+	const { recordHistory, setRecordHistory } = recordHistoryState();
 	const soloRank = useMemo(() => {
 		return summoner?.league.find((league) => league.queueType === 'RANKED_SOLO_5x5');
 	}, [summoner]);
@@ -67,6 +68,10 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
 	const freeRank = useMemo(() => {
 		return summoner?.league.find((league) => league.queueType === 'RANKED_FLEX_SR');
 	}, [summoner]);
+
+	useEffect(() => {
+		setRecordHistory(matchList);
+	}, [matchList]);
 
 	return (
 		<>
@@ -126,7 +131,7 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
 									</Tab>
 								</TabMenu>
 								{currentTab === 'recent' ? (
-									<History matchList={matchList} />
+									<History matchList={matchList} puuid={summoner.info.puuid} />
 								) : (
 									<Statistics />
 								)}

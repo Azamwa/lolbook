@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { PatchNoteType, RuneType, SlotType, SpellType } from 'utils/types';
+import { PatchNoteType, RuneType, SpellType } from 'utils/types';
 import { patchNoteAPI, versionAPI } from 'store';
 
 interface versionListState {
@@ -19,13 +19,13 @@ interface ScreenSizeState {
 }
 
 interface SpellListState {
-    spellList: SpellType[];
-    setSpellList: () => void;
+	spellList: SpellType[];
+	setSpellList: () => void;
 }
 
 interface RuneListState {
-    runeList: RuneType[];
-    setRuneList: () => void;
+	runeList: RuneType[];
+	setRuneList: () => void;
 }
 
 export const versionListState = create<versionListState>((set) => ({
@@ -54,34 +54,38 @@ export const screenSizeState = create<ScreenSizeState>((set) => ({
 }));
 
 export const spellListState = create<SpellListState>((set) => ({
-    spellList: [],
-    setSpellList: async () => {
-        const res = await axios.get('https://ddragon.leagueoflegends.com/cdn/13.20.1/data/ko_KR/summoner.json');
-        const result = Object.values(res.data.data).map((spell: any) => {
-            return {
-                id: spell.id,
-                name: spell.name,
-                key: spell.key,
-                description: spell.description,
-                cooldown: spell.cooldown[0]
-            }
-        })
-        set(() => ({ spellList: result }));
-    }
+	spellList: [],
+	setSpellList: async () => {
+		const res = await axios.get(
+			'https://ddragon.leagueoflegends.com/cdn/13.20.1/data/ko_KR/summoner.json'
+		);
+		const result = Object.values(res.data.data).map((spell: any) => {
+			return {
+				id: spell.id,
+				name: spell.name,
+				key: spell.key,
+				description: spell.description,
+				cooldown: spell.cooldown[0]
+			};
+		});
+		set(() => ({ spellList: result }));
+	}
 }));
 
 export const runeListState = create<RuneListState>((set) => ({
-    runeList: [],
-    setRuneList: async () => {
-        const res = await axios.get('https://ddragon.leagueoflegends.com/cdn/13.20.1/data/ko_KR/runesReforged.json');
-        let result = res.data.map((perks: any) => {
-            let chunk: any = [];
-            for(const page of perks.slots) {
-                chunk.push(...page.runes);
-            }
-            return { ...perks, slots: chunk };
-        });
+	runeList: [],
+	setRuneList: async () => {
+		const res = await axios.get(
+			'https://ddragon.leagueoflegends.com/cdn/13.20.1/data/ko_KR/runesReforged.json'
+		);
+		let result = res.data.map((perks: any) => {
+			let chunk: any = [];
+			for (const page of perks.slots) {
+				chunk.push(...page.runes);
+			}
+			return { ...perks, slots: chunk };
+		});
 
-        set(() => ({ runeList: result }));
-    }
+		set(() => ({ runeList: result }));
+	}
 }));

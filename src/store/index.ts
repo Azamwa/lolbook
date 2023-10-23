@@ -22,7 +22,17 @@ export const championDetailAPI = async (name: string) => {
 
 export const rankingAPI = async (page: string) => {
 	const res = await axios.get(
-        `https://8bihktj9y3.execute-api.ap-northeast-2.amazonaws.com/rankList/${page}`
+		`https://8bihktj9y3.execute-api.ap-northeast-2.amazonaws.com/rankList/${page}`
 	);
 	return res.data;
+};
+
+export const matchListAPI = async (count: number, puuid: string) => {
+	const res = await axios.get(
+		`https://4tsd4q6r68.execute-api.ap-northeast-2.amazonaws.com/v2/getMatchList?puuid=${puuid}&startIdx=${
+			count * 10
+		}`
+	);
+
+	return res.data.body;
 };

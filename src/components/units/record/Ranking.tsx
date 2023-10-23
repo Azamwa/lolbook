@@ -8,8 +8,8 @@ interface RankingProps {
 }
 
 export default function Ranking({ rankList }: RankingProps) {
-    const router = useRouter();
-    const searchSummoner = (ranker: RankingType) => {
+	const router = useRouter();
+	const searchSummoner = (ranker: RankingType) => {
 		router.push({ pathname: `/record/${ranker.summonerName}` });
 	};
 
@@ -28,33 +28,30 @@ export default function Ranking({ rankList }: RankingProps) {
 			</thead>
 			<tbody>
 				<TableBody>
-                    {rankList.map((ranker) => (
-                        <TableContent
-                            key={ranker.summonerId}
-                            onClick={() => searchSummoner(ranker)}>
-                            <RankingNumber>{ranker.idx}</RankingNumber>
-                            <SummonerName>{ranker.summonerName}</SummonerName>
-                            <Tier>
-                                {ranker.tier}
-                            </Tier>
-                            <LeaguePoint>{`${ranker.leaguePoints} LP`}</LeaguePoint>
-                            <WinningRate>
-                                <WinningGraph>
-                                    <WinRate
-                                        winsRate={winningRate(ranker.wins, ranker.losses)}>
-                                        <Wins>{ranker.wins}W</Wins>
-                                    </WinRate>
-                                    <LoseRate
-                                        lossesRate={100 - winningRate(ranker.wins, ranker.losses)}>
-                                        <Losses>{ranker.losses}L</Losses>
-                                    </LoseRate>
-                                </WinningGraph>
-                                <WinningRateText>
-                                    {`${winningRate(ranker.wins, ranker.losses)} %`}
-                                </WinningRateText>
-                            </WinningRate>
-                        </TableContent>
-                    ))}
+					{rankList.map((ranker) => (
+						<TableContent
+							key={ranker.summonerId}
+							onClick={() => searchSummoner(ranker)}>
+							<RankingNumber>{ranker.idx}</RankingNumber>
+							<SummonerName>{ranker.summonerName}</SummonerName>
+							<Tier>{ranker.tier}</Tier>
+							<LeaguePoint>{`${ranker.leaguePoints} LP`}</LeaguePoint>
+							<WinningRate>
+								<WinningGraph>
+									<WinRate winsRate={winningRate(ranker.wins, ranker.losses)}>
+										<Wins>{ranker.wins}W</Wins>
+									</WinRate>
+									<LoseRate
+										lossesRate={100 - winningRate(ranker.wins, ranker.losses)}>
+										<Losses>{ranker.losses}L</Losses>
+									</LoseRate>
+								</WinningGraph>
+								<WinningRateText>
+									{`${winningRate(ranker.wins, ranker.losses)} %`}
+								</WinningRateText>
+							</WinningRate>
+						</TableContent>
+					))}
 				</TableBody>
 			</tbody>
 		</RankingTable>
@@ -63,6 +60,7 @@ export default function Ranking({ rankList }: RankingProps) {
 
 const RankingTable = styled.table`
 	width: 870px;
+	height: 635px;
 	border-radius: 5px;
 	background-color: rgb(52, 69, 85);
 	color: #ccc;
@@ -80,9 +78,9 @@ const TableHeader = styled.th`
 
 const RankingNumber = styled.div`
 	width: 50px;
-    padding-left: 10px;
-    display: flex;
-    justify-content: flex-start;
+	padding-left: 10px;
+	display: flex;
+	justify-content: flex-start;
 `;
 
 const SummonerName = styled.div`
@@ -91,21 +89,21 @@ const SummonerName = styled.div`
 
 const Tier = styled.div`
 	width: 120px;
-    display: flex;
-    justify-content: center;
+	display: flex;
+	justify-content: center;
 `;
 
 const LeaguePoint = styled.div`
 	width: 100px;
-    display: flex;
-    justify-content: center;
+	display: flex;
+	justify-content: center;
 `;
 
 const WinningRate = styled.div`
 	width: 200px;
 	display: flex;
 	align-items: center;
-    justify-content: center;
+	justify-content: center;
 	gap: 10px;
 	position: relative;
 `;
