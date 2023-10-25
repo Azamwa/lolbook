@@ -5,7 +5,8 @@ import Image from 'next/image';
 import styled from 'styled-components';
 import axios from 'axios';
 import { matchListAPI } from 'store';
-import { recordHistoryState, riotAPI } from 'store/record';
+import { recordCountState, recordHistoryState, riotAPI } from 'store/record';
+import { runeListState, spellListState } from 'store/common';
 import { SummonerType, MatchType } from 'utils/recordType';
 import { timeStampToDate } from 'utils/common';
 import SearchForm from 'components/common/SearchForm';
@@ -60,7 +61,10 @@ interface SummonerInfoProps {
 export default function SummonerInfo({ summoner, matchList, error_message }: SummonerInfoProps) {
 	const router = useRouter();
 	const [currentTab, setCurrentTab] = useState<string>('recent');
-	const { recordHistory, setRecordHistory } = recordHistoryState();
+	const { setRecordHistory } = recordHistoryState();
+	const { spellList, setSpellList } = spellListState();
+	const { runeList, setRuneList } = runeListState();
+	const { setRecordCount } = recordCountState();
 	const soloRank = useMemo(() => {
 		return summoner?.league.find((league) => league.queueType === 'RANKED_SOLO_5x5');
 	}, [summoner]);
@@ -68,6 +72,16 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
 	const freeRank = useMemo(() => {
 		return summoner?.league.find((league) => league.queueType === 'RANKED_FLEX_SR');
 	}, [summoner]);
+
+	useEffect(() => {
+		setSpellList();
+		setRuneList();
+
+		return () => {
+			setRecordHistory(null);
+			setRecordCount(0);
+		};
+	}, []);
 
 	useEffect(() => {
 		setRecordHistory(matchList);
@@ -131,7 +145,11 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
 									</Tab>
 								</TabMenu>
 								{currentTab === 'recent' ? (
-									<History matchList={matchList} puuid={summoner.info.puuid} />
+									<History
+										puuid={summoner.info.puuid}
+										spellList={spellList}
+										runeList={runeList}
+									/>
 								) : (
 									<Statistics />
 								)}

@@ -1,14 +1,13 @@
-import dayjs from "dayjs";
-
+import dayjs from 'dayjs';
 
 export const winningRate = (win: number, lose: number) => {
 	return Math.floor((win * 100) / (win + lose));
 };
 
 export const timeStampToDate = (timeStamp: number) => {
-    const date = dayjs(timeStamp).format('YYYY-MM-DD, hh:mm:ss')
-    return date;
-}
+	const date = dayjs(timeStamp).format('YYYY-MM-DD, hh:mm:ss');
+	return date;
+};
 
 export const romeToNumber = (rome: string) => {
 	const number: { [key: string]: number } = {
@@ -54,4 +53,9 @@ export const selectStyle = {
 		...base,
 		color: '#ABB2B9'
 	})
+};
+
+export const rateCalculator = (kill: number, death: number, assist: number) => {
+	const result = ((kill + assist) / death).toFixed(2);
+	return Number(result) === Infinity ? 'Perfect' : '평점 ' + result;
 };

@@ -1,37 +1,32 @@
-import { useEffect } from 'react';
 import styled from 'styled-components';
-import { MatchType } from 'utils/recordType';
-import { runeListState, spellListState, versionListState } from 'store/common';
+import { versionListState } from 'store/common';
+import { recordCountState, recordHistoryState } from 'store/record';
+import { RuneType, SpellType } from 'utils/types';
 import MyChampionMatch from './MyChampionMatch';
 import MatchInfo from './MatchInfo';
 import Participants from './Participants';
-import { recordCountState } from 'store/record';
 
 interface HistoryProps {
-	matchList: MatchType[];
 	puuid: string;
+	spellList: SpellType[];
+	runeList: RuneType[];
 }
 
-export default function History({ matchList, puuid }: HistoryProps) {
+export default function History({ puuid, spellList, runeList }: HistoryProps) {
 	const { version } = versionListState();
 	const currentVersion = version[0];
-	const { spellList, setSpellList } = spellListState();
-	const { runeList, setRuneList } = runeListState();
 	const { recordCount, setRecordCount } = recordCountState();
+	const { recordHistory, setRecordHistory } = recordHistoryState();
 
-	useEffect(() => {
-		setSpellList();
-		setRuneList();
-	}, []);
-
-	const moreRequest = () => {
+	const moreRequest = async () => {
 		setRecordCount();
+		setRecordHistory(null, recordCount + 1, puuid);
 	};
 
 	return (
 		<HistoryContainer>
-			{matchList.length > 0 &&
-				matchList.map((match) => (
+			{recordHistory.length > 0 &&
+				recordHistory.map((match) => (
 					<Match isWin={match.win} key={match.matchId}>
 						<MatchInfo match={match} />
 						<MyChampionMatch
@@ -45,9 +40,7 @@ export default function History({ matchList, puuid }: HistoryProps) {
 						<Participants participants={match.participants} win={match.win} />
 					</Match>
 				))}
-			{matchList.length === 10 && (
-				<MoreRequest onClick={() => moreRequest()}>더 불러오기</MoreRequest>
-			)}
+			<MoreRequest onClick={() => moreRequest()}>더 불러오기</MoreRequest>
 		</HistoryContainer>
 	);
 }

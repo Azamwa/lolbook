@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import styled from 'styled-components';
+import { rateCalculator } from 'utils/common';
 import { SummonerInfo } from 'utils/recordType';
 import { RuneType, SpellType } from 'utils/types';
 
@@ -91,8 +92,7 @@ export default function MyChampionMatch({
 					{summonerInfo.kill} / <span>{summonerInfo.death}</span> / {summonerInfo.assist}
 				</KDA>
 				<KDARate>
-					평점{' '}
-					{((summonerInfo.kill + summonerInfo.assist) / summonerInfo.death).toFixed(2)}
+					{rateCalculator(summonerInfo.kill, summonerInfo.death, summonerInfo.assist)}
 				</KDARate>
 				<KillInvolvement>
 					킬관여율{' '}

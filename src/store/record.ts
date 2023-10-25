@@ -11,12 +11,12 @@ interface SummonerNameState {
 
 interface RecordCountState {
 	recordCount: number;
-	setRecordCount: () => void;
+	setRecordCount: (count?: number) => void;
 }
 
 interface RecordHistoryState {
 	recordHistory: MatchType[];
-	setRecordHistory: (matchList: MatchType[], count?: number, puuid?: string) => void;
+	setRecordHistory: (matchList: MatchType[] | null, count?: number, puuid?: string) => void;
 }
 
 export const summonerNameState = create<SummonerNameState>((set) => ({
@@ -28,20 +28,24 @@ export const summonerNameState = create<SummonerNameState>((set) => ({
 
 export const recordCountState = create<RecordCountState>((set) => ({
 	recordCount: 0,
-	setRecordCount: () => {
-		set((state) => ({ recordCount: state.recordCount + 1 }));
+	setRecordCount: (count) => {
+		set((state) => ({ recordCount: count === undefined ? state.recordCount + 1 : count }));
 	}
 }));
 
 export const recordHistoryState = create<RecordHistoryState>((set) => ({
 	recordHistory: [],
 	setRecordHistory: async (matchList, count, puuid) => {
-		let result = matchList;
-
-		if (result === null && count !== undefined && puuid !== undefined) {
-			result = await await matchListAPI(count, puuid);
+		if (matchList !== null) {
+			set(() => ({ recordHistory: matchList }));
 		}
-
-		set((state) => ({ recordHistory: state.recordHistory.concat(result) }));
+		if (matchList === null) {
+			if (count !== undefined && puuid !== undefined) {
+				const res = await matchListAPI(count, puuid);
+				set((state) => ({ recordHistory: state.recordHistory.concat(res) }));
+			} else {
+				set(() => ({ recordHistory: [] }));
+			}
+		}
 	}
 }));

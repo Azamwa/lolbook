@@ -41,6 +41,7 @@ export default function index({ rankList }: RecordProps) {
 					<SearchForm />
 					<RankingSection>
 						<LastUpdate>
+							최신 업데이트:{' '}
 							{dayjs(rankList[0].currentTime).format('YYYY-MM-DD HH:mm:ss')}
 						</LastUpdate>
 						<Ranking rankList={rankList} />
