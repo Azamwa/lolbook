@@ -68,6 +68,7 @@ const PageWrap = styled.div`
 const PageContent = styled.div`
 	width: 100%;
 	height: 100%;
+	padding-top: 40px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
