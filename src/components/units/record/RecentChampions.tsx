@@ -56,7 +56,9 @@ export default function RecentChampions({ matchList }: RecentChampionsType) {
 					playedChampionCount: championMap.get(match.championId)
 				};
 			})
-			.sort((a, b) => b.playedChampionCount - a.playedChampionCount)
+			.sort((a, b) => {
+				return b.playedChampionCount - a.playedChampionCount || a.championId - b.championId;
+			})
 			.forEach((match) => {
 				if (chunk.championId !== match.championId) {
 					if (chunk.championId !== 0) result.push(chunk);
