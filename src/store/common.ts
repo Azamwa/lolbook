@@ -10,7 +10,7 @@ interface versionListState {
 
 interface PatchNoteListState {
 	patchNoteList: PatchNoteType[];
-	setPatchNoteList: (count: number) => void;
+	setPatchNoteList: (count: number, patchNote?: PatchNoteType[]) => void;
 }
 
 interface ScreenSizeState {
@@ -38,9 +38,13 @@ export const versionListState = create<versionListState>((set) => ({
 
 export const patchNoteListState = create<PatchNoteListState>((set) => ({
 	patchNoteList: [],
-	setPatchNoteList: async (count) => {
-		const list = await patchNoteAPI(count);
-		set((state) => ({ patchNoteList: state.patchNoteList.concat(list) }));
+	setPatchNoteList: async (count, patchNote) => {
+		if (count === 0) {
+			set(() => ({ patchNoteList: patchNote }));
+		} else {
+			const list = await patchNoteAPI(count);
+			set((state) => ({ patchNoteList: state.patchNoteList.concat(list) }));
+		}
 	}
 }));
 

@@ -4,13 +4,27 @@ import Head from 'next/head';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 import { patchNoteListState } from 'store/common';
+import { patchNoteAPI } from 'store';
+import { PatchNoteType } from 'utils/types';
 
-export default function Home() {
+export const getStaticProps = async () => {
+	const list = await patchNoteAPI(0);
+
+	return {
+		props: { list }
+	};
+};
+
+interface PatchNoteProps {
+	list: PatchNoteType[];
+}
+
+export default function Home({ list }: PatchNoteProps) {
 	const [requestCount, setRequestCount] = useState<number>(0);
 	const { patchNoteList, setPatchNoteList } = patchNoteListState();
 
 	useEffect(() => {
-		setPatchNoteList(requestCount);
+		setPatchNoteList(requestCount, list);
 	}, [requestCount]);
 
 	return (
