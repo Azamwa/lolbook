@@ -13,6 +13,7 @@
 		"@types/react": "18.0.25",
 		"@types/react-dom": "18.0.9",
 		"@types/styled-components": "^5.1.26",
+		"aws-sdk": "^2.1497.0",
 		"axios": "^1.5.1",
 		"classnames": "^2.3.2",
 		"dayjs": "^1.11.10",

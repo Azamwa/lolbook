@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import styled from 'styled-components';
@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { patchNoteListState } from 'store/common';
 import { patchNoteAPI } from 'store';
 import { PatchNoteType } from 'utils/types';
+import { setEnterLog } from 'utils/common';
 
 export const getStaticProps = async () => {
 	const list = await patchNoteAPI(0);
@@ -22,6 +23,10 @@ interface PatchNoteProps {
 export default function Home({ list }: PatchNoteProps) {
 	const [requestCount, setRequestCount] = useState<number>(0);
 	const { patchNoteList, setPatchNoteList } = patchNoteListState();
+
+	useEffect(() => {
+		setEnterLog();
+	}, []);
 
 	useEffect(() => {
 		setPatchNoteList(requestCount, list);

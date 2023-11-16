@@ -3,7 +3,7 @@ import axios from 'axios';
 import { PatchNoteType, RuneType, SpellType } from 'utils/types';
 import { patchNoteAPI, versionAPI } from 'store';
 
-interface versionListState {
+interface VersionListState {
 	version: string[];
 	setVersion: () => void;
 }
@@ -28,7 +28,7 @@ interface RuneListState {
 	setRuneList: () => void;
 }
 
-export const versionListState = create<versionListState>((set) => ({
+export const versionListState = create<VersionListState>((set) => ({
 	version: [],
 	setVersion: async () => {
 		const versionList = await versionAPI();

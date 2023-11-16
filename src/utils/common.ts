@@ -1,4 +1,6 @@
+import axios from 'axios';
 import dayjs from 'dayjs';
+import { setClientInfo } from './aws';
 
 export const winningRate = (win: number, lose: number) => {
 	return Math.floor((win * 100) / (win + lose));
@@ -58,4 +60,14 @@ export const selectStyle = {
 export const rateCalculator = (kill: number, death: number, assist: number) => {
 	const result = ((kill + assist) / death).toFixed(2);
 	return Number(result) === Infinity ? 'Perfect' : '평점 ' + result;
+};
+
+export const setEnterLog = async () => {
+	const { data } = await axios.get('https://geolocation-db.com/json/');
+	const info = {
+		ip: data.IPv4,
+		country_name: data.country_name,
+		city: data.city
+	};
+	setClientInfo(info);
 };
