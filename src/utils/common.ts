@@ -63,11 +63,24 @@ export const rateCalculator = (kill: number, death: number, assist: number) => {
 };
 
 export const setEnterLog = async () => {
-	const { data } = await axios.get('https://geolocation-db.com/json/');
-	const info = {
-		ip: data.IPv4,
-		country_name: data.country_name,
-		city: data.city
+	let info = {
+		ip: '',
+		country_name: '',
+		city: ''
 	};
+	try {
+		const { data } = await axios.get('https://geolocation-db.com/json/');
+		info = {
+			ip: data.IPv4,
+			country_name: data.country_name,
+			city: data.city
+		};
+	} catch (e) {
+		info = {
+			ip: 'unknown',
+			country_name: 'unknown',
+			city: 'unknown'
+		};
+	}
 	setClientInfo(info);
 };

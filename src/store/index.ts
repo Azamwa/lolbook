@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { riotAPI } from './record';
 
 export const versionAPI = async () => {
 	const res = await axios.get('https://ddragon.leagueoflegends.com/api/versions.json');
