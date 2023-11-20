@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
@@ -33,6 +34,9 @@ interface RecordProps {
 export default function index({ rankList }: RecordProps) {
 	return (
 		<>
+			<Head>
+				<title>LOLBook | 소환사랭킹</title>
+			</Head>
 			<Background>
 				<Image src="/img/background/in73r6sbixz31.webp" alt="background" fill />
 			</Background>

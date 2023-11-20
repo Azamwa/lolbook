@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { GetServerSideProps } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
@@ -89,6 +90,9 @@ export default function SummonerInfo({ summoner, matchList, error_message }: Sum
 
 	return (
 		<>
+			<Head>
+				<title>{`LOLBook | ${summoner.info.name} - 소환사 전적검색`}</title>
+			</Head>
 			<Background />
 			<PageWrap>
 				{summoner === undefined ? (
