@@ -25,6 +25,7 @@
 		"react-icons": "^4.7.1",
 		"react-loader-spinner": "^5.3.4",
 		"react-select": "^5.7.0",
+		"react-tooltip": "^5.24.0",
 		"sass": "^1.56.1",
 		"styled-components": "^5.3.6",
 		"styled-reset": "^4.4.2",

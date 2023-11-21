@@ -82,7 +82,7 @@ export interface ParticipantsType {
 	win: boolean;
 }
 
-interface TeamInfo {
+export interface TeamInfo {
 	assist: number;
 	death: number;
 	kill: number;

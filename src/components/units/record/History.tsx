@@ -6,8 +6,8 @@ import { RuneType, SpellType } from 'utils/types';
 import MyChampionMatch from './MyChampionMatch';
 import MatchInfo from './MatchInfo';
 import Participants from './Participants';
-import MoreInfo from './MoreInfo';
 import { IoIosArrowDown } from 'react-icons/io';
+import MatchDetail from './MatchDetail';
 
 interface HistoryProps {
 	puuid: string;
@@ -53,7 +53,7 @@ export default function History({ puuid, spellList, runeList }: HistoryProps) {
 								<IoIosArrowDown />
 							</MoreInfoButton>
 						</Match>
-						{match.matchId === currentToggle && <MoreInfo match={match} />}
+						{match.matchId === currentToggle && <MatchDetail match={match} />}
 					</MatchContainer>
 				))}
 			<MoreRequest onClick={() => moreRequest()}>더 불러오기</MoreRequest>
