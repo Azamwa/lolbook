@@ -10,7 +10,7 @@ interface MatchDetailProps {
 export default function MatchDetail({ match }: MatchDetailProps) {
 	return (
 		<MoreInfoContainer>
-			<Comprehensive />
+			<Comprehensive match={match}/>
 			<TeamContainer>
 				<MatchTeamInfo ourTeam={match.ourTeam} />
 				<MatchTeamInfo enemyTeam={match.enemyTeam} />
@@ -27,13 +27,12 @@ const MoreInfoContainer = styled.section`
 	background-color: rgb(26, 36, 46);
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 8px;
 `;
 
 const TeamContainer = styled.div`
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
-	gap: 5px;
 	height: 470px;
 `;
